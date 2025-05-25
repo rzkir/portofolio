@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 
 import { toast } from 'sonner'
 
-import { AuthContextType } from '@/types/auth'
+import { AuthContextType, UserRole } from '@/types/auth'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -18,20 +18,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
     const [session, setSession] = useState<Session | null>(null)
     const [loading, setLoading] = useState(true)
+    const [userRole, setUserRole] = useState<UserRole | null>(null)
     const router = useRouter()
+
+    const fetchUserRole = async (userId: string) => {
+        const { data, error } = await supabase
+            .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
+            .select('role')
+            .eq('id', userId)
+            .single()
+
+        if (error) {
+            console.error('Error fetching user role:', error)
+            return null
+        }
+
+        const role = data?.role as UserRole
+        return role === 'admins' || role === 'user' ? role : null
+    }
 
     useEffect(() => {
         // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabase.auth.getSession().then(async ({ data: { session } }) => {
             setSession(session)
             setUser(session?.user ?? null)
+
+            if (session?.user) {
+                const role = await fetchUserRole(session.user.id)
+                setUserRole(role)
+            } else {
+                setUserRole(null)
+            }
+
             setLoading(false)
         })
 
         // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             setSession(session)
             setUser(session?.user ?? null)
+
+            if (session?.user) {
+                const role = await fetchUserRole(session.user.id)
+                setUserRole(role)
+            } else {
+                setUserRole(null)
+            }
+
             setLoading(false)
         })
 
@@ -52,7 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     data: {
                         first_name: firstName,
                         last_name: lastName,
-                        role: 'user', // Default role for new users
                     },
                 },
             })
@@ -72,14 +104,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             // Store additional user data in the accounts table
             const { error: accountError } = await supabase
-                .from('accounts')
+                .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
                 .insert([
                     {
                         id: authData.user.id,
                         email: email,
                         first_name: firstName,
                         last_name: lastName,
-                        role: 'user'
+                        role: 'user' as UserRole
                     }
                 ])
 
@@ -121,7 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             // Get user role from accounts table
             const { data: accountData, error: accountError } = await supabase
-                .from('accounts')
+                .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
                 .select('role')
                 .eq('id', data.user.id)
                 .single()
@@ -131,9 +163,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 return
             }
 
-            const userRole = accountData?.role || 'user'
+            const role = accountData?.role as UserRole
+            setUserRole(role)
 
-            if (userRole === 'admins') {
+            // Show success message and navigate
+            if (role === 'admins') {
                 toast.success('Welcome back, Admin!', {
                     duration: 2000,
                 })
@@ -146,8 +180,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
 
             return data.user
-        } catch {
-            toast.error('An unexpected error occurred. Please try again.')
+        } catch (error: any) {
+            toast.error(error.message || 'An unexpected error occurred. Please try again.')
+            return
         }
     }
 
@@ -213,6 +248,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         session,
         loading,
+        userRole,
         signUp,
         signIn,
         signOut,
