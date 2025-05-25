@@ -8,7 +8,7 @@ import Providers from "@/base/router/Provider";
 
 import Pathname from "@/base/router/Pathname";
 
-import { ThemeProvider } from "@/utils/context/providers"
+import { ThemeProvider } from "@/utils/context/ThemaContext"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
