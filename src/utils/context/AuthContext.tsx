@@ -115,23 +115,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signOut = async () => {
         try {
-            await fetch('/api/auth/signout', {
+            const response = await fetch('/api/auth/signout', {
                 method: 'POST',
-            })
+                credentials: 'include' // Important: include credentials
+            });
 
-            setUser(null)
-            setUserRole(null)
-            localStorage.removeItem('user')
+            if (!response.ok) {
+                throw new Error('Failed to sign out');
+            }
+
+            // Clear local state
+            setUser(null);
+            setUserRole(null);
+            localStorage.removeItem('user');
 
             toast.success('Logged out successfully!', {
                 duration: 2000,
-            })
+            });
 
-            setTimeout(() => {
-                router.push('/signin')
-            }, 2000)
-        } catch {
-            toast.error('An unexpected error occurred. Please try again.')
+            // Navigate to signin page immediately
+            router.push('/signin');
+        } catch (error) {
+            console.error('Sign out error:', error);
+            toast.error('An unexpected error occurred. Please try again.');
         }
     }
 

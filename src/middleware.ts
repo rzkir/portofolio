@@ -18,17 +18,26 @@ export async function middleware(request: NextRequest) {
   // Check if the path is admin-only
   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
 
-  // If user is on a public path and has a valid token, redirect to home
+  // If user is on a public path and has a valid token
   if (isPublicPath && token) {
     try {
-      // Verify the token
       const payload = await verifyJWT(token);
 
-      // If token is valid, redirect to home or dashboard based on role
-      if (payload.role === "admins") {
+      // If user is admin and on signin/signup page, redirect to dashboard
+      if (
+        payload.role === "admins" &&
+        (pathname === "/signin" || pathname === "/signup")
+      ) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
-      return NextResponse.redirect(new URL("/", request.url));
+
+      // If user is not admin and on signin/signup page, redirect to home
+      if (
+        payload.role !== "admins" &&
+        (pathname === "/signin" || pathname === "/signup")
+      ) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
     } catch (error) {
       // If token is invalid, remove it and continue to public path
       const response = NextResponse.next();
@@ -37,9 +46,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // If user is not on a public path and doesn't have a token, redirect to home
+  // If user is not on a public path and doesn't have a token, redirect to signin
   if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/", request.url));
+    const signinUrl = new URL("/signin", request.url);
+    signinUrl.searchParams.set("from", pathname);
+    return NextResponse.redirect(signinUrl);
   }
 
   // If user is on an admin path, verify their role
@@ -50,6 +61,8 @@ export async function middleware(request: NextRequest) {
         // If not admin, redirect to home
         return NextResponse.redirect(new URL("/", request.url));
       }
+      // If admin role is verified, allow access
+      return NextResponse.next();
     } catch (error) {
       // If token is invalid, redirect to signin
       const signinUrl = new URL("/signin", request.url);

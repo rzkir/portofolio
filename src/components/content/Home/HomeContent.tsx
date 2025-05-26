@@ -30,34 +30,83 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
             onMouseLeave={() => setIsHovered(false)}
         >
             <motion.div
-                className="absolute -z-10 w-[300px] h-[300px] rounded-full pointer-events-none"
+                className="absolute -z-10 w-[180px] h-[180px] rounded-full pointer-events-none"
                 animate={{
-                    x: mousePosition.x - 100,
-                    y: mousePosition.y - 100,
-                    scale: isHovered ? [1, 1.2, 1] : 0,
+                    x: mousePosition.x - 800,
+                    y: mousePosition.y - 400,
+                    scale: isHovered ? [0.8, 1.1, 0.8] : 0,
                     opacity: isHovered ? 0.15 : 0,
                 }}
                 transition={{
-                    x: { type: "spring", stiffness: 200, damping: 20 },
-                    y: { type: "spring", stiffness: 200, damping: 20 },
-                    scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-                    opacity: { duration: 0.2 }
+                    x: { type: "spring", stiffness: 300, damping: 25 },
+                    y: { type: "spring", stiffness: 300, damping: 25 },
+                    scale: { duration: 2, repeat: Infinity, ease: [0.4, 0, 0.6, 1] },
+                    opacity: { duration: 0.4 }
                 }}
                 style={{
                     background: "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
+                    filter: "blur(12px)",
+                }}
+            />
+            <motion.div
+                className="absolute -z-10 w-[120px] h-[120px] rounded-full pointer-events-none"
+                animate={{
+                    x: mousePosition.x - 650,
+                    y: mousePosition.y - 350,
+                    scale: isHovered ? [0.6, 0.9, 0.6] : 0,
+                    opacity: isHovered ? 0.1 : 0,
+                }}
+                transition={{
+                    x: { type: "spring", stiffness: 250, damping: 20 },
+                    y: { type: "spring", stiffness: 250, damping: 20 },
+                    scale: { duration: 2.5, repeat: Infinity, ease: [0.4, 0, 0.6, 1] },
+                    opacity: { duration: 0.4 }
+                }}
+                style={{
+                    background: "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
+                    filter: "blur(8px)",
+                }}
+            />
+            <motion.div
+                className="absolute -z-10 w-[80px] h-[80px] rounded-full pointer-events-none"
+                animate={{
+                    x: mousePosition.x - 750,
+                    y: mousePosition.y - 450,
+                    scale: isHovered ? [0.4, 0.7, 0.4] : 0,
+                    opacity: isHovered ? 0.08 : 0,
+                }}
+                transition={{
+                    x: { type: "spring", stiffness: 200, damping: 15 },
+                    y: { type: "spring", stiffness: 200, damping: 15 },
+                    scale: { duration: 3, repeat: Infinity, ease: [0.4, 0, 0.6, 1] },
+                    opacity: { duration: 0.4 }
+                }}
+                style={{
+                    background: "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
+                    filter: "blur(6px)",
                 }}
             />
             <div className="container px-4 md:px-6">
                 {homeData.map((item) => (
                     <div key={item._id} className="flex flex-col gap-8 md:gap-10">
-                        <h3 className="text-lg md:text-xl font-medium mb-2 text-[color:var(--foreground)] tracking-wide">
+                        <motion.h3
+                            className="text-lg md:text-xl font-medium mb-2 text-[color:var(--foreground)] tracking-wide"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                        >
                             {item.title}
-                        </h3>
+                        </motion.h3>
 
                         <div className='block space-y-4'>
-                            <h1 className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--foreground)] tracking-tight">
+                            <motion.h1
+                                className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--foreground)] tracking-tight"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            >
                                 {item.text}
-                            </h1>
+                            </motion.h1>
 
                             <div className="flex flex-wrap items-center justify-start gap-[0.4em] md:gap-[0.6em]">
                                 {item.span.split('').map((char, index) => (
@@ -65,10 +114,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                         key={index}
                                         className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--muted-foreground)] tracking-tight inline-block cursor-pointer"
                                         initial={{ opacity: 0, y: 20 }}
-                                        animate={{
-                                            opacity: 1,
-                                            y: 0
-                                        }}
+                                        animate={{ opacity: 1, y: 0 }}
                                         whileHover={{
                                             scale: 1.2,
                                             color: "var(--primary)",
@@ -80,7 +126,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                         }}
                                         transition={{
                                             duration: 0.5,
-                                            delay: index * 0.1,
+                                            delay: 0.4 + (index * 0.1),
                                             ease: "easeOut"
                                         }}
                                     >
@@ -91,20 +137,31 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                         </div>
 
                         <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-12'>
-                            <Button
-                                className="rounded-full px-8 py-6 bg-[color:var(--primary)] hover:bg-[color:var(--primary)]/90 
-                                text-[color:var(--primary-foreground)] text-lg font-semibold shadow-lg 
-                                transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.6 }}
                             >
-                                <Link href={item.href} className="flex items-center gap-2">
-                                    {item.label}
-                                    <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                                </Link>
-                            </Button>
+                                <Button
+                                    className="rounded-full px-8 py-6 bg-[color:var(--primary)] hover:bg-[color:var(--primary)]/90 
+                                    text-[color:var(--primary-foreground)] text-lg font-semibold shadow-lg 
+                                    transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                >
+                                    <Link href={item.href} className="flex items-center gap-2">
+                                        {item.label}
+                                        <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                                    </Link>
+                                </Button>
+                            </motion.div>
 
-                            <p className="text-base md:text-lg text-[color:var(--muted-foreground)] max-w-2xl md:text-right leading-relaxed">
+                            <motion.p
+                                className="text-base md:text-lg text-[color:var(--muted-foreground)] max-w-2xl md:text-right leading-relaxed"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.8 }}
+                            >
                                 {item.description}
-                            </p>
+                            </motion.p>
                         </div>
                     </div>
                 ))}
