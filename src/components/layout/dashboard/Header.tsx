@@ -17,7 +17,7 @@ import { useTheme } from "next-themes"
 import { motion } from "framer-motion"
 import { useEffect, useState, createContext, useContext } from "react"
 import { useAuth } from "@/utils/context/AuthContext"
-import { supabase } from "@/utils/supabase/supabase"
+import { useRouter } from "next/navigation"
 
 // Create context for sidebar state
 type SidebarContextType = {
@@ -35,34 +35,21 @@ export const useSidebar = () => useContext(SidebarContext)
 export default function Header() {
     const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
-    const { user } = useAuth()
-    const [userData, setUserData] = useState<{ first_name: string; last_name: string; email: string } | null>(null)
+    const { user, signOut } = useAuth()
+    const router = useRouter()
     const { isMobileOpen, setIsMobileOpen } = useSidebar()
 
     useEffect(() => {
         setMounted(true)
     }, [])
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            if (user) {
-                const { data, error } = await supabase
-                    .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
-                    .select('first_name, last_name, email')
-                    .eq('id', user.id)
-                    .single()
+    const fullName = user ? `${user.firstName} ${user.lastName}` : 'User'
+    const userEmail = user?.email || ''
 
-                if (!error && data) {
-                    setUserData(data)
-                }
-            }
-        }
-
-        fetchUserData()
-    }, [user])
-
-    const fullName = userData ? `${userData.first_name} ${userData.last_name}` : 'User'
-    const userEmail = userData?.email || ''
+    const handleLogout = async () => {
+        await signOut()
+        router.push('/')
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -70,13 +57,13 @@ export default function Header() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden"
+                    className="lg:hidden"
                     onClick={() => setIsMobileOpen(!isMobileOpen)}
                 >
                     <Menu className="h-6 w-6" />
                 </Button>
-                <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
-                    <div className="flex items-center space-x-2 md:space-x-4">
+                <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-4">
+                    <div className="flex items-center space-x-2 lg:space-x-4">
                         {mounted && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
@@ -155,14 +142,14 @@ export default function Header() {
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
                                     Profile
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
                                     Settings
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleLogout}>
                                     Log out
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

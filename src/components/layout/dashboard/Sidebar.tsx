@@ -1,94 +1,23 @@
 "use client"
 
 import Link from "next/link"
+
 import { useState } from "react"
+
 import { usePathname } from "next/navigation"
+
 import { cn } from "@/lib/utils"
+
 import { Button } from "@/components/ui/button"
+
 import { useSidebar } from "./Header"
 
+import { sidebarNavItems, generalNavItems } from "@/components/layout/dashboard/data/dashboard"
+
 import {
-    LayoutDashboard,
-    Users,
-    Settings,
-    BriefcaseBusiness,
-    FileText,
-    BarChart,
     X,
-    CalendarDays,
-    LifeBuoy,
-    LogOut,
     ChevronDown,
-} from "lucide-react"
-
-type SubItem = {
-    title: string
-    href: string
-}
-
-type NavItem = {
-    title: string
-    href: string
-    icon: any
-    subItems?: SubItem[]
-}
-
-const sidebarNavItems: NavItem[] = [
-    {
-        title: "Dashboard",
-        href: "/dashboard",
-        icon: LayoutDashboard,
-    },
-    {
-        title: "Pages",
-        href: "/dashboard/pages",
-        icon: FileText,
-        subItems: [
-            { title: "Home", href: "/dashboard/pages/home" },
-            { title: "About", href: "/dashboard/pages/about" },
-            { title: "Skills", href: "/dashboard/pages/skills" },
-            { title: "Achievement", href: "/dashboard/pages/achievement" },
-        ]
-    },
-    {
-        title: "Calendar",
-        href: "/dashboard/calendar",
-        icon: CalendarDays,
-    },
-    {
-        title: "Works",
-        href: "/dashboard/works",
-        icon: BriefcaseBusiness,
-        subItems: [
-            { title: "Works", href: "/dashboard/works" },
-            { title: "Categories", href: "/dashboard/works/categories" },
-            { title: "Framework", href: "/dashboard/analytics/framework" },
-        ]
-    },
-    {
-        title: "Team",
-        href: "/dashboard/team",
-        icon: Users,
-    },
-]
-
-const generalNavItems = [
-    {
-        title: "Settings",
-        href: "/dashboard/settings",
-        icon: Settings,
-    },
-    {
-        title: "Help",
-        href: "/dashboard/help",
-        icon: LifeBuoy,
-    },
-    {
-        title: "Logout",
-        href: "/logout",
-        icon: LogOut,
-    }
-]
+} from "lucide-react";
 
 export default function Sidebar() {
     const pathname = usePathname()
@@ -110,10 +39,10 @@ export default function Sidebar() {
                 "w-64 px-4",
                 "py-6",
                 "border-r border-border/40",
-                "fixed md:relative",
-                "inset-y-0 left-0 z-[70]",
+                "fixed lg:relative",
+                "inset-y-0 left-0 z-[70] lg:z-[50]",
                 "transform transition-transform duration-300 ease-in-out",
-                isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+                isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}>
                 <div className={cn(
                     "flex h-[60px] items-center justify-between border-b border-border/40 px-0 pb-6"
@@ -136,7 +65,7 @@ export default function Sidebar() {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="md:hidden"
+                        className="lg:hidden"
                         onClick={() => setIsMobileOpen(false)}
                     >
                         <X className="h-6 w-6" />
@@ -278,31 +207,24 @@ export default function Sidebar() {
                     "border-t border-border/40"
                 )}>
                     <div className={cn(
-                        "flex items-center gap-2 rounded-lg bg-primary/10 p-3 transition-all duration-300",
-                        "justify-start flex-row text-left",
+                        "flex flex-col items-center gap-3 rounded-lg bg-primary/10 p-3 transition-all duration-300",
+                        "text-center",
                         "border border-primary/20"
                     )}>
                         <div className={cn(
-                            "h-12 w-12 bg-primary/20 rounded-md mb-0"
-                        )} />
-                        <div className={cn(
-                            "flex-1 space-y-1 transition-all duration-300",
-                            "block"
+                            "h-12 w-12 bg-primary/20 rounded-md flex items-center justify-center"
                         )}>
-                            <p className="text-sm font-medium text-primary">Download our</p>
-                            <p className="text-sm font-medium text-primary">Mobile App</p>
-                            <p className="text-xs text-primary/80">Get easy in another way</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                            </svg>
                         </div>
-                        <Button
-                            size="sm"
-                            variant="secondary"
-                            className={cn(
-                                "w-auto text-sm",
-                                "bg-primary/20 hover:bg-primary/30 text-primary"
-                            )}
-                        >
-                            Download
-                        </Button>
+                        <div className={cn(
+                            "space-y-1 transition-all duration-300"
+                        )}>
+                            <p className="text-sm font-medium text-primary">Cuaca Hari Ini</p>
+                            <p className="text-sm font-medium text-primary">28°C</p>
+                            <p className="text-xs text-primary/80">Cerah Berawan</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -310,7 +232,7 @@ export default function Sidebar() {
             {/* Overlay for mobile */}
             {isMobileOpen && (
                 <div
-                    className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[69] md:hidden"
+                    className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[69] lg:hidden"
                     onClick={() => setIsMobileOpen(false)}
                 />
             )}

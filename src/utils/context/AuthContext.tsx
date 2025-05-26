@@ -1,74 +1,27 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from 'react'
-
-import { User, Session } from '@supabase/supabase-js'
-
-import { supabase } from '../supabase/supabase'
-
 import { useRouter } from 'next/navigation'
-
 import { toast } from 'sonner'
-
-import { AuthContextType, UserRole } from '@/types/auth'
+import { AuthContextType, UserRole, UserSession } from '@/types/auth'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null)
-    const [session, setSession] = useState<Session | null>(null)
+    const [user, setUser] = useState<UserSession | null>(null)
     const [loading, setLoading] = useState(true)
     const [userRole, setUserRole] = useState<UserRole | null>(null)
     const router = useRouter()
 
-    const fetchUserRole = async (userId: string) => {
-        const { data, error } = await supabase
-            .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
-            .select('role')
-            .eq('id', userId)
-            .single()
-
-        if (error) {
-            console.error('Error fetching user role:', error)
-            return null
-        }
-
-        const role = data?.role as UserRole
-        return role === 'admins' || role === 'user' ? role : null
-    }
-
     useEffect(() => {
-        // Get initial session
-        supabase.auth.getSession().then(async ({ data: { session } }) => {
-            setSession(session)
-            setUser(session?.user ?? null)
-
-            if (session?.user) {
-                const role = await fetchUserRole(session.user.id)
-                setUserRole(role)
-            } else {
-                setUserRole(null)
-            }
-
-            setLoading(false)
-        })
-
-        // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-            setSession(session)
-            setUser(session?.user ?? null)
-
-            if (session?.user) {
-                const role = await fetchUserRole(session.user.id)
-                setUserRole(role)
-            } else {
-                setUserRole(null)
-            }
-
-            setLoading(false)
-        })
-
-        return () => subscription.unsubscribe()
+        // Check for user in localStorage on initial load
+        const storedUser = localStorage.getItem('user')
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser) as UserSession
+            setUser(parsedUser)
+            setUserRole(parsedUser.role)
+        }
+        setLoading(false)
     }, [])
 
     const signUp = async (email: string, password: string, fullName: string) => {
@@ -77,57 +30,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const [firstName, ...lastNameParts] = fullName.split(' ')
             const lastName = lastNameParts.join(' ')
 
-            // Sign up with Supabase Auth
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        first_name: firstName,
-                        last_name: lastName,
-                    },
+            const response = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    firstName,
+                    lastName,
+                    role: 'user' // Explicitly set role as user
+                }),
             })
 
-            if (authError) {
-                if (authError.message.includes('already registered')) {
-                    toast.error('This email is already registered. Please use a different email or try logging in.')
-                } else {
-                    toast.error(authError.message)
-                }
-                return
-            }
+            const data = await response.json()
 
-            if (!authData.user) {
-                throw new Error('Failed to create user account')
-            }
-
-            // Store additional user data in the accounts table
-            const { error: accountError } = await supabase
-                .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
-                .insert([
-                    {
-                        id: authData.user.id,
-                        email: email,
-                        first_name: firstName,
-                        last_name: lastName,
-                        role: 'user' as UserRole
-                    }
-                ])
-
-            if (accountError) {
-                // If account creation fails, try to delete the auth user
-                await supabase.auth.admin.deleteUser(authData.user.id)
-                throw new Error('Failed to create user profile')
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to create account')
             }
 
             toast.success('Account created successfully! Redirecting to login...', {
                 duration: 2000,
             })
 
-            setTimeout(() => {
-                router.push('/signin')
-            }, 2000)
+            // Redirect to signin page after successful signup
+            router.push('/signin')
         } catch (error: any) {
             toast.error(error.message || 'An unexpected error occurred. Please try again.')
         }
@@ -135,39 +63,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signIn = async (email: string, password: string) => {
         try {
-            const { error, data } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+            const response = await fetch('/api/auth/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
             })
 
-            if (error) {
-                if (error.message.includes('Invalid login credentials')) {
-                    toast.error('Invalid email or password')
-                } else if (error.message.includes('Email not confirmed')) {
-                    toast.error('Please verify your email first')
-                } else {
-                    toast.error(error.message)
-                }
-                return
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to sign in')
             }
 
-            // Get user role from accounts table
-            const { data: accountData, error: accountError } = await supabase
-                .from(process.env.NEXT_PUBLIC_ACCOUNTS as string)
-                .select('role')
-                .eq('id', data.user.id)
-                .single()
-
-            if (accountError) {
-                toast.error('Failed to fetch user role')
-                return
+            // Create user session from account data
+            const userSession: UserSession = {
+                _id: data.user._id,
+                email: data.user.email,
+                firstName: data.user.firstName,
+                lastName: data.user.lastName,
+                role: data.user.role
             }
 
-            const role = accountData?.role as UserRole
-            setUserRole(role)
+            setUser(userSession)
+            setUserRole(userSession.role)
+            localStorage.setItem('user', JSON.stringify(userSession))
 
-            // Show success message and navigate
-            if (role === 'admins') {
+            // Show success message and navigate based on role
+            if (userSession.role === 'admins') {
                 toast.success('Welcome back, Admin!', {
                     duration: 2000,
                 })
@@ -179,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 router.push('/')
             }
 
-            return data.user
+            return userSession
         } catch (error: any) {
             toast.error(error.message || 'An unexpected error occurred. Please try again.')
             return
@@ -188,11 +115,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signOut = async () => {
         try {
-            const { error } = await supabase.auth.signOut()
-            if (error) {
-                toast.error(error.message)
-                return
-            }
+            await fetch('/api/auth/signout', {
+                method: 'POST',
+            })
+
+            setUser(null)
+            setUserRole(null)
+            localStorage.removeItem('user')
 
             toast.success('Logged out successfully!', {
                 duration: 2000,
@@ -208,13 +137,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const resetPassword = async (email: string) => {
         try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password`,
+            const response = await fetch('/api/auth/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
             })
 
-            if (error) {
-                toast.error(error.message)
-                return
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to send reset email')
             }
 
             toast.success('Password reset link has been sent to your email!', {
@@ -224,29 +158,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setTimeout(() => {
                 router.push('/signin')
             }, 3000)
-        } catch {
-            toast.error('An unexpected error occurred. Please try again.')
+        } catch (error: any) {
+            toast.error(error.message || 'An unexpected error occurred. Please try again.')
         }
     }
 
     const changePassword = async (newPassword: string) => {
         try {
-            const { error } = await supabase.auth.updateUser({ password: newPassword });
-            if (error) {
-                toast.error(error.message);
-                return false;
+            if (!user?._id) {
+                toast.error('User not authenticated')
+                return false
             }
-            toast.success('Password updated successfully!');
-            return true;
-        } catch {
-            toast.error('An unexpected error occurred. Please try again.');
-            return false;
+
+            const response = await fetch('/api/auth/reset-password', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: user._id,
+                    newPassword,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to change password')
+            }
+
+            toast.success('Password updated successfully!')
+            return true
+        } catch (error: any) {
+            toast.error(error.message || 'An unexpected error occurred. Please try again.')
+            return false
         }
-    };
+    }
 
     const value = {
         user,
-        session,
         loading,
         userRole,
         signUp,

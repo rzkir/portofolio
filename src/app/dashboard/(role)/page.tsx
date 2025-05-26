@@ -1,7 +1,9 @@
 import React from 'react'
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart, Users, Coffee, DollarSign } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 export const metadata = {

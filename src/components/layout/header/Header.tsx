@@ -23,7 +23,7 @@ export default function Header() {
 
     const { user, loading, userRole, signOut } = useAuth()
 
-    // Tambahkan state untuk modal menu dan profile dropdown
+    // State untuk modal menu dan profile dropdown
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [isProfileOpen, setIsProfileOpen] = React.useState(false);
     const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
@@ -148,7 +148,7 @@ export default function Header() {
                                 className="hidden sm:flex items-center gap-2"
                             >
                                 <User className="h-4 w-4" />
-                                {userRole === 'admins' ? 'Dashboard' : 'Profile'}
+                                {userRole === 'admins' ? 'Dashboard' : `${user.firstName} ${user.lastName}`}
                             </Button>
 
                             <AnimatePresence>
@@ -195,7 +195,7 @@ export default function Header() {
                             </AnimatePresence>
                         </div>
                     ) : (
-                        <Button variant="outline" onClick={handleLogin} className="hidden sm:inline-flex">Let's Signin &rarr;</Button>
+                        <Button variant="outline" onClick={handleLogin} className="hidden sm:inline-flex">Sign In</Button>
                     )}
                     {/* Menu button */}
                     <Button variant="outline" onClick={() => setIsMenuOpen(true)} className="p-2 sm:p-3">
@@ -217,7 +217,7 @@ export default function Header() {
                         transition={{ duration: 0.3 }}
                     >
                         <motion.div
-                            className="bg-[#0A0D14] w-full h-full mx-auto flex flex-col justify-center items-center relative gap-8 sm:gap-12 px-4 sm:px-10 py-6 sm:py-16 rounded-none sm:rounded-2xl shadow-2xl"
+                            className="bg-background w-full h-full mx-auto flex flex-col justify-center items-center relative gap-8 sm:gap-12 px-4 sm:px-10 py-6 sm:py-16 rounded-none sm:rounded-2xl shadow-2xl"
                             onClick={e => e.stopPropagation()}
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -230,7 +230,7 @@ export default function Header() {
                         >
                             {/* Close button */}
                             <motion.button
-                                className="absolute top-4 right-4 sm:top-8 sm:right-10 text-white text-2xl sm:text-4xl hover:text-gray-400 z-10 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                className="absolute top-4 right-4 sm:top-8 sm:right-10 text-foreground text-2xl sm:text-4xl hover:text-muted-foreground z-10 focus:outline-none focus:ring-2 focus:ring-ring"
                                 onClick={() => setIsMenuOpen(false)}
                                 aria-label="Close"
                                 whileHover={{ scale: 1.1 }}
@@ -257,19 +257,19 @@ export default function Header() {
                                         }}
                                     >
                                         <motion.div
-                                            className="text-2xl sm:text-5xl font-bold text-white transition-all duration-200 group-hover:tracking-wide"
+                                            className="text-2xl sm:text-5xl font-bold text-foreground transition-all duration-200 group-hover:tracking-wide"
                                             whileHover={{ scale: 1.02 }}
                                         >
-                                            {item.label} <span className="text-gray-400 text-base sm:text-lg align-top">({item.number})</span>
+                                            {item.label} <span className="text-muted-foreground text-base sm:text-lg align-top">({item.number})</span>
                                         </motion.div>
                                         <motion.button
                                             onClick={() => { setIsMenuOpen(false); router.push(item.path) }}
-                                            className="border border-gray-500 rounded-full p-1.5 sm:p-3 group-hover:bg-gray-800 transition-colors duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                            className="border border-border rounded-full p-1.5 sm:p-3 group-hover:bg-accent transition-colors duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-ring"
                                             whileHover={{ scale: 1.1, rotate: 5 }}
                                             whileTap={{ scale: 0.95 }}
                                         >
                                             <span className="sr-only">Go to {item.label}</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                             </svg>
                                         </motion.button>
@@ -278,7 +278,7 @@ export default function Header() {
                             </nav>
                             {/* Footer menu modal */}
                             <motion.div
-                                className="border-t border-gray-700 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between gap-6 sm:gap-8 w-full mt-6 sm:mt-10"
+                                className="border-t border-border pt-6 sm:pt-8 flex flex-col md:flex-row justify-between gap-6 sm:gap-8 w-full mt-6 sm:mt-10"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4, duration: 0.3 }}
@@ -288,13 +288,13 @@ export default function Header() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.5 }}
                                 >
-                                    <div className="font-semibold text-gray-400 mb-2">Follow me.</div>
-                                    <div className="flex flex-wrap gap-3 sm:gap-4 text-white text-xs sm:text-sm">
+                                    <div className="font-semibold text-muted-foreground mb-2">Follow me.</div>
+                                    <div className="flex flex-wrap gap-3 sm:gap-4 text-foreground text-xs sm:text-sm">
                                         {['INSTAGRAM', 'BEHANCE', 'TWITTER', 'DRIBBBLE'].map((social, index) => (
                                             <motion.a
                                                 key={social}
                                                 href="#"
-                                                className="hover:underline flex items-center gap-1 transition-colors duration-200 hover:text-blue-400"
+                                                className="hover:underline flex items-center gap-1 transition-colors duration-200 hover:text-primary"
                                                 whileHover={{ x: 5 }}
                                                 initial={{ opacity: 0, x: -10 }}
                                                 animate={{ opacity: 1, x: 0 }}
@@ -311,16 +311,16 @@ export default function Header() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.7 }}
                                 >
-                                    <div className="font-semibold text-gray-400 mb-2">Stay connected w/ me.</div>
+                                    <div className="font-semibold text-muted-foreground mb-2">Stay connected w/ me.</div>
                                     <form className="flex items-center gap-2">
                                         <motion.input
                                             type="email"
                                             placeholder="Enter your email"
-                                            className="bg-transparent border-b border-gray-600 text-white px-2 py-1 outline-none w-full placeholder-gray-400 text-sm sm:text-base"
+                                            className="bg-transparent border-b border-border text-foreground px-2 py-1 outline-none w-full placeholder-muted-foreground text-sm sm:text-base"
                                             whileFocus={{ scale: 1.02 }}
                                         />
                                         <motion.div
-                                            className="text-white text-lg sm:text-xl hover:text-blue-400 transition-colors duration-200"
+                                            className="text-foreground text-lg sm:text-xl hover:text-primary transition-colors duration-200"
                                             whileHover={{ scale: 1.1, rotate: 5 }}
                                             whileTap={{ scale: 0.95 }}
                                         >

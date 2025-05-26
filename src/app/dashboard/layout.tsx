@@ -1,10 +1,15 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { useAuth } from '@/utils/context/AuthContext'
+
 import Header, { SidebarContext } from '@/components/layout/dashboard/Header'
+
 import Sidebar from '@/components/layout/dashboard/Sidebar'
+
 import AccessDenied from '@/hooks/dashboard/AccessDenied'
 
 export default function DashboardLayout({
@@ -51,7 +56,7 @@ export default function DashboardLayout({
                 {/* Main content */}
                 <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out overflow-y-auto">
                     <Header />
-                    <main className="flex-1">
+                    <main className="flex-1 px-4 py-4">
                         {children}
                     </main>
                 </div>
