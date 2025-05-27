@@ -24,7 +24,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
 
     return (
         <section
-            className="min-h-screen flex flex-col items-center justify-center -mt-24 py-16 relative overflow-hidden"
+            className="min-h-screen flex flex-col items-center justify-center -mt-16 py-16 relative overflow-hidden"
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -44,7 +44,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                     opacity: { duration: 0.4 }
                 }}
                 style={{
-                    background: "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
+                    background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
                     filter: "blur(12px)",
                 }}
             />
@@ -63,7 +63,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                     opacity: { duration: 0.4 }
                 }}
                 style={{
-                    background: "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
+                    background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
                     filter: "blur(8px)",
                 }}
             />
@@ -82,7 +82,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                     opacity: { duration: 0.4 }
                 }}
                 style={{
-                    background: "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
+                    background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
                     filter: "blur(6px)",
                 }}
             />
@@ -117,7 +117,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                         animate={{ opacity: 1, y: 0 }}
                                         whileHover={{
                                             scale: 1.2,
-                                            color: "var(--primary)",
+                                            color: "var(--color-primary)",
                                             transition: {
                                                 type: "spring",
                                                 stiffness: 400,
@@ -143,9 +143,15 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                 transition={{ duration: 0.5, delay: 0.6 }}
                             >
                                 <Button
-                                    className="rounded-full px-8 py-6 bg-[color:var(--primary)] hover:bg-[color:var(--primary)]/90 
-                                    text-[color:var(--primary-foreground)] text-lg font-semibold shadow-lg 
-                                    transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                    className="group relative rounded-full px-8 py-6 bg-[color:var(--color-primary)] 
+                                    text-[color:var(--color-primary-foreground)] text-lg font-semibold 
+                                    overflow-hidden transition-all duration-300 hover:shadow-xl
+                                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent 
+                                    before:via-white/40 before:to-transparent before:translate-x-[-100%] 
+                                    before:transition-transform before:duration-300 hover:before:translate-x-[100%]
+                                    after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent 
+                                    after:via-white/30 after:to-transparent after:translate-x-[-100%] 
+                                    after:transition-transform after:duration-300 after:delay-50 hover:after:translate-x-[100%]"
                                 >
                                     <Link href={item.href} className="flex items-center gap-2">
                                         {item.label}
