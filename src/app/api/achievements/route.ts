@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/utils/mongodb/mongodb";
 import Achievement from "@/models/achievement";
+import imagekit from "@/utils/imgkit/imagekit";
 
 export async function GET() {
   try {

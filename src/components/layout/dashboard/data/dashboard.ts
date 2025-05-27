@@ -4,9 +4,11 @@ import {
   Settings,
   BriefcaseBusiness,
   FileText,
-  CalendarDays,
   LifeBuoy,
   LogOut,
+  Youtube,
+  ChartBarStacked,
+  Library,
 } from "lucide-react";
 
 type NavItem = {
@@ -39,9 +41,19 @@ export const sidebarNavItems: NavItem[] = [
     ],
   },
   {
-    title: "Calendar",
-    href: "/dashboard/calendar",
-    icon: CalendarDays,
+    title: "Youtube",
+    href: "/dashboard/youtube",
+    icon: Youtube,
+  },
+  {
+    title: "Framework",
+    href: "/dashboard/framework",
+    icon: Library,
+  },
+  {
+    title: "Categories",
+    href: "/dashboard/categories",
+    icon: ChartBarStacked,
   },
   {
     title: "Works",

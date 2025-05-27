@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/utils/mongodb/mongodb";
 import { About } from "@/models/About";
+import imagekit from "@/utils/imgkit/imagekit";
 
 // GET all about data
 export async function GET() {

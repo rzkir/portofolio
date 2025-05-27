@@ -23,7 +23,7 @@ import {
 
 import { Pagination } from '@/base/helper/pagination'
 
-interface Skill {
+interface Framework {
     _id?: string;
     imageUrl: string;
     title: string;
@@ -41,15 +41,15 @@ interface PendingUpload {
     title: string;
 }
 
-export default function SkillsLayout() {
-    const [skills, setSkills] = useState<Skill[]>([]);
+export default function FrameworkLayout() {
+    const [frameworks, setFrameworks] = useState<Framework[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [formData, setFormData] = useState<Skill>({
+    const [formData, setFormData] = useState<Framework>({
         imageUrl: '',
         title: ''
     });
@@ -63,23 +63,23 @@ export default function SkillsLayout() {
     const [isDragging, setIsDragging] = useState(false);
     const dropZoneRef = useRef<HTMLDivElement>(null);
 
-    const totalPages = Math.ceil(skills.length / itemsPerPage);
+    const totalPages = Math.ceil(frameworks.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentSkills = skills.slice(startIndex, endIndex);
+    const currentFrameworks = frameworks.slice(startIndex, endIndex);
 
     useEffect(() => {
-        fetchSkills();
+        fetchFrameworks();
     }, []);
 
-    const fetchSkills = async () => {
+    const fetchFrameworks = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/skills');
+            const response = await fetch('/api/frameworks');
             const data = await response.json();
-            setSkills(data);
+            setFrameworks(data);
         } catch (error) {
-            toast.error('Failed to fetch skills');
+            toast.error('Failed to fetch frameworks');
         } finally {
             setIsLoading(false);
         }
@@ -106,7 +106,6 @@ export default function SkillsLayout() {
     const handleMultipleFileUpload = async (files: File[]) => {
         const uploadPromises = files.map(async (file) => {
             try {
-                // Add file to progress tracking
                 setUploadProgress(prev => [...prev, {
                     fileName: file.name,
                     progress: 0,
@@ -116,7 +115,7 @@ export default function SkillsLayout() {
                 const formData = new FormData();
                 formData.append('file', file);
 
-                const response = await fetch('/api/skills/upload', {
+                const response = await fetch('/api/frameworks/upload', {
                     method: 'POST',
                     body: formData,
                 });
@@ -131,14 +130,12 @@ export default function SkillsLayout() {
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                     .join(' ');
 
-                // Store in pending uploads instead of saving to database
                 setPendingUploads(prev => [...prev, {
                     file,
                     imageUrl: data.url,
                     title: formattedTitle
                 }]);
 
-                // Update progress to success
                 setUploadProgress(prev => prev.map(item =>
                     item.fileName === file.name
                         ? { ...item, progress: 100, status: 'success' }
@@ -147,7 +144,6 @@ export default function SkillsLayout() {
 
                 return data;
             } catch (error) {
-                // Update progress to error
                 setUploadProgress(prev => prev.map(item =>
                     item.fileName === file.name
                         ? { ...item, status: 'error' }
@@ -171,8 +167,7 @@ export default function SkillsLayout() {
             setIsSubmitting(true);
 
             if (isEditing) {
-                // Handle edit case
-                const response = await fetch(`/api/skills?id=${formData._id}`, {
+                const response = await fetch(`/api/frameworks?id=${formData._id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -183,13 +178,12 @@ export default function SkillsLayout() {
                     }),
                 });
 
-                if (!response.ok) throw new Error('Failed to update skill');
+                if (!response.ok) throw new Error('Failed to update framework');
 
-                toast.success('Skill updated successfully');
+                toast.success('Framework updated successfully');
             } else {
-                // Handle create case
                 const savePromises = pendingUploads.map(async (upload) => {
-                    const response = await fetch('/api/skills', {
+                    const response = await fetch('/api/frameworks', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -200,12 +194,12 @@ export default function SkillsLayout() {
                         }),
                     });
 
-                    if (!response.ok) throw new Error('Failed to save skill');
+                    if (!response.ok) throw new Error('Failed to save framework');
                     return response.json();
                 });
 
                 await Promise.all(savePromises);
-                toast.success('All skills created successfully');
+                toast.success('All frameworks created successfully');
             }
 
             setIsEditing(false);
@@ -216,10 +210,10 @@ export default function SkillsLayout() {
             });
             setPendingUploads([]);
             setUploadProgress([]);
-            fetchSkills();
+            fetchFrameworks();
         } catch (error) {
             console.error('Submit error:', error);
-            toast.error(error instanceof Error ? error.message : 'Failed to save skills');
+            toast.error(error instanceof Error ? error.message : 'Failed to save frameworks');
         } finally {
             setIsSubmitting(false);
         }
@@ -228,24 +222,24 @@ export default function SkillsLayout() {
     const handleDelete = async (id: string) => {
         try {
             setIsDeleting(true);
-            const response = await fetch(`/api/skills?id=${id}`, {
+            const response = await fetch(`/api/frameworks?id=${id}`, {
                 method: 'DELETE',
             });
 
-            if (!response.ok) throw new Error('Failed to delete skill');
+            if (!response.ok) throw new Error('Failed to delete framework');
 
-            toast.success('Skill deleted successfully');
-            fetchSkills();
+            toast.success('Framework deleted successfully');
+            fetchFrameworks();
             setIsDeleteDialogOpen(false);
             setDeleteId(null);
         } catch (error) {
-            toast.error('Failed to delete skill');
+            toast.error('Failed to delete framework');
         } finally {
             setIsDeleting(false);
         }
     };
 
-    const handleEdit = (data: Skill) => {
+    const handleEdit = (data: Framework) => {
         setFormData(data);
         setPendingUploads([{
             file: new File([], data.title),
@@ -269,7 +263,7 @@ export default function SkillsLayout() {
                     <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
                         <div className='flex flex-col gap-4'>
                             <h3 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent'>
-                                Skills
+                                Framework
                             </h3>
 
                             <ol className='flex flex-wrap gap-2 items-center text-sm text-muted-foreground'>
@@ -277,12 +271,8 @@ export default function SkillsLayout() {
                                     <span>Dashboard</span>
                                     <ChevronRight className="w-4 h-4 mx-1 text-muted-foreground" />
                                 </li>
-                                <li className='flex items-center hover:text-primary transition-colors'>
-                                    <span>Pages</span>
-                                    <ChevronRight className="w-4 h-4 mx-1 text-muted-foreground" />
-                                </li>
                                 <li className='flex items-center text-primary font-medium'>
-                                    <span>Skills</span>
+                                    <span>Framework</span>
                                 </li>
                             </ol>
                         </div>
@@ -321,7 +311,7 @@ export default function SkillsLayout() {
                                 </div>
                             </div>
                         ))
-                    ) : skills.length === 0 ? (
+                    ) : frameworks.length === 0 ? (
                         <div className="col-span-full p-8 text-center border rounded-xl bg-card shadow-sm">
                             <div className="flex flex-col items-center gap-4">
                                 <svg
@@ -341,19 +331,19 @@ export default function SkillsLayout() {
                                     <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
                                     <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
                                 </svg>
-                                <h3 className="text-xl font-semibold text-muted-foreground mb-2">No Skills Found</h3>
-                                <p className="text-muted-foreground">Start by creating your first skill using the "Create Content" button above.</p>
+                                <h3 className="text-xl font-semibold text-muted-foreground mb-2">No Frameworks Found</h3>
+                                <p className="text-muted-foreground">Start by creating your first framework using the "Create Content" button above.</p>
                             </div>
                         </div>
                     ) : (
-                        currentSkills.map((skill) => (
-                            <div key={skill._id} className="p-4 sm:p-6 border rounded-xl bg-card shadow-sm hover:shadow-md transition-all">
+                        currentFrameworks.map((framework) => (
+                            <div key={framework._id} className="p-4 sm:p-6 border rounded-xl bg-card shadow-sm hover:shadow-md transition-all">
                                 <div className="flex flex-col gap-4 sm:gap-6">
                                     <div className="relative w-full aspect-[4/3] flex-shrink-0">
-                                        {skill.imageUrl ? (
+                                        {framework.imageUrl ? (
                                             <Image
-                                                src={skill.imageUrl}
-                                                alt={skill.title}
+                                                src={framework.imageUrl}
+                                                alt={framework.title}
                                                 fill
                                                 className="object-cover rounded-xl shadow-sm"
                                             />
@@ -366,14 +356,14 @@ export default function SkillsLayout() {
                                     <div className="flex-1">
                                         <div className="flex flex-col justify-between items-start gap-4">
                                             <div className="space-y-2 w-full">
-                                                <h4 className="text-lg sm:text-xl font-bold">{skill.title}</h4>
+                                                <h4 className="text-lg sm:text-xl font-bold">{framework.title}</h4>
                                             </div>
                                             <div className="flex gap-3 w-full">
                                                 <Button
                                                     variant="outline"
                                                     size="lg"
                                                     onClick={() => {
-                                                        handleEdit(skill);
+                                                        handleEdit(framework);
                                                         setIsDialogOpen(true);
                                                     }}
                                                     className="flex-1"
@@ -383,7 +373,7 @@ export default function SkillsLayout() {
                                                 <Button
                                                     variant="destructive"
                                                     size="lg"
-                                                    onClick={() => skill._id && openDeleteDialog(skill._id)}
+                                                    onClick={() => framework._id && openDeleteDialog(framework._id)}
                                                     className="flex-1"
                                                 >
                                                     Delete
@@ -398,7 +388,7 @@ export default function SkillsLayout() {
                 </div>
 
                 {/* Pagination Section */}
-                {!isLoading && skills.length > 0 && (
+                {!isLoading && frameworks.length > 0 && (
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
@@ -410,7 +400,7 @@ export default function SkillsLayout() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[600px] p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
                     <DialogHeader className="mb-4 sm:mb-6">
-                        <DialogTitle className="text-xl sm:text-2xl font-bold">{isEditing ? 'Edit Skill' : 'Create Skill'}</DialogTitle>
+                        <DialogTitle className="text-xl sm:text-2xl font-bold">{isEditing ? 'Edit Framework' : 'Create Framework'}</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                         <div className="space-y-4 sm:space-y-6">
@@ -521,7 +511,7 @@ export default function SkillsLayout() {
                                                     setPendingUploads(newUploads);
                                                 }}
                                                 className="h-10"
-                                                placeholder="Enter skill title"
+                                                placeholder="Enter framework title"
                                             />
                                         </div>
                                     ))}
@@ -545,7 +535,7 @@ export default function SkillsLayout() {
                         <DialogTitle className="text-lg sm:text-xl font-bold">Confirm Delete</DialogTitle>
                     </DialogHeader>
                     <div className="py-4">
-                        <p className="text-muted-foreground">Are you sure you want to delete this skill?</p>
+                        <p className="text-muted-foreground">Are you sure you want to delete this framework?</p>
                     </div>
                     <div className="flex justify-end gap-3">
                         <Button
