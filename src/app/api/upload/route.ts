@@ -10,21 +10,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Convert file to base64 using Buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
+    const buffer = await file.arrayBuffer();
+    const base64String = Buffer.from(buffer).toString("base64");
 
     const uploadResponse = await imagekitInstance.upload({
-      file: base64,
-      fileName: `about-${Date.now()}`,
-      folder: "/about",
+      file: `data:${file.type};base64,${base64String}`,
+      fileName: file.name,
+      folder: "/achievements",
     });
 
-    return NextResponse.json({
-      url: uploadResponse.url,
-      fileId: uploadResponse.fileId,
-    });
+    return NextResponse.json({ url: uploadResponse.url });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(
