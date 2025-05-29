@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
+
 import {
   createCategory,
   getAllCategories,
-  getCategoryById,
   updateCategory,
   deleteCategory,
 } from "@/services/categoryService";
@@ -11,8 +11,15 @@ import {
 export async function GET() {
   try {
     const categories = await getAllCategories();
+
+    if (!Array.isArray(categories)) {
+      console.error("Categories is not an array:", categories);
+      return NextResponse.json([], { status: 500 });
+    }
+
     return NextResponse.json(categories);
   } catch (error) {
+    console.error("Error in GET /api/categories:", error);
     return NextResponse.json(
       { error: "Failed to fetch categories" },
       { status: 500 }

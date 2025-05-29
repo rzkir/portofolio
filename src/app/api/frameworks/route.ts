@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { connectDB } from "@/utils/mongodb/mongodb";
-
 import mongoose from "mongoose";
-import imagekit from "@/utils/imgkit/imagekit";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 const getDb = () => {
   if (!mongoose.connection.db) {
@@ -14,7 +13,7 @@ const getDb = () => {
 
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDatabase();
     const db = getDb();
     const frameworks = await db.collection("frameworks").find({}).toArray();
     return NextResponse.json(frameworks);
@@ -29,7 +28,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const db = getDb();
     const body = await request.json();
 
@@ -59,7 +58,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const db = getDb();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
@@ -110,7 +109,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const db = getDb();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");

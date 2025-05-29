@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
 import { HomeContent } from "@/models/HomeContent";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 // GET all home contents
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDatabase();
     const contents = await HomeContent.find().sort({ createdAt: -1 });
     return NextResponse.json(contents);
   } catch (error) {
@@ -19,7 +21,7 @@ export async function GET() {
 // POST new home content
 export async function POST(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const body = await request.json();
     const content = await HomeContent.create(body);
     return NextResponse.json(content, { status: 201 });
@@ -34,7 +36,7 @@ export async function POST(request: Request) {
 // PUT update home content
 export async function PUT(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const body = await request.json();
     const { id, ...updateData } = body;
 
@@ -58,7 +60,7 @@ export async function PUT(request: Request) {
 // DELETE home content
 export async function DELETE(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 

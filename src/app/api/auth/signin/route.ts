@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
 import { Account } from "@/models/Account";
+
 import { generateJWT } from "@/utils/auth/token";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
 
-    await connectDB();
+    await connectToDatabase();
 
     // Find account
     const account = await Account.findOne({ email });

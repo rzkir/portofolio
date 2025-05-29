@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import 'react-quill-new/dist/quill.snow.css'
 
@@ -55,6 +55,38 @@ export default function QuillEditor({
     className = "",
     height = "400px"
 }: QuillEditorProps) {
+    useEffect(() => {
+        // Add theme-specific styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .dark .ql-toolbar.ql-snow {
+                border-color: var(--color-border) !important;
+                background: var(--color-card) !important;
+            }
+            .dark .ql-container.ql-snow {
+                border-color: var(--color-border) !important;
+                background: var(--color-card) !important;
+                color: var(--color-foreground) !important;
+            }
+            .dark .ql-toolbar.ql-snow .ql-picker-label {
+                color: var(--color-foreground) !important;
+            }
+            .dark .ql-toolbar.ql-snow .ql-stroke {
+                stroke: var(--color-foreground) !important;
+            }
+            .dark .ql-toolbar.ql-snow .ql-fill {
+                fill: var(--color-foreground) !important;
+            }
+            .dark .ql-editor.ql-blank::before {
+                color: var(--color-muted-foreground) !important;
+            }
+        `;
+        document.head.appendChild(style);
+        return () => {
+            document.head.removeChild(style);
+        };
+    }, []);
+
     return (
         <div className={`min-h-[200px] border rounded-lg overflow-hidden ${className}`}>
             <ReactQuill

@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
 import { Account } from "@/models/Account";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 export async function POST(request: Request) {
   try {
     const { email, password, firstName, lastName, role } = await request.json();
 
-    await connectDB();
+    await connectToDatabase();
 
     // Check if account already exists
     const existingAccount = await Account.findOne({ email });

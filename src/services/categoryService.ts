@@ -1,10 +1,11 @@
 import { Category } from "@/models/Category";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 // Create a new category
 export async function createCategory(data: { name: string }) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const category = await Category.create(data);
     return category;
   } catch (error) {
@@ -15,10 +16,13 @@ export async function createCategory(data: { name: string }) {
 // Get all categories
 export async function getAllCategories() {
   try {
-    await connectDB();
-    const categories = await Category.find().sort({ createdAt: -1 });
+    await connectToDatabase();
+    console.log("Fetching categories...");
+    const categories = await Category.find().sort({ createdAt: -1 }).lean();
+    console.log("Categories fetched:", categories);
     return categories;
   } catch (error) {
+    console.error("Error in getAllCategories:", error);
     throw error;
   }
 }
@@ -26,7 +30,7 @@ export async function getAllCategories() {
 // Get a single category by ID
 export async function getCategoryById(id: string) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const category = await Category.findById(id);
     return category;
   } catch (error) {
@@ -37,7 +41,7 @@ export async function getCategoryById(id: string) {
 // Update a category
 export async function updateCategory(id: string, data: { name: string }) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const category = await Category.findByIdAndUpdate(
       id,
       { ...data, updatedAt: new Date() },
@@ -52,9 +56,20 @@ export async function updateCategory(id: string, data: { name: string }) {
 // Delete a category
 export async function deleteCategory(id: string) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const category = await Category.findByIdAndDelete(id);
     return category;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Get only category names
+export async function getCategoryNames() {
+  try {
+    await connectToDatabase();
+    const categories = await Category.find().select("name -_id");
+    return categories.map((category) => category.name);
   } catch (error) {
     throw error;
   }

@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
 import { Account } from "@/models/Account";
+
 import { generateToken, generateJWT } from "@/utils/auth/token";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
 
-    await connectDB();
+    await connectToDatabase();
 
     const account = await Account.findOne({ email });
     if (!account) {
@@ -39,7 +42,7 @@ export async function PUT(request: Request) {
   try {
     const { token, newPassword } = await request.json();
 
-    await connectDB();
+    await connectToDatabase();
 
     const account = await Account.findOne({
       resetToken: token,

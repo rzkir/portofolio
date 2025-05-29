@@ -46,9 +46,20 @@ export default function CategoriesLayout() {
     const fetchCategories = async () => {
         try {
             const response = await fetch('/api/categories');
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories');
+            }
             const data = await response.json();
-            setCategories(data);
+            if (Array.isArray(data)) {
+                setCategories(data);
+            } else {
+                console.error('Expected array of categories but got:', data);
+                setCategories([]);
+                toast.error('Invalid data format received');
+            }
         } catch (error) {
+            console.error('Error fetching categories:', error);
+            setCategories([]);
             toast.error('Failed to fetch categories');
         } finally {
             setIsLoading(false);

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
 import Achievement from "@/models/achievement";
-import imagekit from "@/utils/imgkit/imagekit";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDatabase();
     const achievements = await Achievement.find().sort({ createdAt: -1 });
     return NextResponse.json(achievements);
   } catch (error) {
@@ -18,7 +19,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const body = await request.json();
     console.log("Received data in POST:", body);
 
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     const body = await request.json();
@@ -73,7 +74,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 

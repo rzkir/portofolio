@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb/mongodb";
+
 import { About } from "@/models/About";
-import imagekit from "@/utils/imgkit/imagekit";
+
+import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 // GET all about data
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDatabase();
     const aboutData = await About.find();
     return NextResponse.json(aboutData);
   } catch (error) {
@@ -20,7 +21,7 @@ export async function GET() {
 // POST new about data
 export async function POST(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const body = await request.json();
     const aboutData = await About.create(body);
     return NextResponse.json(aboutData, { status: 201 });
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 // PUT update about data
 export async function PUT(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     const body = await request.json();
@@ -64,7 +65,7 @@ export async function PUT(request: Request) {
 // DELETE about data
 export async function DELETE(request: Request) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
