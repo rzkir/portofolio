@@ -56,14 +56,9 @@ export const sidebarNavItems: NavItem[] = [
     icon: ChartBarStacked,
   },
   {
-    title: "Works",
-    href: "/dashboard/works",
+    title: "Projects",
+    href: "/dashboard/projects",
     icon: BriefcaseBusiness,
-    subItems: [
-      { title: "Works", href: "/dashboard/works" },
-      { title: "Categories", href: "/dashboard/works/categories" },
-      { title: "Framework", href: "/dashboard/analytics/framework" },
-    ],
   },
   {
     title: "Team",
