@@ -43,6 +43,10 @@ export default function Header() {
         setIsProfileOpen(false);
     }
 
+    const toggleTheme = () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark')
+    }
+
     if (loading) {
         return null; // or a loading skeleton
     }
@@ -101,23 +105,9 @@ export default function Header() {
                                         <Switch
                                             id="theme-toggle"
                                             checked={theme === 'dark'}
-                                            onCheckedChange={(checked: boolean) => setTheme(checked ? 'dark' : 'light')}
+                                            onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
                                             thumbContent={
-                                                theme === 'dark' ? (
-                                                    <motion.svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                                        viewBox="0 0 24 24"
-                                                        key="dark-icon"
-                                                        initial={{ rotate: 0, opacity: 0 }}
-                                                        animate={{ rotate: 360, opacity: 1 }}
-                                                        exit={{ rotate: 0, opacity: 0 }}
-                                                        transition={{ duration: 0.5 }}
-                                                    >
-                                                        <circle cx="12" cy="12" r="11" fill="#60A5FA" />
-                                                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="#FCD34D" />
-                                                    </motion.svg>
-                                                ) : (
+                                                theme === 'light' ? (
                                                     <motion.svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         className="h-2.5 w-2.5 sm:h-3 sm:w-3"
@@ -135,6 +125,20 @@ export default function Header() {
                                                     >
                                                         <circle cx="12" cy="12" r="4" />
                                                         <path d="M12 2v2m0 16v2m9-9h-2M5 12H3m14.85-6.85L16.4 7.6M7.6 16.4l-1.45 1.45m0-9.9L7.6 7.6M16.4 16.4l1.45 1.45" />
+                                                    </motion.svg>
+                                                ) : (
+                                                    <motion.svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                                        viewBox="0 0 24 24"
+                                                        key="dark-icon"
+                                                        initial={{ rotate: 0, opacity: 0 }}
+                                                        animate={{ rotate: 360, opacity: 1 }}
+                                                        exit={{ rotate: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.5 }}
+                                                    >
+                                                        <circle cx="12" cy="12" r="11" fill="#60A5FA" />
+                                                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="#FCD34D" />
                                                     </motion.svg>
                                                 )
                                             }
