@@ -1,6 +1,6 @@
 import { AboutContentProps } from "@/components/content/About/types/about";
 
-const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/about`;
+const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBLIC_ABOUT}`;
 
 export const fetchAboutContents = async (): Promise<AboutContentProps[]> => {
   try {

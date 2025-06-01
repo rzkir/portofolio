@@ -56,7 +56,7 @@ export default function Header() {
     return (
         <>
             <motion.header
-                className="w-full px-4 sm:px-6 py-4 sticky top-0 z-10 bg-background/80 backdrop-blur-sm"
+                className="w-full px-4 sm:px-6 py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
