@@ -166,7 +166,7 @@ export default function AboutLayout() {
     };
 
     return (
-        <section className="p-4 sm:p-8 bg-muted/30 rounded-2xl">
+        <section className="p-4 sm:p-8 bg-muted/30 rounded-2xl" id="about">
             <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-8 border rounded-2xl border-border bg-card shadow-sm mb-8 gap-4 sm:gap-0'>
                 <div className='flex flex-col gap-4'>
                     <h3 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent'>

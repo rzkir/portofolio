@@ -42,12 +42,12 @@ export const metadata = {
         type: "image/png",
       },
       {
-        url: "/favicon.png",
+        url: "/logo.png",
         sizes: "512x512",
         type: "image/png",
       },
     ],
-    apple: "/favicon.png",
+    apple: "/logo.png",
     shortcut: "/favicon.png",
     appleTouchIcon: "/favicon.png",
   },
@@ -80,7 +80,7 @@ export const metadata = {
     locale: "id_ID",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/desktop.png",
         width: 1200,
         height: 630,
         alt: "Rizki Ramadhan - Full Stack Developer & Freelancer",
