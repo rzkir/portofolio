@@ -57,6 +57,7 @@ youtubeSchema.pre("save", function (next) {
 });
 
 const Youtube =
-  mongoose.models.Youtube || mongoose.model("Youtube", youtubeSchema);
+  mongoose.models.Youtube ||
+  mongoose.model(process.env.NEXT_PUBLIC_YOUTUBE as string, youtubeSchema);
 
 export default Youtube;

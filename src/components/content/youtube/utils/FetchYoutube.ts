@@ -1,6 +1,6 @@
 import { YoutubeContentProps } from "@/components/content/youtube/types/youtube";
 
-const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBLIC_YOUTUBE}`;
+const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBLIC_API_YOUTUBE}`;
 
 export const fetchYoutubeContents = async (): Promise<
   YoutubeContentProps[]

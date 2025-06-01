@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import bcrypt from "bcryptjs";
 
 export interface IAccount extends mongoose.Document {
@@ -49,7 +50,7 @@ const accountSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: "accounts", // Explicitly set collection name
+    collection: process.env.NEXT_PUBLIC_ACCOUNTS, // Explicitly set collection name
   }
 );
 
@@ -78,4 +79,7 @@ if (mongoose.models.Account) {
   delete mongoose.models.Account;
 }
 
-export const Account = mongoose.model<IAccount>("Account", accountSchema);
+export const Account = mongoose.model<IAccount>(
+  process.env.NEXT_PUBLIC_ACCOUNTS as string,
+  accountSchema
+);

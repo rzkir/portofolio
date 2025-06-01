@@ -23,4 +23,5 @@ categorySchema.pre("save", function (next) {
 });
 
 export const Category =
-  mongoose.models.Category || mongoose.model("Category", categorySchema);
+  mongoose.models.Category ||
+  mongoose.model(process.env.NEXT_PUBLIC_CATEGORY as string, categorySchema);

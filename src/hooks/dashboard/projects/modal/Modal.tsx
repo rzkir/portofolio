@@ -37,36 +37,7 @@ import QuillEditor from '@/base/helper/QuillEditor'
 
 import { cn } from "@/lib/utils"
 
-interface Framework {
-    title: string;
-    imageUrl: string;
-}
-
-interface projects {
-    _id?: string;
-    title: string;
-    slug: string;
-    description: string;
-    content: string;
-    category: string;
-    thumbnail: string;
-    imageUrl: string[];
-    previewLink: string;
-    frameworks: Framework[];
-}
-
-interface ModalProps {
-    isOpen: boolean;
-    onOpenChange: (open: boolean) => void;
-    isEditing: boolean;
-    formData: projects;
-    setFormData: React.Dispatch<React.SetStateAction<projects>>;
-    categories: string[];
-    frameworks: Framework[];
-    onSubmit: (e: React.FormEvent) => Promise<void>;
-    isUploading: boolean;
-    isSubmitting: boolean;
-}
+import { Framework, ModalProps } from "@/hooks/dashboard/projects/types/projects"
 
 export default function Modal({
     isOpen,

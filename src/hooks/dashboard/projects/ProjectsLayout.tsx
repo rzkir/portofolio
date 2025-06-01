@@ -4,11 +4,9 @@ import React, { useState, useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-import { ChevronRight, FileText, Link } from "lucide-react"
+import { ChevronRight, FileText, Link, X, Eye, Image as ImageIcon, Tag } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-
-import { Skeleton } from "@/components/ui/skeleton"
 
 import Image from "next/image"
 
@@ -20,34 +18,36 @@ import Modal from './modal/Modal'
 
 import Delete from './modal/Delete'
 
-interface Framework {
-    title: string;
-    imageUrl: string;
-}
+import View from './modal/View'
 
-interface projects {
-    _id?: string;
-    title: string;
-    slug: string;
-    description: string;
-    content: string;
-    category: string;
-    thumbnail: string;
-    imageUrl: string[];
-    previewLink: string;
-    frameworks: Framework[];
-}
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+
+import { Input } from "@/components/ui/input"
+
+import { Label } from "@/components/ui/label"
+
+import { Pagination } from '@/base/helper/pagination'
+
+import ProjectsSkeleton from './ProjectsSkeleton'
+
+import { Framework, projects } from "@/hooks/dashboard/projects/types/projects"
 
 export default function ProjectsLayout() {
     const [isOpen, setIsOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isViewOpen, setIsViewOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteContentId, setDeleteContentId] = useState<string | undefined>(undefined);
     const [categories, setCategories] = useState<string[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [frameworks, setFrameworks] = useState<Framework[]>([]);
     const [projectsContent, setProjectsContent] = useState<projects[]>([]);
+    const [filteredProjects, setFilteredProjects] = useState<projects[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<projects>({
         _id: '',
@@ -62,6 +62,7 @@ export default function ProjectsLayout() {
         frameworks: []
     });
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedProject, setSelectedProject] = useState<projects | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -90,7 +91,13 @@ export default function ProjectsLayout() {
                     throw new Error('Failed to fetch Projects content');
                 }
                 const projectsData = await projectsResponse.json() as projects[];
-                setProjectsContent(projectsData);
+                // Sort projects by createdAt in descending order (newest first)
+                const sortedProjects = [...projectsData].sort((a, b) => {
+                    const dateA = new Date(a.createdAt || 0).getTime();
+                    const dateB = new Date(b.createdAt || 0).getTime();
+                    return dateB - dateA;
+                });
+                setProjectsContent(sortedProjects);
             } catch (error) {
                 toast.error(error instanceof Error ? error.message : 'Failed to fetch data');
             } finally {
@@ -99,7 +106,39 @@ export default function ProjectsLayout() {
         };
 
         fetchData();
-    }, []);
+    }, []); // Only run on mount
+
+    // Separate useEffect for filtering
+    useEffect(() => {
+        // Filter projects based on selected category and search query
+        let filtered = projectsContent;
+
+        // Apply category filter
+        if (selectedCategory !== 'all') {
+            filtered = filtered.filter(project => project.category === selectedCategory);
+        }
+
+        // Apply search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase().trim();
+            filtered = filtered.filter(project =>
+                project.title.toLowerCase().includes(query)
+            );
+        }
+
+        setFilteredProjects(filtered);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [selectedCategory, searchQuery, projectsContent]);
+
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentProjects = filteredProjects.slice(startIndex, endIndex);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     const handleEdit = (content: projects) => {
         setFormData({
@@ -210,31 +249,9 @@ export default function ProjectsLayout() {
         }
     };
 
-    const renderSkeletonCards = () => {
-        return Array.from({ length: 6 }).map((_, index) => (
-            <Card key={index} className="overflow-hidden">
-                <div className="relative w-full h-48">
-                    <Skeleton className="w-full h-full" />
-                </div>
-                <CardHeader>
-                    <div className="flex items-center gap-2 mb-2">
-                        <Skeleton className="h-6 w-20" />
-                    </div>
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-full" />
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                            <Skeleton key={i} className="h-6 w-16" />
-                        ))}
-                    </div>
-                </CardContent>
-                <CardFooter className="flex justify-between gap-2 border-t pt-4">
-                    <Skeleton className="h-9 w-full" />
-                </CardFooter>
-            </Card>
-        ));
+    const handleView = (content: projects) => {
+        setSelectedProject(content);
+        setIsViewOpen(true);
     };
 
     return (
@@ -265,15 +282,67 @@ export default function ProjectsLayout() {
                 </Button>
             </div>
 
+            {/* Filters Section */}
+            <div className="mt-6 p-4 border rounded-2xl border-border bg-card shadow-sm">
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                    <div className="w-full md:w-[300px]">
+                        <Label className="text-sm font-medium mb-2 block">Search Projects</Label>
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                placeholder="Search by title..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pr-8"
+                            />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                >
+                                    <X className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="w-full md:w-[200px]">
+                        <Label className="text-sm font-medium mb-2 block">Filter by Category</Label>
+                        <Select
+                            value={selectedCategory}
+                            onValueChange={setSelectedCategory}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Categories</SelectItem>
+                                {categories.map((category) => (
+                                    <SelectItem key={category} value={category}>
+                                        {category}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            </div>
+
             {/* Project Content Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-6">
                 {isLoading ? (
-                    renderSkeletonCards()
-                ) : projectsContent.length === 0 ? (
+                    <ProjectsSkeleton />
+                ) : filteredProjects.length === 0 ? (
                     <div className="col-span-full flex flex-col items-center justify-center p-8 text-center border rounded-lg bg-muted/50">
                         <FileText className="w-12 h-12 text-muted-foreground mb-4" />
                         <h3 className="text-lg font-semibold mb-2">No Content Found</h3>
-                        <p className="text-muted-foreground mb-4">There are no projects available at the moment.</p>
+                        <p className="text-muted-foreground mb-4">
+                            {searchQuery
+                                ? `No projects found matching "${searchQuery}"${selectedCategory !== 'all' ? ` in the "${selectedCategory}" category` : ''}.`
+                                : selectedCategory === 'all'
+                                    ? "There are no projects available at the moment."
+                                    : `No projects found in the "${selectedCategory}" category.`}
+                        </p>
                         <Button
                             variant="default"
                             onClick={() => setIsOpen(true)}
@@ -283,56 +352,68 @@ export default function ProjectsLayout() {
                         </Button>
                     </div>
                 ) : (
-                    projectsContent.map((content) => (
-                        <Card key={content._id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group p-0">
-                            <div className="relative w-full h-48 overflow-hidden">
+                    currentProjects.map((content) => (
+                        <Card key={content._id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-border/50 hover:border-primary/20 p-0">
+                            <div className="relative w-full h-64 overflow-hidden">
                                 {content.thumbnail ? (
                                     <Image
                                         src={content.thumbnail}
                                         alt={content.title}
                                         fill
-                                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                 ) : (
-                                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                                    <div className="w-full h-full bg-muted/50 flex items-center justify-center">
                                         <span className="text-muted-foreground">No thumbnail</span>
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                                     <a
                                         href={`/projects/${content.slug}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-white hover:text-primary transition-colors flex items-center gap-2"
+                                        className="text-white hover:text-primary transition-colors flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-full backdrop-blur-sm"
                                     >
                                         <Link className="w-4 h-4" />
                                         <span className="text-sm font-medium">View Project</span>
                                     </a>
                                 </div>
                             </div>
-                            <CardHeader>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Badge variant="secondary" className="hover:bg-primary/10 transition-colors">
+
+                            <CardHeader className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="secondary" className="hover:bg-primary/10 transition-colors text-xs">
                                         {content.category}
                                     </Badge>
                                 </div>
-                                <CardTitle className="line-clamp-1 group-hover:text-primary transition-colors">{content.title}</CardTitle>
-                                <CardDescription className="line-clamp-2">{content.description}</CardDescription>
+                                <CardTitle className="line-clamp-1 group-hover:text-primary transition-colors text-xl">{content.title}</CardTitle>
+                                <CardDescription className="line-clamp-2 text-sm text-muted-foreground">{content.description}</CardDescription>
                             </CardHeader>
+
                             <CardContent>
                                 <div className="flex flex-wrap gap-2">
                                     {content.frameworks.map((framework) => (
                                         <Badge
                                             key={framework.title}
                                             variant="outline"
-                                            className="hover:bg-muted transition-colors"
+                                            className="hover:bg-muted transition-colors text-xs"
                                         >
                                             {framework.title}
                                         </Badge>
                                     ))}
                                 </div>
                             </CardContent>
-                            <CardFooter className="flex justify-between gap-2 border-t pt-4">
+
+                            <CardFooter className="flex justify-between gap-2 border-t bg-muted/30 py-4">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleView(content)}
+                                    className="flex-1 hover:bg-primary/10 transition-colors"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" />
+                                    View
+                                </Button>
                                 <Button
                                     variant="outline"
                                     size="sm"
@@ -354,6 +435,16 @@ export default function ProjectsLayout() {
                     ))
                 )}
             </div>
+
+            {/* Pagination */}
+            {!isLoading && filteredProjects.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    className="mt-8"
+                />
+            )}
 
             {/* Form Modal */}
             <Modal
@@ -397,6 +488,13 @@ export default function ProjectsLayout() {
                 }}
                 onDelete={handleDelete}
                 isDeleting={isDeleting}
+            />
+
+            {/* View Modal */}
+            <View
+                isOpen={isViewOpen}
+                onOpenChange={setIsViewOpen}
+                selectedProject={selectedProject}
             />
         </section>
     );

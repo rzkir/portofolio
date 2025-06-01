@@ -13,12 +13,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog"
 
-interface DeleteProps {
-    isOpen: boolean;
-    onOpenChange: (open: boolean) => void;
-    onDelete: () => Promise<void>;
-    isDeleting: boolean;
-}
+import { DeleteProps } from "@/hooks/dashboard/projects/types/projects"
 
 export default function Delete({
     isOpen,

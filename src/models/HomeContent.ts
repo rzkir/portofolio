@@ -34,4 +34,4 @@ const homeContentSchema = new mongoose.Schema(
 
 export const HomeContent =
   mongoose.models.HomeContent ||
-  mongoose.model("HomeContent", homeContentSchema);
+  mongoose.model(process.env.NEXT_PUBLIC_HOME as string, homeContentSchema);

@@ -18,6 +18,9 @@ const achievementSchema = new mongoose.Schema(
 
 const Achievement =
   mongoose.models.Achievement ||
-  mongoose.model("Achievement", achievementSchema);
+  mongoose.model(
+    process.env.NEXT_PUBLIC_ACHIEVEMENTS as string,
+    achievementSchema
+  );
 
 export default Achievement;

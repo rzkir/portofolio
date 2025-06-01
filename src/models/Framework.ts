@@ -27,4 +27,5 @@ frameworkSchema.pre("save", function (next) {
 });
 
 export const Framework =
-  mongoose.models.Framework || mongoose.model("Framework", frameworkSchema);
+  mongoose.models.Framework ||
+  mongoose.model(process.env.NEXT_PUBLIC_FRAMEWORK as string, frameworkSchema);

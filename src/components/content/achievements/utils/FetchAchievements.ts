@@ -1,6 +1,6 @@
 import { AchievementsContentProps } from "@/components/content/achievements/types/achievements";
 
-const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBLIC_ACHIEVEMENTS}`;
+const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBLIC_API_ACHIEVEMENTS}`;
 
 export const fetchAchievementsContents = async (): Promise<
   AchievementsContentProps[]

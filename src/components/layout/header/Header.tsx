@@ -173,7 +173,7 @@ export default function Header() {
                                                         setIsProfileOpen(false);
                                                         router.push('/dashboard');
                                                     }}
-                                                    className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2"
+                                                    className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
                                                 >
                                                     <LayoutDashboard className="h-4 w-4" />
                                                     Dashboard
@@ -184,7 +184,7 @@ export default function Header() {
                                                         setIsProfileOpen(false);
                                                         router.push('/profile');
                                                     }}
-                                                    className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2"
+                                                    className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
                                                 >
                                                     <User className="h-4 w-4" />
                                                     View Profile
@@ -192,7 +192,7 @@ export default function Header() {
                                             )}
                                             <button
                                                 onClick={handleLogout}
-                                                className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-accent transition-colors flex items-center gap-2"
+                                                className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
                                             >
                                                 <LogOut className="h-4 w-4" />
                                                 Logout

@@ -65,6 +65,7 @@ projectsSchema.pre("save", function (next) {
 });
 
 const Projects =
-  mongoose.models.Projects || mongoose.model("Projects", projectsSchema);
+  mongoose.models.Projects ||
+  mongoose.model(process.env.NEXT_PUBLIC_PROJECTS as string, projectsSchema);
 
 export default Projects;

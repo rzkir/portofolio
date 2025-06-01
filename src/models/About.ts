@@ -17,4 +17,5 @@ const aboutSchema = new mongoose.Schema(
 );
 
 export const About =
-  mongoose.models.About || mongoose.model("About", aboutSchema);
+  mongoose.models.About ||
+  mongoose.model(process.env.NEXT_PUBLIC_ABOUT as string, aboutSchema);
