@@ -51,6 +51,7 @@ interface projects {
     category: string;
     thumbnail: string;
     imageUrl: string[];
+    previewLink: string;
     frameworks: Framework[];
 }
 
@@ -76,10 +77,11 @@ export default function Modal({
     categories,
     frameworks,
     onSubmit,
-    isUploading,
     isSubmitting
 }: ModalProps) {
     const [isDragging, setIsDragging] = useState(false);
+    const [isUploadingImages, setIsUploadingImages] = useState(false);
+    const [draggedItem, setDraggedItem] = useState<number | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -115,11 +117,12 @@ export default function Modal({
         const file = e.target.files?.[0];
         if (!file) return;
 
+        setIsUploadingImages(true);
         try {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch('/api/youtube/upload', {
+            const response = await fetch('/api/projects/upload', {
                 method: 'POST',
                 body: formData,
             });
@@ -136,6 +139,8 @@ export default function Modal({
             toast.success('Thumbnail uploaded successfully');
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to upload thumbnail');
+        } finally {
+            setIsUploadingImages(false);
         }
     };
 
@@ -156,6 +161,10 @@ export default function Modal({
         });
     };
 
+    const handleDragStart = (index: number) => {
+        setDraggedItem(index);
+    };
+
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(true);
@@ -166,38 +175,22 @@ export default function Modal({
         setIsDragging(false);
     };
 
-    const handleDrop = async (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetIndex: number) => {
         e.preventDefault();
         setIsDragging(false);
 
-        const file = e.dataTransfer.files?.[0];
-        if (!file || !file.type.startsWith('image/')) {
-            toast.error('Please drop an image file');
-            return;
-        }
+        if (draggedItem === null) return;
 
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
+        const newImageUrl = [...formData.imageUrl];
+        const draggedImage = newImageUrl[draggedItem];
+        newImageUrl.splice(draggedItem, 1);
+        newImageUrl.splice(targetIndex, 0, draggedImage);
 
-            const response = await fetch('/api/youtube/upload', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to upload thumbnail');
-            }
-
-            const data = await response.json();
-            setFormData(prev => ({
-                ...prev,
-                thumbnail: data.url
-            }));
-            toast.success('Thumbnail uploaded successfully');
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Failed to upload thumbnail');
-        }
+        setFormData(prev => ({
+            ...prev,
+            imageUrl: newImageUrl
+        }));
+        setDraggedItem(null);
     };
 
     const handleRemoveThumbnail = () => {
@@ -211,6 +204,7 @@ export default function Modal({
         const files = e.target.files;
         if (!files) return;
 
+        setIsUploadingImages(true);
         try {
             const uploadedUrls: string[] = [];
             for (let i = 0; i < files.length; i++) {
@@ -238,6 +232,8 @@ export default function Modal({
             toast.success('Images uploaded successfully');
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to upload images');
+        } finally {
+            setIsUploadingImages(false);
         }
     };
 
@@ -246,6 +242,53 @@ export default function Modal({
             ...prev,
             imageUrl: prev.imageUrl.filter((_, i) => i !== index)
         }));
+    };
+
+    const handleAdditionalImagesDrop = async (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+
+        const files = e.dataTransfer.files;
+        if (!files || files.length === 0) return;
+
+        setIsUploadingImages(true);
+        try {
+            const uploadedUrls: string[] = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) {
+                    toast.error('Please drop only image files');
+                    continue;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/api/projects/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload image');
+                }
+
+                const data = await response.json();
+                uploadedUrls.push(data.url);
+            }
+
+            if (uploadedUrls.length > 0) {
+                setFormData(prev => ({
+                    ...prev,
+                    imageUrl: [...prev.imageUrl, ...uploadedUrls]
+                }));
+                toast.success('Images uploaded successfully');
+            }
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to upload images');
+        } finally {
+            setIsUploadingImages(false);
+        }
     };
 
     return (
@@ -300,6 +343,21 @@ export default function Modal({
                                         onChange={handleChange}
                                         placeholder="Enter project slug"
                                         required
+                                        className="w-full transition-colors focus:ring-2 focus:ring-primary/20"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="previewLink" className="text-sm font-medium flex items-center gap-2">
+                                        <Link className="w-4 h-4 text-muted-foreground" />
+                                        Preview Link
+                                    </Label>
+                                    <Input
+                                        id="previewLink"
+                                        name="previewLink"
+                                        value={formData.previewLink}
+                                        onChange={handleChange}
+                                        placeholder="Enter project preview link"
                                         className="w-full transition-colors focus:ring-2 focus:ring-primary/20"
                                     />
                                 </div>
@@ -368,16 +426,21 @@ export default function Modal({
                         </div>
 
                         <div className="space-y-4">
-                            <Label className="text-sm font-medium flex items-center gap-2">
-                                <List className="w-4 h-4 text-muted-foreground" />
-                                Frameworks
-                            </Label>
+                            <div className="flex items-center gap-2 text-lg font-semibold border-b pb-2">
+                                <List className="w-5 h-5 text-primary" />
+                                <h3>Frameworks</h3>
+                            </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 border rounded-lg bg-muted/50">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 border rounded-lg bg-muted/50">
                                 {frameworks.map((framework) => (
                                     <div
                                         key={framework.title}
-                                        className="flex items-center space-x-2"
+                                        className={cn(
+                                            "flex items-center gap-3 p-3 rounded-lg border transition-all duration-200",
+                                            formData.frameworks.some(f => f.title === framework.title)
+                                                ? "bg-primary/10 border-primary/50"
+                                                : "hover:bg-muted/80 border-muted-foreground/25"
+                                        )}
                                     >
                                         <input
                                             type="checkbox"
@@ -388,8 +451,13 @@ export default function Modal({
                                         />
                                         <label
                                             htmlFor={framework.title}
-                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                            className="flex items-center gap-2 text-sm font-medium leading-none cursor-pointer"
                                         >
+                                            <img
+                                                src={framework.imageUrl}
+                                                alt={framework.title}
+                                                className="w-5 h-5 object-contain"
+                                            />
                                             {framework.title}
                                         </label>
                                     </div>
@@ -401,8 +469,13 @@ export default function Modal({
                                         <Badge
                                             key={framework.title}
                                             variant="secondary"
-                                            className="flex items-center gap-1 hover:bg-primary/10 transition-colors"
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                                         >
+                                            <img
+                                                src={framework.imageUrl}
+                                                alt={framework.title}
+                                                className="w-4 h-4 object-contain"
+                                            />
                                             {framework.title}
                                             <button
                                                 type="button"
@@ -419,7 +492,7 @@ export default function Modal({
                     </div>
 
                     {/* Right Column - Media */}
-                    <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-4">
                             <div className="flex items-center gap-2 text-lg font-semibold border-b pb-2">
                                 <ImageIcon className="w-5 h-5 text-primary" />
@@ -433,7 +506,7 @@ export default function Modal({
                                             <img
                                                 src={formData.thumbnail}
                                                 alt="Thumbnail preview"
-                                                className="w-full h-32 object-cover"
+                                                className="w-full h-48 object-contain"
                                             />
                                         </div>
                                         <Button
@@ -455,7 +528,7 @@ export default function Modal({
                                         )}
                                         onDragOver={handleDragOver}
                                         onDragLeave={handleDragLeave}
-                                        onDrop={handleDrop}
+                                        onDrop={(e) => handleDrop(e, 0)}
                                     >
                                         <Input
                                             id="thumbnail"
@@ -472,7 +545,7 @@ export default function Modal({
                                                     type="button"
                                                     variant="link"
                                                     onClick={() => document.getElementById('thumbnail')?.click()}
-                                                    disabled={isUploading}
+                                                    disabled={isUploadingImages}
                                                     className="text-primary hover:text-primary/80"
                                                 >
                                                     browse
@@ -494,61 +567,101 @@ export default function Modal({
                             <div className="space-y-4">
                                 {/* Image Grid */}
                                 {formData.imageUrl.length > 0 && (
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                        {formData.imageUrl.map((url, index) => (
-                                            <div key={index} className="relative group">
-                                                <div className="border rounded-lg overflow-hidden">
-                                                    <img
-                                                        src={url}
-                                                        alt={`Project image ${index + 1}`}
-                                                        className="w-full h-32 object-cover"
-                                                    />
-                                                </div>
-                                                <Button
-                                                    type="button"
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleRemoveImage(index)}
-                                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    <div className="max-h-[400px] overflow-y-auto pr-2">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                            {formData.imageUrl.map((url, index) => (
+                                                <div
+                                                    key={url}
+                                                    draggable
+                                                    onDragStart={() => handleDragStart(index)}
+                                                    onDragOver={handleDragOver}
+                                                    onDragLeave={handleDragLeave}
+                                                    onDrop={(e) => handleDrop(e, index)}
+                                                    className={cn(
+                                                        "relative group cursor-move",
+                                                        isDragging && "opacity-50"
+                                                    )}
                                                 >
-                                                    <X className="w-4 h-4" />
-                                                </Button>
-                                            </div>
-                                        ))}
+                                                    <div className="border rounded-lg overflow-hidden">
+                                                        <img
+                                                            src={url}
+                                                            alt={`Project image ${index + 1}`}
+                                                            className="w-full h-40 object-cover"
+                                                            onError={(e) => {
+                                                                const target = e.target as HTMLImageElement;
+                                                                target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => handleRemoveImage(index)}
+                                                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-50"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </Button>
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <div className="text-white text-sm font-medium">
+                                                            Drag to reorder
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
-                                {/* Upload Button */}
-                                <div
-                                    className={cn(
-                                        "border-2 border-dashed rounded-lg p-6 text-center transition-colors",
-                                        "border-muted-foreground/25 hover:border-primary/50"
-                                    )}
-                                >
-                                    <Input
-                                        id="images"
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleImageUpload}
-                                        className="hidden"
-                                    />
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Upload className="w-8 h-8 text-muted-foreground" />
-                                        <div className="text-sm text-muted-foreground">
-                                            <p>Upload additional images</p>
-                                            <Button
-                                                type="button"
-                                                variant="link"
-                                                onClick={() => document.getElementById('images')?.click()}
-                                                disabled={isUploading}
-                                                className="text-primary hover:text-primary/80"
-                                            >
-                                                Select Files
-                                            </Button>
+                                {/* Upload Button - Only show when no images */}
+                                {formData.imageUrl.length === 0 && (
+                                    <div
+                                        className={cn(
+                                            "border-2 border-dashed rounded-lg p-6 text-center transition-colors",
+                                            isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50",
+                                            "relative"
+                                        )}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleAdditionalImagesDrop}
+                                    >
+                                        <Input
+                                            id="images"
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handleImageUpload}
+                                            className="hidden"
+                                            disabled={isUploadingImages}
+                                        />
+                                        <div className="flex flex-col items-center gap-2">
+                                            <Upload className="w-8 h-8 text-muted-foreground" />
+                                            <div className="text-sm text-muted-foreground">
+                                                <p>Drag and drop your images here, or</p>
+                                                <Button
+                                                    type="button"
+                                                    variant="link"
+                                                    onClick={() => document.getElementById('images')?.click()}
+                                                    disabled={isUploadingImages}
+                                                    className="text-primary hover:text-primary/80"
+                                                >
+                                                    Select Files
+                                                </Button>
+                                            </div>
+                                            {isUploadingImages && (
+                                                <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+                                                    <div className="flex items-center gap-2">
+                                                        <svg className="animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                        <span>Uploading...</span>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -556,7 +669,7 @@ export default function Modal({
                     <DialogFooter className="border-t pt-4 mt-6">
                         <Button
                             type="submit"
-                            disabled={isUploading || isSubmitting}
+                            disabled={isUploadingImages || isSubmitting}
                             className="w-full sm:w-auto hover:scale-105 transition-all duration-300"
                         >
                             {isSubmitting ? `${isEditing ? 'Updating' : 'Creating'}...` : `${isEditing ? 'Update' : 'Create'} Content`}

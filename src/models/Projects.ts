@@ -45,6 +45,10 @@ const projectsSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    previewLink: {
+      type: String,
+      required: false,
+    },
     frameworks: {
       type: [frameworkSchema],
       default: [],

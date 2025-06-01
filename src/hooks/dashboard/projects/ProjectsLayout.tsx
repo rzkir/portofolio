@@ -34,6 +34,7 @@ interface projects {
     category: string;
     thumbnail: string;
     imageUrl: string[];
+    previewLink: string;
     frameworks: Framework[];
 }
 
@@ -57,6 +58,7 @@ export default function ProjectsLayout() {
         category: '',
         thumbnail: '',
         imageUrl: [],
+        previewLink: '',
         frameworks: []
     });
     const [isLoading, setIsLoading] = useState(true);
@@ -109,6 +111,7 @@ export default function ProjectsLayout() {
             category: content.category,
             thumbnail: content.thumbnail,
             imageUrl: content.imageUrl || [],
+            previewLink: content.previewLink || '',
             frameworks: content.frameworks
         });
         setIsEditing(true);
@@ -166,6 +169,7 @@ export default function ProjectsLayout() {
                 category: '',
                 thumbnail: '',
                 imageUrl: [],
+                previewLink: '',
                 frameworks: []
             });
             setIsEditing(false);
@@ -280,7 +284,7 @@ export default function ProjectsLayout() {
                     </div>
                 ) : (
                     projectsContent.map((content) => (
-                        <Card key={content._id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group">
+                        <Card key={content._id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group p-0">
                             <div className="relative w-full h-48 overflow-hidden">
                                 {content.thumbnail ? (
                                     <Image
@@ -367,6 +371,7 @@ export default function ProjectsLayout() {
                             category: '',
                             thumbnail: '',
                             imageUrl: [],
+                            previewLink: '',
                             frameworks: []
                         });
                     }

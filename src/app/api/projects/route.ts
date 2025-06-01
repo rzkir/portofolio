@@ -55,6 +55,7 @@ export async function POST(request: Request) {
       thumbnail: body.thumbnail,
       slug: body.slug,
       imageUrl: body.imageUrl || [],
+      previewLink: body.previewLink || "",
       frameworks: body.frameworks.map((framework: FrameworkData) => ({
         title: framework.title,
         imageUrl: framework.imageUrl,
