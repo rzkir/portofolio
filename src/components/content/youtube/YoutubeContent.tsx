@@ -66,7 +66,7 @@ export default function YoutubeContent({ youtubeData = [] }: { youtubeData?: You
                             >
                                 {selectedCategory === category && (
                                     <motion.div
-                                        layoutId="activeCategory"
+                                        layoutId="activeYoutubeCategory"
                                         className="absolute inset-0 bg-primary rounded-lg"
                                         initial={false}
                                         transition={{

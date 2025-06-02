@@ -6,12 +6,15 @@ import Home from '@/components/content/Home/Home'
 
 import Youtube from '@/components/content/youtube/Youtube'
 
+import Projects from '@/components/content/projects/Projects'
+
 export default function page() {
   return (
     <Fragment>
       <Home />
       <About />
       <Youtube />
+      <Projects />
     </Fragment>
   )
 }
