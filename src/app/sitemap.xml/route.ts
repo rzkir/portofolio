@@ -199,6 +199,7 @@ ${urls
     )}</image:loc>
       <image:title>${escapeXml(metadata.openGraph.images[0].alt)}</image:title>
       <image:caption>${escapeXml(description)}</image:caption>
+      <image:license>${escapeXml(SITE_NAME)}</image:license>
     </image:image>
   </url>`;
   })
