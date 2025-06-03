@@ -15,7 +15,7 @@ export function Pagination({
 }: PaginationProps) {
     return (
         <div className={`mt-8 flex flex-col items-center gap-4 ${className}`}>
-            <div className="w-full flex justify-between items-center">
+            <div className="w-full flex flex-col md:flex-row gap-4 justify-between items-center">
                 <div className="text-sm text-muted-foreground">
                     Page {currentPage} of {totalPages}
                 </div>

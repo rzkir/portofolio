@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { fetchHomeContents } from '@/components/content/Home/utils/FetchHome';
+import { fetchSkillsContents } from '@/components/content/skills/utils/FetchSkils';
 
-import HomeContent from '@/components/content/Home/HomeContent';
+import SkilsContent from '@/components/content/skills/SkilsContent';
 
-import HomeSkeleton from '@/components/content/Home/HomeSkeleton';
+import SkilsSkeleton from '@/components/content/skills/SkilsSkeleton';
 
-export default async function Home() {
+export default async function Skills() {
     try {
-        const homeData = await fetchHomeContents();
-        return <HomeContent homeData={homeData} />;
+        const skillsData = await fetchSkillsContents();
+        return <SkilsContent skillsData={skillsData} />;
     } catch (error) {
-        console.error('Error fetching home data:', error);
+        console.error('Error fetching skills data:', error);
         return (
-            <HomeSkeleton />
+            <SkilsSkeleton />
         );
     }
 }

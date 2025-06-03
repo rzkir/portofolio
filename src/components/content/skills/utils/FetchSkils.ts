@@ -1,10 +1,8 @@
-import { AchievementsContentProps } from "@/components/content/achievements/types/achievements";
+import { SkillsContentProps } from "@/components/content/skills/types/skills";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBLIC_API_SKILLS}`;
 
-export const fetchAchievementsContents = async (): Promise<
-  AchievementsContentProps[]
-> => {
+export const fetchSkillsContents = async (): Promise<SkillsContentProps[]> => {
   try {
     const response = await fetch(API_URL, {
       next: { revalidate: 10 }, // Revalidate every 10 seconds
@@ -15,14 +13,14 @@ export const fetchAchievementsContents = async (): Promise<
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch achievements contents: ${response.statusText}`
+        `Failed to fetch skills contents: ${response.statusText}`
       );
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching achievements contents:", error);
+    console.error("Error fetching skills contents:", error);
     throw error;
   }
 };

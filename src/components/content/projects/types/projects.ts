@@ -8,7 +8,6 @@ export interface ProjectsContentProps {
   thumbnail: string;
   imageUrl: string[];
   previewLink: string;
-  github?: string;
   frameworks: Framework[];
   createdAt?: Date;
   updatedAt?: Date;

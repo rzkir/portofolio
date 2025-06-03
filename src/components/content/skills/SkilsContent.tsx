@@ -1,176 +1,88 @@
 "use client"
 
-import React, { useState } from 'react'
+import React from 'react'
 
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useTransform, useInView } from 'framer-motion'
 
-import { HomeContentProps } from '@/components/content/Home/types/home'
+import { SkillsContentProps } from '@/components/content/skills/types/skills'
 
-import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
-import Link from 'next/link'
+import { Badge } from "@/components/ui/badge"
 
-export default function HomeContent({ homeData }: { homeData: HomeContentProps[] }) {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        setMousePosition({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
-        });
-    };
-
+export default function SkillsContent({ skillsData }: { skillsData: SkillsContentProps[] }) {
     return (
-        <section
-            className="md:min-h-screen min-h-full flex flex-col items-center justify-center py-10 -mt-0 md:-mt-16 relative overflow-hidden"
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            <motion.div
-                className="absolute -z-10 w-[180px] h-[180px] rounded-full pointer-events-none"
-                animate={{
-                    x: mousePosition.x - 800,
-                    y: mousePosition.y - 400,
-                    scale: isHovered ? [0.8, 1.1, 0.8] : 0,
-                    opacity: isHovered ? 0.15 : 0,
-                }}
-                transition={{
-                    x: { type: "spring", stiffness: 300, damping: 25 },
-                    y: { type: "spring", stiffness: 300, damping: 25 },
-                    scale: { duration: 2, repeat: Infinity, ease: [0.4, 0, 0.6, 1] },
-                    opacity: { duration: 0.4 }
-                }}
-                style={{
-                    background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
-                    filter: "blur(12px)",
-                }}
-            />
-            <motion.div
-                className="absolute -z-10 w-[120px] h-[120px] rounded-full pointer-events-none"
-                animate={{
-                    x: mousePosition.x - 650,
-                    y: mousePosition.y - 350,
-                    scale: isHovered ? [0.6, 0.9, 0.6] : 0,
-                    opacity: isHovered ? 0.1 : 0,
-                }}
-                transition={{
-                    x: { type: "spring", stiffness: 250, damping: 20 },
-                    y: { type: "spring", stiffness: 250, damping: 20 },
-                    scale: { duration: 2.5, repeat: Infinity, ease: [0.4, 0, 0.6, 1] },
-                    opacity: { duration: 0.4 }
-                }}
-                style={{
-                    background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
-                    filter: "blur(8px)",
-                }}
-            />
-            <motion.div
-                className="absolute -z-10 w-[80px] h-[80px] rounded-full pointer-events-none"
-                animate={{
-                    x: mousePosition.x - 750,
-                    y: mousePosition.y - 450,
-                    scale: isHovered ? [0.4, 0.7, 0.4] : 0,
-                    opacity: isHovered ? 0.08 : 0,
-                }}
-                transition={{
-                    x: { type: "spring", stiffness: 200, damping: 15 },
-                    y: { type: "spring", stiffness: 200, damping: 15 },
-                    scale: { duration: 3, repeat: Infinity, ease: [0.4, 0, 0.6, 1] },
-                    opacity: { duration: 0.4 }
-                }}
-                style={{
-                    background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
-                    filter: "blur(6px)",
-                }}
-            />
-            <div className="container px-4 md:px-6">
-                {homeData.map((item) => (
-                    <div key={item._id} className="flex flex-col gap-8 md:gap-10">
-                        <motion.h3
-                            className="text-lg md:text-xl font-medium mb-2 text-[color:var(--foreground)] tracking-wide"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            {item.title}
-                        </motion.h3>
+        <section className="w-full py-10 bg-background">
+            <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+                <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight mb-14'>
+                    Tech Skills
+                </h1>
 
-                        <div className='block space-y-4'>
-                            <motion.h1
-                                className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--foreground)] tracking-tight"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.2 }}
-                            >
-                                {item.text}
-                            </motion.h1>
+                <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    {skillsData.map((item) => {
+                        const x = useMotionValue(0)
+                        const y = useMotionValue(0)
+                        const ref = React.useRef(null)
+                        const isInView = useInView(ref, { once: true })
 
-                            <div className="flex flex-wrap items-center justify-start gap-[0.4em] md:gap-[0.6em]">
-                                {item.span.split('').map((char, index) => (
-                                    <motion.span
-                                        key={index}
-                                        className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--muted-foreground)] tracking-tight inline-block cursor-pointer"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        whileHover={{
-                                            scale: 1.2,
-                                            color: "var(--color-primary)",
-                                            transition: {
-                                                type: "spring",
-                                                stiffness: 400,
-                                                damping: 10
-                                            }
-                                        }}
-                                        transition={{
-                                            duration: 0.5,
-                                            delay: 0.4 + (index * 0.1),
-                                            ease: "easeOut"
-                                        }}
-                                    >
-                                        {char}
-                                    </motion.span>
-                                ))}
-                            </div>
-                        </div>
+                        const rotateX = useTransform(y, [-100, 100], [30, -30])
+                        const rotateY = useTransform(x, [-100, 100], [-30, 30])
 
-                        <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-12'>
+                        const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+                            const rect = event.currentTarget.getBoundingClientRect()
+                            const centerX = rect.left + rect.width / 2
+                            const centerY = rect.top + rect.height / 2
+
+                            x.set(event.clientX - centerX)
+                            y.set(event.clientY - centerY)
+                        }
+
+                        const handleMouseLeave = () => {
+                            x.set(0)
+                            y.set(0)
+                        }
+
+                        return (
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.6 }}
+                                ref={ref}
+                                key={item._id}
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={isInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 20 }}
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                                style={{
+                                    perspective: 1000,
+                                    rotateX,
+                                    rotateY,
+                                }}
+                                onMouseMove={handleMouseMove}
+                                onMouseLeave={handleMouseLeave}
                             >
-                                <Button
-                                    className="group relative rounded-full px-8 py-6 bg-[color:var(--color-primary)] 
-                                    text-[color:var(--color-primary-foreground)] text-lg font-semibold 
-                                    overflow-hidden transition-all duration-300 hover:shadow-xl
-                                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent 
-                                    before:via-white/40 before:to-transparent before:translate-x-[-100%] 
-                                    before:transition-transform before:duration-300 hover:before:translate-x-[100%]
-                                    after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent 
-                                    after:via-white/30 after:to-transparent after:translate-x-[-100%] 
-                                    after:transition-transform after:duration-300 after:delay-50 hover:after:translate-x-[100%]"
+                                <Badge
+                                    variant="secondary"
+                                    className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 h-auto cursor-pointer 
+                                    bg-gradient-to-br from-secondary to-secondary/80
+                                    shadow-[0_4px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_0_rgb(0,0,0,0.1)]
+                                    active:shadow-[0_2px_0_rgb(0,0,0,0.1)] active:translate-y-[2px]
+                                    transition-all duration-200 ease-out
+                                    border border-black/10
+                                    hover:bg-secondary/90"
                                 >
-                                    <Link href={item.href} className="flex items-center gap-2">
-                                        {item.label}
-                                        <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                                    </Link>
-                                </Button>
+                                    <div className="relative w-6 h-6 sm:w-8 sm:h-8">
+                                        <Image
+                                            src={item.imageUrl}
+                                            alt={item.title}
+                                            fill
+                                            className="object-contain drop-shadow-sm"
+                                        />
+                                    </div>
+                                    <span className="text-sm sm:text-base font-medium drop-shadow-sm">
+                                        {item.title}
+                                    </span>
+                                </Badge>
                             </motion.div>
-
-                            <motion.p
-                                className="text-base md:text-lg text-[color:var(--muted-foreground)] max-w-2xl md:text-right leading-relaxed"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.8 }}
-                            >
-                                {item.description}
-                            </motion.p>
-                        </div>
-                    </div>
-                ))}
+                        )
+                    })}
+                </div>
             </div>
         </section>
     )
