@@ -6,6 +6,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
 const SITE_NAME = metadata.openGraph.siteName;
 const SITE_DESCRIPTION = metadata.openGraph.description;
 
+// Add XML escape function
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 async function getBlogSlugs() {
   try {
     const { db } = await connectToDatabase();
@@ -177,31 +187,39 @@ ${urls
 
     return `
   <url>
-    <loc>${BASE_URL}${url}</loc>
+    <loc>${escapeXml(BASE_URL)}${escapeXml(url)}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="${
+    <xhtml:link rel="alternate" hreflang="${escapeXml(
       metadata.openGraph.locale
-    }" href="${BASE_URL}${url}" />
-    <og:title>${title}</og:title>
-    <og:description>${description}</og:description>
-    <og:url>${BASE_URL}${url}</og:url>
-    <og:type>${isHomePage ? metadata.openGraph.type : "article"}</og:type>
-    <og:site_name>${SITE_NAME}</og:site_name>
-    <og:locale>${metadata.openGraph.locale}</og:locale>
+    )}" href="${escapeXml(BASE_URL)}${escapeXml(url)}" />
+    <og:title>${escapeXml(title)}</og:title>
+    <og:description>${escapeXml(description)}</og:description>
+    <og:url>${escapeXml(BASE_URL)}${escapeXml(url)}</og:url>
+    <og:type>${escapeXml(
+      isHomePage ? metadata.openGraph.type : "article"
+    )}</og:type>
+    <og:site_name>${escapeXml(SITE_NAME)}</og:site_name>
+    <og:locale>${escapeXml(metadata.openGraph.locale)}</og:locale>
     <og:image>
-      <og:image:url>${BASE_URL}${
+      <og:image:url>${escapeXml(BASE_URL)}${escapeXml(
       metadata.openGraph.images[0].url
-    }</og:image:url>
+    )}</og:image:url>
       <og:image:width>${metadata.openGraph.images[0].width}</og:image:width>
       <og:image:height>${metadata.openGraph.images[0].height}</og:image:height>
-      <og:image:alt>${metadata.openGraph.images[0].alt}</og:image:alt>
-      <og:image:type>${metadata.openGraph.images[0].type}</og:image:type>
+      <og:image:alt>${escapeXml(
+        metadata.openGraph.images[0].alt
+      )}</og:image:alt>
+      <og:image:type>${escapeXml(
+        metadata.openGraph.images[0].type
+      )}</og:image:type>
     </og:image>
     <image:image>
-      <image:loc>${BASE_URL}${metadata.openGraph.images[0].url}</image:loc>
-      <image:title>${metadata.openGraph.images[0].alt}</image:title>
+      <image:loc>${escapeXml(BASE_URL)}${escapeXml(
+      metadata.openGraph.images[0].url
+    )}</image:loc>
+      <image:title>${escapeXml(metadata.openGraph.images[0].alt)}</image:title>
     </image:image>
   </url>`;
   })
