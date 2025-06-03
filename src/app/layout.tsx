@@ -2,11 +2,9 @@ import { metadata } from "@/base/meta/Metadata";
 
 export { metadata };
 
-import { Geist, Geist_Mono } from "next/font/google";
-
 metadata.manifest = "/manifest.json";
 
-import "./globals.css";
+import "@/base/styling/globals.css";
 
 import Providers from "@/base/router/Provider";
 
@@ -14,15 +12,7 @@ import Pathname from "@/base/router/Pathname";
 
 import { ThemeProvider } from "@/utils/context/ThemaContext"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { geistSans, geistMono } from "@/base/fonts/Fonts";
 
 export default function RootLayout({
   children,
