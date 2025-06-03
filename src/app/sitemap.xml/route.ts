@@ -173,7 +173,6 @@ async function generateSitemap() {
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:og="http://ogp.me/ns#"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls
   .map((url) => {
@@ -194,30 +193,12 @@ ${urls
     <xhtml:link rel="alternate" hreflang="${escapeXml(
       metadata.openGraph.locale
     )}" href="${escapeXml(BASE_URL)}${escapeXml(url)}" />
-    <og:title>${escapeXml(title)}</og:title>
-    <og:description>${escapeXml(description)}</og:description>
-    <og:url>${escapeXml(BASE_URL)}${escapeXml(url)}</og:url>
-    <og:type>${escapeXml(
-      isHomePage ? metadata.openGraph.type : "article"
-    )}</og:type>
-    <og:site_name>${escapeXml(SITE_NAME)}</og:site_name>
-    <og:locale>${escapeXml(metadata.openGraph.locale)}</og:locale>
-    <og:image>
-      <og:image>
-        <og:url>${escapeXml(BASE_URL)}${escapeXml(
-      metadata.openGraph.images[0].url
-    )}</og:url>
-        <og:width>${metadata.openGraph.images[0].width}</og:width>
-        <og:height>${metadata.openGraph.images[0].height}</og:height>
-        <og:alt>${escapeXml(metadata.openGraph.images[0].alt)}</og:alt>
-        <og:type>${escapeXml(metadata.openGraph.images[0].type)}</og:type>
-      </og:image>
-    </og:image>
     <image:image>
       <image:loc>${escapeXml(BASE_URL)}${escapeXml(
       metadata.openGraph.images[0].url
     )}</image:loc>
       <image:title>${escapeXml(metadata.openGraph.images[0].alt)}</image:title>
+      <image:caption>${escapeXml(description)}</image:caption>
     </image:image>
   </url>`;
   })
