@@ -203,17 +203,15 @@ ${urls
     <og:site_name>${escapeXml(SITE_NAME)}</og:site_name>
     <og:locale>${escapeXml(metadata.openGraph.locale)}</og:locale>
     <og:image>
-      <og:image:url>${escapeXml(BASE_URL)}${escapeXml(
+      <og:image>
+        <og:url>${escapeXml(BASE_URL)}${escapeXml(
       metadata.openGraph.images[0].url
-    )}</og:image:url>
-      <og:image:width>${metadata.openGraph.images[0].width}</og:image:width>
-      <og:image:height>${metadata.openGraph.images[0].height}</og:image:height>
-      <og:image:alt>${escapeXml(
-        metadata.openGraph.images[0].alt
-      )}</og:image:alt>
-      <og:image:type>${escapeXml(
-        metadata.openGraph.images[0].type
-      )}</og:image:type>
+    )}</og:url>
+        <og:width>${metadata.openGraph.images[0].width}</og:width>
+        <og:height>${metadata.openGraph.images[0].height}</og:height>
+        <og:alt>${escapeXml(metadata.openGraph.images[0].alt)}</og:alt>
+        <og:type>${escapeXml(metadata.openGraph.images[0].type)}</og:type>
+      </og:image>
     </og:image>
     <image:image>
       <image:loc>${escapeXml(BASE_URL)}${escapeXml(
