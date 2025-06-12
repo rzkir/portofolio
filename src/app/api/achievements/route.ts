@@ -5,6 +5,12 @@ import Achievement from "@/models/achievement";
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+
+  if (authHeader !== `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await connectToDatabase();
     const achievements = await Achievement.find().sort({ createdAt: -1 });

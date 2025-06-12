@@ -51,7 +51,12 @@ export default function HomeLayout() {
     const fetchContents = async () => {
         try {
             setIsLoading(true)
-            const response = await fetch('/api/home');
+            const response = await fetch('/api/home', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                },
+            });
             const data = await response.json();
             setContents(data);
         } catch (error) {
@@ -94,6 +99,7 @@ export default function HomeLayout() {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
                     },
                     body: JSON.stringify({
                         id: selectedContent._id,
@@ -109,6 +115,7 @@ export default function HomeLayout() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
                     },
                     body: JSON.stringify(formData),
                 });
@@ -131,6 +138,10 @@ export default function HomeLayout() {
             if (selectedContent?._id) {
                 const response = await fetch(`/api/home?id=${selectedContent._id}`, {
                     method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
                 });
 
                 if (!response.ok) throw new Error('Failed to delete content');

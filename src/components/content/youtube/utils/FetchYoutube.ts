@@ -10,6 +10,7 @@ export const fetchYoutubeContents = async (): Promise<
       next: { revalidate: 10 }, // Revalidate every 10 seconds
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
       },
     });
 

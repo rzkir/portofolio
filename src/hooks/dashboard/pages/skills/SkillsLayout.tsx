@@ -75,7 +75,12 @@ export default function SkillsLayout() {
     const fetchSkills = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/skills');
+            const response = await fetch('/api/skills', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                },
+            });
             const data = await response.json();
             setSkills(data);
         } catch (error) {
@@ -301,7 +306,7 @@ export default function SkillsLayout() {
                 </div>
 
                 {/* Content Section */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {isLoading ? (
                         Array.from({ length: 3 }).map((_, index) => (
                             <div key={index} className="p-4 sm:p-6 border rounded-xl bg-card shadow-sm">

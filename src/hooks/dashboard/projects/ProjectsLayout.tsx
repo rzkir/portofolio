@@ -69,7 +69,12 @@ export default function ProjectsLayout() {
             setIsLoading(true);
             try {
                 // Fetch categories
-                const categoriesResponse = await fetch('/api/projects/categories');
+                const categoriesResponse = await fetch('/api/projects/categories', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
+                });
                 if (!categoriesResponse.ok) {
                     throw new Error('Failed to fetch categories');
                 }
@@ -78,7 +83,12 @@ export default function ProjectsLayout() {
                 setCategories(uniqueCategories);
 
                 // Fetch frameworks
-                const frameworksResponse = await fetch('/api/projects/frameworks');
+                const frameworksResponse = await fetch('/api/projects/frameworks', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
+                });
                 if (!frameworksResponse.ok) {
                     throw new Error('Failed to fetch frameworks');
                 }
@@ -86,7 +96,12 @@ export default function ProjectsLayout() {
                 setFrameworks(frameworksData);
 
                 // Fetch Projects content
-                const projectsResponse = await fetch('/api/projects');
+                const projectsResponse = await fetch('/api/projects', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
+                });
                 if (!projectsResponse.ok) {
                     throw new Error('Failed to fetch Projects content');
                 }

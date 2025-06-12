@@ -5,6 +5,12 @@ import { connectToDatabase } from "@/utils/mongodb/mongodb";
 import Skill from "@/models/skill";
 
 export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+
+  if (authHeader !== `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await connectToDatabase();
     const skills = await Skill.find().sort({ createdAt: -1 });

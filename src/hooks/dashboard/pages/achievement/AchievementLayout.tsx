@@ -80,7 +80,12 @@ export default function AchievementLayout() {
     const fetchAchievements = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/achievements');
+            const response = await fetch('/api/achievements', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                },
+            });
             const data = await response.json();
             setAchievements(data);
         } catch (error) {

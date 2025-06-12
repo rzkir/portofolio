@@ -64,7 +64,12 @@ export default function YoutubeLayout() {
             setIsLoading(true);
             try {
                 // Fetch categories
-                const categoriesResponse = await fetch('/api/youtube/categories');
+                const categoriesResponse = await fetch('/api/youtube/categories', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
+                });
                 if (!categoriesResponse.ok) {
                     throw new Error('Failed to fetch categories');
                 }
@@ -73,7 +78,12 @@ export default function YoutubeLayout() {
                 setCategories(uniqueCategories);
 
                 // Fetch frameworks
-                const frameworksResponse = await fetch('/api/youtube/frameworks');
+                const frameworksResponse = await fetch('/api/youtube/frameworks', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
+                });
                 if (!frameworksResponse.ok) {
                     throw new Error('Failed to fetch frameworks');
                 }
@@ -81,7 +91,12 @@ export default function YoutubeLayout() {
                 setFrameworks(frameworksData);
 
                 // Fetch YouTube content
-                const youtubeResponse = await fetch('/api/youtube');
+                const youtubeResponse = await fetch('/api/youtube', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                    },
+                });
                 if (!youtubeResponse.ok) {
                     throw new Error('Failed to fetch YouTube content');
                 }

@@ -62,7 +62,12 @@ export default function AboutLayout() {
     const fetchAboutData = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/about');
+            const response = await fetch('/api/about', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                },
+            });
             const data = await response.json();
             setAboutData(data);
         } catch (error) {

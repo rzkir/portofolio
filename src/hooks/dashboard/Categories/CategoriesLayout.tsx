@@ -45,7 +45,12 @@ export default function CategoriesLayout() {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch('/api/categories');
+            const response = await fetch('/api/categories', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch categories');
             }
