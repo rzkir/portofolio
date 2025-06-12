@@ -4,17 +4,7 @@ import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 import Skill from "@/models/skill";
 
-function isFrontendRequest(request: Request) {
-  const referer = request.headers.get("referer");
-  return referer?.includes(process.env.NEXT_PUBLIC_BASE_URL || "");
-}
-
 export async function GET(request: Request) {
-  // In production, only allow requests from frontend
-  if (process.env.NODE_ENV === "production" && !isFrontendRequest(request)) {
-    return new NextResponse(null, { status: 404 });
-  }
-
   try {
     await connectToDatabase();
     const skills = await Skill.find().sort({ createdAt: -1 });

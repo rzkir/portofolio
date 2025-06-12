@@ -9,19 +9,8 @@ interface FrameworkData {
   imageUrl: string;
 }
 
-// Check if request is from frontend fetch
-function isFrontendRequest(request: Request) {
-  const referer = request.headers.get("referer");
-  return referer?.includes(process.env.NEXT_PUBLIC_BASE_URL || "");
-}
-
 // GET all Projects content
 export async function GET(request: Request) {
-  // In production, only allow requests from frontend
-  if (process.env.NODE_ENV === "production" && !isFrontendRequest(request)) {
-    return new NextResponse(null, { status: 404 });
-  }
-
   try {
     const { db } = await connectToDatabase();
     const projectsContent = await Projects.find().sort({ createdAt: -1 });
