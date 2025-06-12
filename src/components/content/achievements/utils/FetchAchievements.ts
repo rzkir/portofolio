@@ -10,7 +10,6 @@ export const fetchAchievementsContents = async (): Promise<
       next: { revalidate: 10 }, // Revalidate every 10 seconds
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_API_KEY as string,
       },
     });
 

@@ -9,19 +9,17 @@ interface FrameworkData {
   imageUrl: string;
 }
 
-// API Key only for GET endpoint
-const API_KEY = process.env.API_KEY as string;
-
-function validateApiKey(request: Request) {
-  const apiKey = request.headers.get("x-api-key");
-  return apiKey === API_KEY;
+// Check if request is from frontend fetch
+function isFrontendRequest(request: Request) {
+  const referer = request.headers.get("referer");
+  return referer?.includes(process.env.NEXT_PUBLIC_BASE_URL || "");
 }
 
 // GET all Projects content
 export async function GET(request: Request) {
-  // Check API key
-  if (!validateApiKey(request)) {
-    return new NextResponse(null, { status: 401 });
+  // In production, only allow requests from frontend
+  if (process.env.NODE_ENV === "production" && !isFrontendRequest(request)) {
+    return new NextResponse(null, { status: 404 });
   }
 
   try {
