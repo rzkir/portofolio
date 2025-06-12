@@ -19,17 +19,6 @@ export async function GET(request: Request) {
     return new NextResponse(null, { status: 401 });
   }
 
-  console.log("Current NODE_ENV:", process.env.NODE_ENV);
-
-  // Check if in production environment
-  if (
-    process.env.NODE_ENV === "production" ||
-    process.env.NODE_ENV === undefined
-  ) {
-    console.log("Production environment detected, blocking GET request");
-    return new NextResponse(null, { status: 404 });
-  }
-
   try {
     await connectToDatabase();
     const aboutData = await About.find();
