@@ -5,13 +5,19 @@ import { About } from "@/models/About";
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+
+  if (authHeader !== `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await connectToDatabase();
-    const aboutData = await About.find();
-    return NextResponse.json(aboutData);
+    const contents = await About.find().sort({ createdAt: -1 });
+    return NextResponse.json(contents);
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch data" },
+      { error: "Failed to fetch contents" },
       { status: 500 }
     );
   }

@@ -5,9 +5,10 @@ const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${process.env.NEXT_PUBL
 export const fetchAboutContents = async (): Promise<AboutContentProps[]> => {
   try {
     const response = await fetch(API_URL, {
-      next: { revalidate: 10 }, // Revalidate every 10 seconds
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
       },
     });
 
