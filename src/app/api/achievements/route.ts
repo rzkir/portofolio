@@ -4,14 +4,27 @@ import Achievement from "@/models/achievement";
 
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
-export async function GET() {
+// API Key only for GET endpoint
+const API_KEY = process.env.API_KEY as string;
+
+function validateApiKey(request: Request) {
+  const apiKey = request.headers.get("x-api-key");
+  return apiKey === API_KEY;
+}
+
+export async function GET(request: Request) {
+  // Check API key
+  if (!validateApiKey(request)) {
+    return new NextResponse(null, { status: 401 });
+  }
+
   try {
     await connectToDatabase();
     const achievements = await Achievement.find().sort({ createdAt: -1 });
     return NextResponse.json(achievements);
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch achievements" },
+      { error: "Failed to fetch data" },
       { status: 500 }
     );
   }

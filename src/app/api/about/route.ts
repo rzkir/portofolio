@@ -4,8 +4,32 @@ import { About } from "@/models/About";
 
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
+// API Key only for GET endpoint
+const API_KEY = process.env.API_KEY as string;
+
+function validateApiKey(request: Request) {
+  const apiKey = request.headers.get("x-api-key");
+  return apiKey === API_KEY;
+}
+
 // GET all about data
-export async function GET() {
+export async function GET(request: Request) {
+  // Check API key
+  if (!validateApiKey(request)) {
+    return new NextResponse(null, { status: 401 });
+  }
+
+  console.log("Current NODE_ENV:", process.env.NODE_ENV);
+
+  // Check if in production environment
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.NODE_ENV === undefined
+  ) {
+    console.log("Production environment detected, blocking GET request");
+    return new NextResponse(null, { status: 404 });
+  }
+
   try {
     await connectToDatabase();
     const aboutData = await About.find();

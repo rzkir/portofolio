@@ -4,8 +4,21 @@ import { HomeContent } from "@/models/HomeContent";
 
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
+// API Key only for GET endpoint
+const API_KEY = process.env.API_KEY as string;
+
+function validateApiKey(request: Request) {
+  const apiKey = request.headers.get("x-api-key");
+  return apiKey === API_KEY;
+}
+
 // GET all home contents
-export async function GET() {
+export async function GET(request: Request) {
+  // Check API key
+  if (!validateApiKey(request)) {
+    return new NextResponse(null, { status: 401 });
+  }
+
   try {
     await connectToDatabase();
     const contents = await HomeContent.find().sort({ createdAt: -1 });

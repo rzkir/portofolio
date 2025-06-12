@@ -4,7 +4,20 @@ import { connectToDatabase } from "@/utils/mongodb/mongodb";
 
 import Skill from "@/models/skill";
 
-export async function GET() {
+// API Key only for GET endpoint
+const API_KEY = process.env.API_KEY as string;
+
+function validateApiKey(request: Request) {
+  const apiKey = request.headers.get("x-api-key");
+  return apiKey === API_KEY;
+}
+
+export async function GET(request: Request) {
+  // Check API key
+  if (!validateApiKey(request)) {
+    return new NextResponse(null, { status: 401 });
+  }
+
   try {
     await connectToDatabase();
     const skills = await Skill.find().sort({ createdAt: -1 });

@@ -9,8 +9,21 @@ interface FrameworkData {
   imageUrl: string;
 }
 
+// API Key only for GET endpoint
+const API_KEY = process.env.API_KEY as string;
+
+function validateApiKey(request: Request) {
+  const apiKey = request.headers.get("x-api-key");
+  return apiKey === API_KEY;
+}
+
 // GET all Projects content
-export async function GET() {
+export async function GET(request: Request) {
+  // Check API key
+  if (!validateApiKey(request)) {
+    return new NextResponse(null, { status: 401 });
+  }
+
   try {
     const { db } = await connectToDatabase();
     const projectsContent = await Projects.find().sort({ createdAt: -1 });
