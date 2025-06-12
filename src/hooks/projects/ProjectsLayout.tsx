@@ -66,24 +66,25 @@ export default function ProjectsLayout({ productsData, allProjects }: ProjectsLa
                                 <Badge
                                     key={index}
                                     variant="secondary"
-                                    className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 h-auto cursor-pointer 
+                                    className="flex items-center gap-2 px-4 py-2 h-auto cursor-pointer 
                                     bg-secondary/80 hover:bg-secondary
                                     text-secondary-foreground
                                     shadow-[0_4px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_0_rgb(0,0,0,0.1)]
                                     active:shadow-[0_2px_0_rgb(0,0,0,0.1)] active:translate-y-[2px]
                                     transition-all duration-200 ease-out
                                     border border-border/50
-                                    rounded-xl sm:rounded-2xl hover:border-primary/50"
+                                    rounded-lg hover:border-primary/50"
                                 >
-                                    <div className="relative w-8 h-8 sm:w-10 sm:h-10">
+                                    <div className="relative w-6 h-6">
                                         <Image
                                             src={framework.imageUrl}
                                             alt={framework.title}
                                             fill
                                             className="object-contain drop-shadow-sm"
+                                            sizes="(max-width: 768px) 24px, 24px"
                                         />
                                     </div>
-                                    <span className="text-base sm:text-lg font-medium drop-shadow-sm">
+                                    <span className="text-sm font-medium drop-shadow-sm">
                                         {framework.title}
                                     </span>
                                 </Badge>

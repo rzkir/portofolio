@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import Projects from "@/models/Projects";
 
 export interface ProjectsData {
