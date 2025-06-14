@@ -32,24 +32,24 @@ export const metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.png",
+        url: "/favicon.ico",
         sizes: "64x64 32x32 24x24 16x16",
         type: "image/png",
       },
       {
-        url: "/favicon.png",
+        url: "/favicon.ico",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        url: "/logo.png",
+        url: "/favicon.ico",
         sizes: "512x512",
         type: "image/png",
       },
     ],
-    apple: "/logo.png",
-    shortcut: "/favicon.png",
-    appleTouchIcon: "/favicon.png",
+    apple: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    appleTouchIcon: "/favicon.ico",
   },
   tags: [
     {
