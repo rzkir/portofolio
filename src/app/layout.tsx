@@ -14,6 +14,8 @@ import { ThemeProvider } from "@/utils/context/ThemaContext"
 
 import { geistSans, geistMono } from "@/base/fonts/Fonts";
 
+import { GoogleTagManager, GoogleTagManagerNoScript } from '@/base/analytics/GoogleTagManager'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,10 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <GoogleTagManager />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <GoogleTagManagerNoScript />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
