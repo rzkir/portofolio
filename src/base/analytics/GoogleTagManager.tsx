@@ -1,6 +1,6 @@
 import Script from 'next/script'
 
-const GTM_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER
+const GTM_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
 export const GoogleTagManager = () => {
     return (
