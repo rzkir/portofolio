@@ -3,8 +3,6 @@ import { FormatSlug } from "@/base/helper/FormatSlug";
 import metadata from "@/base/meta/Metadata";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
-const SITE_NAME = metadata.openGraph.siteName;
-const SITE_DESCRIPTION = metadata.openGraph.description;
 
 // Add XML escape function
 function escapeXml(unsafe: string): string {
@@ -52,120 +50,15 @@ async function getProject() {
   }
 }
 
-async function getYoutube() {
-  try {
-    const { db } = await connectToDatabase();
-    const youtube = await db
-      .collection(process.env.NEXT_PUBLIC_API_YOUTUBE as string)
-      .find({}, { projection: { title: 1 } })
-      .toArray();
-    const titles = new Set<string>();
-
-    youtube.forEach((video) => {
-      if (video.title) {
-        titles.add(video.title);
-      }
-    });
-
-    return Array.from(titles);
-  } catch (error) {
-    console.error("Error fetching youtube titles:", error);
-    return [];
-  }
-}
-
-async function getHome() {
-  try {
-    const { db } = await connectToDatabase();
-    const home = await db
-      .collection(process.env.NEXT_PUBLIC_API_HOME as string)
-      .find({}, { projection: { title: 1 } })
-      .toArray();
-    const titles = new Set<string>();
-
-    home.forEach((item) => {
-      if (item.title) {
-        titles.add(item.title);
-      }
-    });
-
-    return Array.from(titles);
-  } catch (error) {
-    console.error("Error fetching home titles:", error);
-    return [];
-  }
-}
-
-async function getAbout() {
-  try {
-    const { db } = await connectToDatabase();
-    const about = await db
-      .collection(process.env.NEXT_PUBLIC_API_ABOUT as string)
-      .find({}, { projection: { title: 1 } })
-      .toArray();
-    const titles = new Set<string>();
-
-    about.forEach((item) => {
-      if (item.title) {
-        titles.add(item.title);
-      }
-    });
-
-    return Array.from(titles);
-  } catch (error) {
-    console.error("Error fetching about titles:", error);
-    return [];
-  }
-}
-
-async function getAchievements() {
-  try {
-    const { db } = await connectToDatabase();
-    const achievements = await db
-      .collection(process.env.NEXT_PUBLIC_API_ACHIEVEMENTS as string)
-      .find({}, { projection: { title: 1 } })
-      .toArray();
-    const titles = new Set<string>();
-
-    achievements.forEach((item) => {
-      if (item.title) {
-        titles.add(item.title);
-      }
-    });
-
-    return Array.from(titles);
-  } catch (error) {
-    console.error("Error fetching achievements titles:", error);
-    return [];
-  }
-}
-
 async function generateSitemap() {
   const blogSlugs = await getBlogSlugs();
   const projectTitles = await getProject();
-  const youtubeTitles = await getYoutube();
-  const homeTitles = await getHome();
-  const aboutTitles = await getAbout();
-  const achievementTitles = await getAchievements();
 
-  const staticUrls = [
-    "/",
-    "#home",
-    "#about",
-    "#blog",
-    "#contact",
-    "#projects",
-    "#youtube",
-    "#skills",
-  ];
+  const staticUrls = ["/"];
 
   const dynamicUrls = [
     ...blogSlugs.map((slug) => `/blog/${slug}`),
     ...projectTitles.map((title) => `/projects/${FormatSlug(title)}`),
-    ...youtubeTitles.map((title) => `/youtube/${FormatSlug(title)}`),
-    ...homeTitles.map((title) => `/home/${FormatSlug(title)}`),
-    ...aboutTitles.map((title) => `/about/${FormatSlug(title)}`),
-    ...achievementTitles.map((title) => `/achievements/${FormatSlug(title)}`),
   ];
 
   const urls = [...staticUrls, ...dynamicUrls];
@@ -175,35 +68,37 @@ async function generateSitemap() {
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls
-  .map((url) => {
-    const isHomePage = url === "/";
-    const title = isHomePage
-      ? metadata.title
-      : `${url.split("/").pop() || ""} - ${metadata.title}`;
-    const description = isHomePage
-      ? SITE_DESCRIPTION
-      : `${title} - ${SITE_DESCRIPTION}`;
+      .map((url) => {
+        const isHomePage = url === "/";
+        const title = isHomePage
+          ? metadata.title
+          : `${url.split("/").pop() || ""} - ${metadata.title}`;
+        const description = isHomePage
+          ? metadata.openGraph.description
+          : `${title} - ${metadata.openGraph.description}`;
 
-    return `
+        return `
   <url>
     <loc>${escapeXml(BASE_URL)}${escapeXml(url)}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="${escapeXml(
-      metadata.openGraph.locale
-    )}" href="${escapeXml(BASE_URL)}${escapeXml(url)}" />
+          metadata.openGraph.locale
+        )}" href="${escapeXml(BASE_URL)}${escapeXml(url)}" />
     <image:image>
       <image:loc>${escapeXml(BASE_URL)}${escapeXml(
-      metadata.openGraph.images[0].url
-    )}</image:loc>
-      <image:title>${escapeXml(metadata.openGraph.images[0].alt)}</image:title>
+          metadata.openGraph.images[0].url
+        )}</image:loc>
+      <image:title>${escapeXml(
+          metadata.openGraph.images[0].alt
+        )}</image:title>
       <image:caption>${escapeXml(description)}</image:caption>
-      <image:license>${escapeXml(SITE_NAME)}</image:license>
+      <image:license>${escapeXml(BASE_URL)}</image:license>
     </image:image>
   </url>`;
-  })
-  .join("")}
+      })
+      .join("")}
 </urlset>`;
 
   return sitemapXml;

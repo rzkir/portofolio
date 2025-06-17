@@ -48,7 +48,7 @@ export default function Sidebar() {
                     "flex h-[60px] items-center justify-between border-b border-border/40 px-0 pb-6"
                 )}>
                     <Link
-                        href="/dashboard"
+                        href="/"
                         className={cn(
                             "flex items-center gap-2 font-semibold hover:opacity-80 transition-opacity",
                             "justify-start w-full px-0"
@@ -59,7 +59,7 @@ export default function Sidebar() {
                             "text-xl whitespace-nowrap transition-all duration-300",
                             "w-auto opacity-100 block"
                         )}>
-                            Donezo
+                            Rizki Ramadhan
                         </span>
                     </Link>
                     <Button

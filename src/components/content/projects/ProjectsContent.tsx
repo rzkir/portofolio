@@ -81,8 +81,8 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                     </div>
 
                     {/* Category Toggle */}
-                    <div className="overflow-x-auto flex items-center justify-center mb-2 md:mb-5">
-                        <div className="flex items-center justify-start gap-1 sm:gap-2 p-1 bg-secondary/20 dark:bg-secondary/10 rounded-xl border border-border w-fit sm:min-w-0">
+                    <div className="overflow-x-auto flex items-center justify-start md:justify-center mb-2 md:mb-5 w-full md:w-fit">
+                        <div className="flex items-center justify-start md:justify-center gap-1 sm:gap-2 p-1 bg-secondary/20 dark:bg-secondary/10 rounded-xl border border-border w-fit md:max-w-full sm:min-w-0">
                             {categories.map((category) => (
                                 <motion.button
                                     key={category}
@@ -312,13 +312,10 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                         {paginatedProjects.map((item, idx) => {
                             const isActive = activeIndex === idx;
                             return (
-                                <motion.div
+                                <div
                                     key={idx}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: idx * 0.1 }}
                                     className="group w-[85vw] flex-shrink-0 snap-center"
+                                    onClick={() => setActiveIndex(isActive ? -1 : idx)}
                                 >
                                     <Card className={`relative overflow-hidden border-border/50 transition-all duration-500 hover:border-primary/50 p-0 ${isActive ? 'bg-card/50' : 'hover:bg-card/50'} backdrop-blur-sm`}>
                                         <div className="relative aspect-[16/9] w-full overflow-hidden">
@@ -329,9 +326,9 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                 sizes="(max-width: 768px) 85vw, 1400px"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                            <div className={`absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'} md:opacity-0 md:group-hover:opacity-100`} />
 
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                                            <div className={`absolute bottom-0 left-0 right-0 p-6 transition-transform duration-500 ${isActive ? 'translate-y-0' : 'translate-y-full'} md:translate-y-full md:group-hover:translate-y-0`}>
                                                 <div className="flex items-center gap-3 mb-4">
                                                     <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${startIndex + idx + 1}`}</span>
                                                     <CardTitle className="text-xl font-semibold tracking-tight linc line-clamp-1 md:line-clamp-2">{item.title}</CardTitle>
@@ -370,7 +367,7 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                                             </div>
                                         </div>
                                     </Card>
-                                </motion.div>
+                                </div>
                             )
                         })}
                     </div>

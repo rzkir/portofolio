@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { verifyJWT } from "./utils/auth/token";
 
 // Define public paths that don't require authentication
-const publicPaths = ["/", "/signin", "/signup", "/reset-password"];
+const publicPaths = ["/", "/signin", "/signup", "/reset-password", "/sitemap.xml", "/robots.txt", "/manifest.json"];
 
 // Define admin-only paths
 const adminPaths = ["/dashboard"];

@@ -9,6 +9,7 @@ import {
   Youtube,
   ChartBarStacked,
   Library,
+  Newspaper
 } from "lucide-react";
 
 type NavItem = {
@@ -61,23 +62,25 @@ export const sidebarNavItems: NavItem[] = [
     icon: BriefcaseBusiness,
   },
   {
-    title: "Team",
-    href: "/dashboard/team",
-    icon: Users,
+    title: "Blog",
+    href: "/dashboard/blog",
+    icon: Newspaper,
   },
 ];
 
 export const generalNavItems = [
   {
+    title: "User",
+    href: "/dashboard/user",
+    icon: Newspaper,
+  },
+
+  {
     title: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
   },
-  {
-    title: "Help",
-    href: "/dashboard/help",
-    icon: LifeBuoy,
-  },
+
   {
     title: "Logout",
     href: "/logout",
