@@ -253,6 +253,7 @@ export default function Header() {
                                     <motion.div
                                         key={item.number}
                                         className="flex items-center justify-between group"
+                                        onClick={() => { setIsMenuOpen(false); router.push(item.path) }}
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{
