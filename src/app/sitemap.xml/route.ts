@@ -57,8 +57,8 @@ async function generateSitemap() {
   const staticUrls = ["/"];
 
   const dynamicUrls = [
-    ...blogSlugs.map((slug) => `/blog/${slug}`),
-    ...projectTitles.map((title) => `/projects/${FormatSlug(title)}`),
+    ...blogSlugs.map((slug) => `/${slug}`),
+    ...projectTitles.map((title) => `/${FormatSlug(title)}`),
   ];
 
   const urls = [...staticUrls, ...dynamicUrls];
@@ -112,8 +112,6 @@ export async function GET() {
     return new Response(body, {
       headers: {
         "Content-Type": "application/xml",
-        "Cache-Control":
-          "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   } catch (error) {
