@@ -20,6 +20,8 @@ export default function DashboardPage() {
     const [totalProjects, setTotalProjects] = useState<number | null>(null);
     const [totalYoutube, setTotalYoutube] = useState<number | null>(null);
     const [totalAchievements, setTotalAchievements] = useState<number | null>(null);
+    const [totalContacts, setTotalContacts] = useState<number | null>(null);
+    const [unreadContacts, setUnreadContacts] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -50,9 +52,24 @@ export default function DashboardPage() {
                 setError("Failed to load achievements data.");
             }
         };
+        const getContacts = async () => {
+            try {
+                const response = await fetch('/api/contact');
+                if (response.ok) {
+                    const data = await response.json();
+                    const contacts = data.contacts || [];
+                    setTotalContacts(contacts.length);
+                    const unread = contacts.filter((contact: any) => contact.status === 'unread').length;
+                    setUnreadContacts(unread);
+                }
+            } catch (err) {
+                console.error("Failed to fetch contacts:", err);
+            }
+        };
         getProjects();
         getYoutube();
         getAchievements();
+        getContacts();
     }, []);
 
     return (
@@ -106,12 +123,14 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="rounded-lg shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pending Project</CardTitle>
+                        <CardTitle className="text-sm font-medium">Contact Messages</CardTitle>
                         <div className="h-4 w-4 bg-muted-foreground rounded-full" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">2</div>
-                        <p className="text-xs text-muted-foreground">On Discuss</p>
+                        <div className="text-2xl font-bold">{totalContacts}</div>
+                        <p className="text-xs text-muted-foreground">
+                            {unreadContacts} unread messages
+                        </p>
                     </CardContent>
                 </Card>
             </div>

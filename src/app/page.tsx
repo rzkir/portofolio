@@ -10,6 +10,8 @@ import Projects from '@/components/content/projects/Projects'
 
 import Skills from "@/components/content/skills/Skils"
 
+import Contact from '@/components/content/contact/Contact'
+
 export default function page() {
   return (
     <Fragment>
@@ -18,6 +20,7 @@ export default function page() {
       <Skills />
       <Youtube />
       <Projects />
+      <Contact />
     </Fragment>
   )
 }
