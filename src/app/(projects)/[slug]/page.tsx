@@ -16,13 +16,14 @@ type Props = {
 export async function generateMetadata(
     { params }: Props,
 ): Promise<Metadata> {
-    const resolvedParams = await params
-    return getProjectsMetadata({ params: { slug: resolvedParams.slug } })
+    const resolvedParams = await params;
+    const metadata = await getProjectsMetadata({ params: { slug: resolvedParams.slug } });
+    return metadata;
 }
 
 export default async function Page({ params }: Props) {
     try {
-        const resolvedParams = await params
+        const resolvedParams = await params;
         const projects = await fetchProjectsContents();
         const projectData = projects.find(project => project.slug === resolvedParams.slug);
 

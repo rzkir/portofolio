@@ -12,7 +12,7 @@ import {
     Mail,
     Calendar,
     User,
-    MessageSquare,
+    ChevronRight,
     Eye,
     Trash2,
     CheckCircle,
@@ -21,7 +21,6 @@ import {
     Send,
     X,
     AlertCircle,
-    MessageCircle
 } from 'lucide-react'
 
 interface Contact {
@@ -53,53 +52,12 @@ export default function ContactPage() {
 
     useEffect(() => {
         fetchContacts()
-        checkWhatsappConfig()
         // Load saved admin email from localStorage
         const savedEmail = localStorage.getItem('adminEmail')
         if (savedEmail) {
             setReplyData(prev => ({ ...prev, adminEmail: savedEmail }))
         }
     }, [])
-
-    const checkWhatsappConfig = async () => {
-        try {
-            const response = await fetch('/api/test-whatsapp')
-            if (response.ok) {
-                const config = await response.json()
-                setWhatsappConfig(config)
-            }
-        } catch (error) {
-            console.error('Error checking WhatsApp config:', error)
-        }
-    }
-
-    const testWhatsappNotification = async () => {
-        setTestingWhatsapp(true)
-        try {
-            const response = await fetch('/api/test-whatsapp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    testMessage: '🔔 Test notifikasi WhatsApp dari dashboard admin - ' + new Date().toLocaleString('id-ID')
-                }),
-            })
-
-            const result = await response.json()
-
-            if (result.success) {
-                alert('✅ Test message sent successfully! Check your WhatsApp.')
-            } else {
-                alert('❌ Failed to send test message: ' + result.error)
-            }
-        } catch (error) {
-            console.error('Test WhatsApp error:', error)
-            alert('❌ Error testing WhatsApp notification')
-        } finally {
-            setTestingWhatsapp(false)
-        }
-    }
 
     const fetchContacts = async () => {
         try {
@@ -280,57 +238,40 @@ export default function ContactPage() {
     }
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Contact Messages</h1>
-                    <p className="text-muted-foreground">
-                        Manage incoming contact form submissions
-                    </p>
+        <section>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-8 border rounded-2xl border-border bg-card shadow-sm mb-8 gap-4 sm:gap-0'>
+                <div className='flex flex-col gap-4'>
+                    <h3 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent'>
+                        Contact Messages
+                    </h3>
+
+                    <ol className='flex flex-wrap gap-2 items-center text-sm text-muted-foreground'>
+                        <li className='flex items-center hover:text-primary transition-colors'>
+                            <span>Dashboard</span>
+                            <ChevronRight className="w-4 h-4 mx-1 text-muted-foreground" />
+                        </li>
+                        <li className='flex items-center hover:text-primary transition-colors'>
+                            <span>Pages</span>
+                            <ChevronRight className="w-4 h-4 mx-1 text-muted-foreground" />
+                        </li>
+                        <li className='flex items-center text-primary font-medium'>
+                            <span>About</span>
+                        </li>
+                    </ol>
                 </div>
-                <div className="flex gap-2">
-                    {whatsappConfig && (
-                        <Button
-                            onClick={testWhatsappNotification}
-                            variant="outline"
-                            disabled={testingWhatsapp || !whatsappConfig.configured}
-                            className="flex items-center gap-2"
-                        >
-                            <MessageCircle className="w-4 h-4" />
-                            {testingWhatsapp ? 'Testing...' : 'Test WhatsApp'}
-                        </Button>
-                    )}
-                    <Button onClick={fetchContacts} variant="outline">
-                        Refresh
-                    </Button>
-                </div>
+
+                <Button
+                    variant="default"
+                    className="px-8 py-3 font-medium shadow-sm hover:shadow-md transition-all bg-primary hover:bg-primary/90"
+                    onClick={fetchContacts}
+                >
+                    Refresh
+                </Button>
             </div>
 
-            {/* WhatsApp Configuration Status */}
-            {whatsappConfig && (
-                <Card className="border-l-4 border-l-blue-500">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <MessageCircle className="w-4 h-4 text-blue-500" />
-                                <span className="font-medium">WhatsApp Notifications</span>
-                            </div>
-                            <Badge variant={whatsappConfig.configured ? "default" : "destructive"}>
-                                {whatsappConfig.configured ? "Configured" : "Not Configured"}
-                            </Badge>
-                        </div>
-                        {!whatsappConfig.configured && (
-                            <p className="text-sm text-muted-foreground mt-2">
-                                Set ULTRAMSG_INSTANCE_ID, ULTRAMSG_TOKEN, and ADMIN_WHATSAPP_NUMBER in your .env.local file
-                            </p>
-                        )}
-                    </CardContent>
-                </Card>
-            )}
-
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                 {contacts.length === 0 ? (
-                    <Card>
+                    <Card className="shadow-md rounded-2xl border border-border bg-card">
                         <CardContent className="p-8 text-center">
                             <Mail className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                             <h3 className="text-lg font-semibold mb-2">No messages yet</h3>
@@ -341,88 +282,86 @@ export default function ContactPage() {
                     </Card>
                 ) : (
                     contacts.map((contact) => (
-                        <Card key={contact._id} className="hover:shadow-md transition-shadow">
-                            <CardContent className="p-6">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1 space-y-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex items-center gap-2">
-                                                {getStatusIcon(contact.status)}
-                                                <Badge className={getStatusBadge(contact.status)}>
-                                                    {contact.status}
-                                                </Badge>
-                                            </div>
-                                            <span className="text-sm text-muted-foreground">
-                                                {formatDate(contact.createdAt)}
-                                            </span>
-                                        </div>
-
-                                        <div>
-                                            <h3 className="font-semibold text-lg">{contact.subject}</h3>
-                                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                                                <span className="flex items-center gap-1">
-                                                    <User className="w-4 h-4" />
-                                                    {contact.name}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <Mail className="w-4 h-4" />
-                                                    {contact.email}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <p className="text-muted-foreground line-clamp-2">
-                                            {contact.message}
-                                        </p>
-                                    </div>
-
-                                    <div className="flex flex-col gap-2 ml-4">
+                        <Card
+                            key={contact._id}
+                            className="transition-all duration-200 shadow-sm hover:shadow-lg border border-border rounded-2xl bg-card group"
+                        >
+                            <CardContent className="p-6 flex flex-col h-full justify-between">
+                                {/* Header */}
+                                <div className="flex items-start justify-between mb-3">
+                                    <h3 className="font-semibold text-lg line-clamp-1 text-foreground">
+                                        {contact.subject}
+                                    </h3>
+                                    <Badge className={`px-2 py-0.5 text-xs font-semibold rounded-lg shadow-sm border ${getStatusBadge(contact.status)}`}>
+                                        {contact.status}
+                                    </Badge>
+                                </div>
+                                {/* Info Bar */}
+                                <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-4">
+                                    <span className="flex items-center gap-1">
+                                        <User className="w-4 h-4" />
+                                        {contact.name}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <Mail className="w-4 h-4" />
+                                        {contact.email}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <Calendar className="w-4 h-4" />
+                                        {formatDate(contact.createdAt)}
+                                    </span>
+                                </div>
+                                {/* Message Preview */}
+                                <p className="text-muted-foreground text-sm line-clamp-2 mb-6">
+                                    {contact.message}
+                                </p>
+                                {/* Footer Actions */}
+                                <div className="flex gap-2 mt-auto">
+                                    <Button
+                                        size="sm"
+                                        className="flex-1 font-semibold"
+                                        onClick={() => {
+                                            setSelectedContact(contact)
+                                            setShowDialog(true)
+                                        }}
+                                    >
+                                        <Eye className="w-4 h-4 mr-1" />
+                                        View
+                                    </Button>
+                                    {contact.status !== 'replied' && (
                                         <Button
                                             size="sm"
                                             variant="outline"
+                                            className="flex-1"
                                             onClick={() => {
                                                 setSelectedContact(contact)
-                                                setShowDialog(true)
+                                                setShowReplyForm(true)
                                             }}
                                         >
-                                            <Eye className="w-4 h-4 mr-1" />
-                                            View
+                                            <Reply className="w-4 h-4 mr-1" />
+                                            Reply
                                         </Button>
-
-                                        {contact.status === 'unread' && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => updateContactStatus(contact._id, 'read')}
-                                            >
-                                                <CheckCircle className="w-4 h-4 mr-1" />
-                                                Mark Read
-                                            </Button>
-                                        )}
-
-                                        {contact.status !== 'replied' && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => {
-                                                    setSelectedContact(contact)
-                                                    setShowReplyForm(true)
-                                                }}
-                                            >
-                                                <Reply className="w-4 h-4 mr-1" />
-                                                Reply
-                                            </Button>
-                                        )}
-
+                                    )}
+                                    {contact.status === 'unread' && (
                                         <Button
                                             size="sm"
-                                            variant="destructive"
-                                            onClick={() => deleteContact(contact._id)}
+                                            variant="ghost"
+                                            className="flex-1"
+                                            onClick={() => updateContactStatus(contact._id, 'read')}
                                         >
-                                            <Trash2 className="w-4 h-4 mr-1" />
-                                            Delete
+                                            <CheckCircle className="w-4 h-4 mr-1" />
+                                            Mark Read
                                         </Button>
-                                    </div>
+                                    )}
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="flex-1 text-destructive hover:bg-destructive/10"
+                                        onClick={() => deleteContact(contact._id)}
+                                    >
+                                        <Trash2 className="w-4 h-4 mr-1" />
+                                        Delete
+                                    </Button>
                                 </div>
                             </CardContent>
                         </Card>
@@ -432,17 +371,23 @@ export default function ContactPage() {
 
             {/* Contact Detail Dialog */}
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-8  border border-border rounded-2xl shadow-xl">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl">Message Details</DialogTitle>
+                        <DialogTitle className="text-3xl font-bold flex items-center gap-3 mb-2">
+                            Message Details
+                            {selectedContact && (
+                                <Badge className={`ml-2 px-2 py-0.5 text-xs font-semibold rounded-lg shadow-sm border ${getStatusBadge(selectedContact.status)}`}>{selectedContact.status}</Badge>
+                            )}
+                        </DialogTitle>
                     </DialogHeader>
 
                     {selectedContact && (
-                        <div className="space-y-6">
-                            <div className="space-y-4">
+                        <div className="space-y-8">
+                            {/* Info Bar */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4 border-muted-foreground/10">
                                 <div>
-                                    <h3 className="font-semibold text-lg">{selectedContact.subject}</h3>
-                                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                                    <h3 className="font-semibold text-xl text-foreground mb-1">{selectedContact.subject}</h3>
+                                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                         <span className="flex items-center gap-1">
                                             <User className="w-4 h-4" />
                                             {selectedContact.name}
@@ -457,18 +402,21 @@ export default function ContactPage() {
                                         </span>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div>
-                                    <h4 className="font-medium mb-2">Message:</h4>
-                                    <div className="bg-muted p-4 rounded-lg">
-                                        <p className="whitespace-pre-wrap">{selectedContact.message}</p>
-                                    </div>
+                            {/* Message Section */}
+                            <div>
+                                <h4 className="font-medium mb-2 text-muted-foreground">Message:</h4>
+                                <div className="bg-muted/60 p-6 rounded-xl border border-border">
+                                    <p className="whitespace-pre-wrap text-base text-foreground">{selectedContact.message}</p>
                                 </div>
                             </div>
 
-                            <div className="flex gap-3">
+                            {/* Actions */}
+                            <div className="flex flex-wrap gap-3 pt-2 border-t border-muted-foreground/10">
                                 <Button
                                     variant="outline"
+                                    className="flex-1 min-w-[120px]"
                                     onClick={() => {
                                         setShowDialog(false)
                                         setShowReplyForm(true)
@@ -480,6 +428,7 @@ export default function ContactPage() {
 
                                 <Button
                                     variant="outline"
+                                    className="flex-1 min-w-[120px]"
                                     onClick={() => window.open(`mailto:${selectedContact.email}?subject=Re: ${selectedContact.subject}`)}
                                 >
                                     <Mail className="w-4 h-4 mr-2" />
@@ -489,6 +438,7 @@ export default function ContactPage() {
                                 {selectedContact.status === 'unread' && (
                                     <Button
                                         variant="outline"
+                                        className="flex-1 min-w-[120px]"
                                         onClick={() => {
                                             updateContactStatus(selectedContact._id, 'read')
                                             setShowDialog(false)
@@ -501,6 +451,7 @@ export default function ContactPage() {
 
                                 <Button
                                     variant="destructive"
+                                    className="flex-1 min-w-[120px]"
                                     onClick={() => {
                                         deleteContact(selectedContact._id)
                                         setShowDialog(false)
@@ -636,6 +587,6 @@ export default function ContactPage() {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
+        </section>
     )
 } 

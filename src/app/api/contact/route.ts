@@ -22,10 +22,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate email format
-    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: "Please enter a valid email address" },
+        { error: "Invalid email format" },
         { status: 400 }
       );
     }
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       email: email.trim().toLowerCase(),
       subject: subject.trim(),
       message: message.trim(),
+      status: "unread",
     });
 
     // Save to database
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Message sent successfully!",
+        message: "Message sent successfully! We will contact you soon.",
         contact: {
           id: newContact._id,
           name: newContact.name,
