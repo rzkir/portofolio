@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
+import { revalidateSitemap } from "@/utils/sitemap";
 import Youtube from "@/models/youtube";
 
 interface FrameworkData {
@@ -59,6 +60,9 @@ export async function POST(request: Request) {
     const newYoutube = new Youtube(youtubeData);
     const savedYoutube = await newYoutube.save();
 
+    // Revalidate sitemap after successful creation
+    await revalidateSitemap();
+
     return NextResponse.json(savedYoutube, { status: 201 });
   } catch (error) {
     if (error instanceof Error) {
@@ -99,6 +103,9 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Revalidate sitemap after successful update
+    await revalidateSitemap();
+
     return NextResponse.json(updatedYoutube);
   } catch (error) {
     return NextResponse.json(
@@ -127,6 +134,9 @@ export async function DELETE(request: Request) {
         { status: 404 }
       );
     }
+
+    // Revalidate sitemap after successful deletion
+    await revalidateSitemap();
 
     return NextResponse.json({
       message: "YouTube content deleted successfully",

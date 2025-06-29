@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { connectToDatabase } from "@/utils/mongodb/mongodb";
+import { revalidateSitemap } from "@/utils/sitemap";
 
 import Projects from "@/models/Projects";
 
@@ -72,6 +73,9 @@ export async function POST(request: Request) {
     const newProjects = new Projects(projectsData);
     const savedProjects = await newProjects.save();
 
+    // Revalidate sitemap after successful creation
+    await revalidateSitemap();
+
     return NextResponse.json(savedProjects, { status: 201 });
   } catch (error) {
     if (error instanceof Error) {
@@ -127,6 +131,9 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Revalidate sitemap after successful update
+    await revalidateSitemap();
+
     return NextResponse.json(updatedProjects);
   } catch (error) {
     return NextResponse.json(
@@ -155,6 +162,9 @@ export async function DELETE(request: Request) {
         { status: 404 }
       );
     }
+
+    // Revalidate sitemap after successful deletion
+    await revalidateSitemap();
 
     return NextResponse.json({
       message: "Projects content deleted successfully",

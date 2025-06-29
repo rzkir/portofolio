@@ -28,77 +28,80 @@ async function getBlogSlugs() {
   }
 }
 
-async function getProject() {
+async function getProjectSlugs() {
   try {
     const { db } = await connectToDatabase();
     const projects = await db
       .collection(process.env.NEXT_PUBLIC_API_PROJECTS as string)
-      .find({}, { projection: { title: 1 } })
+      .find({}, { projection: { slug: 1, updatedAt: 1 } })
       .toArray();
-    const titles = new Set<string>();
 
-    projects.forEach((project) => {
-      if (project.title) {
-        titles.add(project.title);
-      }
-    });
-
-    return Array.from(titles);
+    return projects.map((project) => ({
+      slug: project.slug,
+      updatedAt: project.updatedAt || project.createdAt || new Date(),
+    }));
   } catch (error) {
-    console.error("Error fetching project titles:", error);
+    console.error("Error fetching project slugs:", error);
     return [];
   }
 }
 
 async function generateSitemap() {
   const blogSlugs = await getBlogSlugs();
-  const projectTitles = await getProject();
+  const projectSlugs = await getProjectSlugs();
 
   const staticUrls = ["/"];
 
   const dynamicUrls = [
-    ...blogSlugs.map((slug) => `/${slug}`),
-    ...projectTitles.map((title) => `/${FormatSlug(title)}`),
+    ...blogSlugs.map((slug) => ({
+      url: `/${slug}`,
+      lastmod: new Date().toISOString(),
+    })),
+    ...projectSlugs.map((project) => ({
+      url: `/${project.slug}`,
+      lastmod: project.updatedAt.toISOString(),
+    })),
   ];
 
-  const urls = [...staticUrls, ...dynamicUrls];
+  const urls = [
+    { url: "/", lastmod: new Date().toISOString() },
+    ...dynamicUrls,
+  ];
 
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls
-      .map((url) => {
-        const isHomePage = url === "/";
-        const title = isHomePage
-          ? metadata.title
-          : `${url.split("/").pop() || ""} - ${metadata.title}`;
-        const description = isHomePage
-          ? metadata.openGraph.description
-          : `${title} - ${metadata.openGraph.description}`;
+  .map((item) => {
+    const isHomePage = item.url === "/";
+    const title = isHomePage
+      ? metadata.title
+      : `${item.url.split("/").pop() || ""} - ${metadata.title}`;
+    const description = isHomePage
+      ? metadata.openGraph.description
+      : `${title} - ${metadata.openGraph.description}`;
 
-        return `
+    return `
   <url>
-    <loc>${escapeXml(BASE_URL)}${escapeXml(url)}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
+    <loc>${escapeXml(BASE_URL)}${escapeXml(item.url)}</loc>
+    <lastmod>${item.lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="${escapeXml(
-          metadata.openGraph.locale
-        )}" href="${escapeXml(BASE_URL)}${escapeXml(url)}" />
+      metadata.openGraph.locale
+    )}" href="${escapeXml(BASE_URL)}${escapeXml(item.url)}" />
     <image:image>
       <image:loc>${escapeXml(BASE_URL)}${escapeXml(
-          metadata.openGraph.images[0].url
-        )}</image:loc>
-      <image:title>${escapeXml(
-          metadata.openGraph.images[0].alt
-        )}</image:title>
+      metadata.openGraph.images[0].url
+    )}</image:loc>
+      <image:title>${escapeXml(metadata.openGraph.images[0].alt)}</image:title>
       <image:caption>${escapeXml(description)}</image:caption>
       <image:license>${escapeXml(BASE_URL)}</image:license>
     </image:image>
   </url>`;
-      })
-      .join("")}
+  })
+  .join("")}
 </urlset>`;
 
   return sitemapXml;
@@ -112,6 +115,8 @@ export async function GET() {
     return new Response(body, {
       headers: {
         "Content-Type": "application/xml",
+        "Cache-Control":
+          "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   } catch (error) {
