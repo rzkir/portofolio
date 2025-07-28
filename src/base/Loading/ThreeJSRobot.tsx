@@ -1,11 +1,8 @@
 'use client'
 
 import { Canvas, useFrame } from '@react-three/fiber'
-
-import { OrbitControls, Sphere, Box, Torus } from '@react-three/drei'
-
+import { OrbitControls, Sphere, Box, Torus, Cylinder } from '@react-three/drei'
 import { useRef, useState, Suspense } from 'react'
-
 import * as THREE from 'three'
 
 function ModernLoading() {

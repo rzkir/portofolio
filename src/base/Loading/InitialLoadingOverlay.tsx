@@ -80,7 +80,7 @@ export default function InitialLoadingOverlay({
             exit={{ opacity: 0 }}
             className={`fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black backdrop-blur-sm px-4 ${className}`}
         >
-            <div className="flex flex-col items-center space-y-4 sm:space-y-6 md:space-y-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+            <div className="flex flex-col items-center space-y-4 sm:space-y-6 md:space-y-8 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
                 {/* 3D Text Section */}
                 <div className="text-center">
                     {/* 3D Name Text */}
@@ -169,7 +169,7 @@ export default function InitialLoadingOverlay({
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
-                    className="relative w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64"
+                    className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64"
                 >
                     <ThreeJSRobot />
                 </motion.div>
