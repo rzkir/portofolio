@@ -12,6 +12,10 @@ import Pathname from "@/base/router/Pathname";
 
 import { ThemeProvider } from "@/utils/context/ThemaContext"
 
+import { LoadingProvider } from "@/utils/context/LoadingContext"
+
+import LoadingOverlayWrapper from "@/base/Loading/LoadingOverlayWrapper"
+
 import { geistSans, geistMono } from "@/base/fonts/Fonts";
 
 import { GoogleTagManager, GoogleTagManagerNoScript } from '@/base/analytics/GoogleTagManager'
@@ -37,11 +41,14 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme"
         >
-          <Providers>
-            <Pathname>
-              {children}
-            </Pathname>
-          </Providers>
+          <LoadingProvider>
+            <Providers>
+              <Pathname>
+                {children}
+              </Pathname>
+            </Providers>
+            <LoadingOverlayWrapper />
+          </LoadingProvider>
         </ThemeProvider>
       </body>
     </html>

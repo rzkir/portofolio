@@ -30,6 +30,8 @@ import { useRouter } from 'next/navigation'
 
 import { useTheme } from 'next-themes'
 
+import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
+
 export default function SignInLayout() {
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);
@@ -37,6 +39,7 @@ export default function SignInLayout() {
     const [isLoading, setIsLoading] = useState(false)
     const { signIn } = useAuth()
     const router = useRouter()
+    const { withLoading } = useLoadingOverlay()
 
     useEffect(() => {
         setMounted(true)
@@ -56,7 +59,10 @@ export default function SignInLayout() {
     const onSubmit = async (data: SignInFormData) => {
         try {
             setIsLoading(true)
-            await signIn(data.email, data.password)
+            await withLoading(
+                () => signIn(data.email, data.password),
+                'Signing you in...'
+            )
         } catch (error: any) {
             console.error('Sign in error:', error)
             toast.error(error.message || 'An error occurred during sign in')

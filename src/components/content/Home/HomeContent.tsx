@@ -10,9 +10,12 @@ import { Button } from '@/components/ui/button'
 
 import Link from 'next/link'
 
+import { useLoading } from '@/utils/context/LoadingContext'
+
 export default function HomeContent({ homeData }: { homeData: HomeContentProps[] }) {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isHovered, setIsHovered] = useState(false);
+    const { isInitialLoading } = useLoading();
 
     const handleMouseMove = (e: React.MouseEvent) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -92,8 +95,11 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                         <motion.h3
                             className="text-lg md:text-xl font-medium mb-2 text-[color:var(--foreground)] tracking-wide"
                             initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
+                            animate={{
+                                opacity: isInitialLoading ? 0 : 1,
+                                y: isInitialLoading ? 20 : 0
+                            }}
+                            transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.2 }}
                         >
                             {item.title}
                         </motion.h3>
@@ -102,8 +108,11 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                             <motion.h1
                                 className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--foreground)] tracking-tight"
                                 initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.2 }}
+                                animate={{
+                                    opacity: isInitialLoading ? 0 : 1,
+                                    y: isInitialLoading ? 20 : 0
+                                }}
+                                transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.4 }}
                             >
                                 {item.text}
                             </motion.h1>
@@ -114,9 +123,12 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                         key={index}
                                         className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--muted-foreground)] tracking-tight inline-block cursor-pointer"
                                         initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
+                                        animate={{
+                                            opacity: isInitialLoading ? 0 : 1,
+                                            y: isInitialLoading ? 20 : 0
+                                        }}
                                         whileHover={{
-                                            scale: 1.2,
+                                            scale: isInitialLoading ? 1 : 1.2,
                                             color: "var(--color-primary)",
                                             transition: {
                                                 type: "spring",
@@ -126,7 +138,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                         }}
                                         transition={{
                                             duration: 0.5,
-                                            delay: 0.4 + (index * 0.1),
+                                            delay: isInitialLoading ? 0 : 0.6 + (index * 0.1),
                                             ease: "easeOut"
                                         }}
                                     >
@@ -139,8 +151,11 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                         <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-12'>
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.6 }}
+                                animate={{
+                                    opacity: isInitialLoading ? 0 : 1,
+                                    y: isInitialLoading ? 20 : 0
+                                }}
+                                transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.8 }}
                             >
                                 <Button
                                     className="group relative rounded-full px-8 py-6 bg-[color:var(--color-primary)] 
@@ -163,8 +178,11 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                             <motion.p
                                 className="text-base md:text-lg text-[color:var(--muted-foreground)] max-w-2xl md:text-right leading-relaxed"
                                 initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.8 }}
+                                animate={{
+                                    opacity: isInitialLoading ? 0 : 1,
+                                    y: isInitialLoading ? 20 : 0
+                                }}
+                                transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 1.0 }}
                             >
                                 {item.description}
                             </motion.p>

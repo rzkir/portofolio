@@ -1,12 +1,12 @@
 "use client"
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 
 import { ProjectsContentProps } from './types/projects'
 
 import Image from 'next/image'
 
-import { ArrowUpRight, ExternalLink, Eye, Code } from "lucide-react"
+import { ExternalLink, Eye } from "lucide-react"
 
 import { Card, CardTitle, CardDescription } from "@/components/ui/card"
 
@@ -20,12 +20,18 @@ import Link from 'next/link'
 
 import Preview from './modal/Priview'
 
-export default function ProjectsContent({ projectsData }: { projectsData: ProjectsContentProps[] }) {
+import { useRouter } from 'next/navigation'
+
+import { useLoading } from '@/utils/context/LoadingContext'
+
+const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { projectsData: ProjectsContentProps[] }) {
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [previewProject, setPreviewProject] = useState<ProjectsContentProps | null>(null);
     const itemsPerPage = 6; // Number of projects to show per page
+    const router = useRouter();
+    const { showLoading, hideLoading } = useLoading();
 
     // Get unique categories
     const categories = useMemo(() => {
@@ -50,19 +56,35 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
     const bottomProjects = paginatedProjects.slice(4, 6);
 
     // Handle page change
-    const handlePageChange = (page: number) => {
+    const handlePageChange = useCallback((page: number) => {
         setCurrentPage(page);
         setActiveIndex(-1); // Reset active index when changing pages
-    };
+    }, []);
 
     // Reset to first page when category changes
     React.useEffect(() => {
         setCurrentPage(1);
     }, [selectedCategory]);
 
-    const handlePreview = (project: ProjectsContentProps) => {
+    const handlePreview = useCallback((project: ProjectsContentProps) => {
         setPreviewProject(project);
-    };
+    }, []);
+
+    const handleViewDetails = useCallback(async (slug: string) => {
+        try {
+            showLoading("Navigating to project details...");
+            // Simulate a small delay for better UX
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            router.push(`/${slug}`);
+            // Hide loading after a short delay to ensure navigation has started
+            setTimeout(() => {
+                hideLoading();
+            }, 1000);
+        } catch (error) {
+            hideLoading();
+            console.error("Navigation error:", error);
+        }
+    }, [router, showLoading, hideLoading]);
 
     return (
         <section className="py-16 bg-gradient-to-b from-background to-background/95">
@@ -151,12 +173,10 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                                                 variant="secondary"
                                                 size="sm"
                                                 className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
-                                                asChild
+                                                onClick={() => handleViewDetails(topProject.slug)}
                                             >
-                                                <Link href={topProject.slug} rel="noopener noreferrer">
-                                                    <ExternalLink className="w-4 h-4" />
-                                                    Lihat Details
-                                                </Link>
+                                                <ExternalLink className="w-4 h-4" />
+                                                Lihat Details
                                             </Button>
 
                                             <Button
@@ -214,12 +234,10 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                                                         variant="secondary"
                                                         size="sm"
                                                         className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
-                                                        asChild
+                                                        onClick={() => handleViewDetails(item.slug)}
                                                     >
-                                                        <Link href={item.slug} rel="noopener noreferrer">
-                                                            <ExternalLink className="w-4 h-4" />
-                                                            Lihat Details
-                                                        </Link>
+                                                        <ExternalLink className="w-4 h-4" />
+                                                        Lihat Details
                                                     </Button>
 
                                                     <Button
@@ -279,12 +297,10 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                                                         variant="secondary"
                                                         size="sm"
                                                         className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
-                                                        asChild
+                                                        onClick={() => handleViewDetails(item.slug)}
                                                     >
-                                                        <Link href={item.slug} rel="noopener noreferrer">
-                                                            <ExternalLink className="w-4 h-4" />
-                                                            Lihat Details
-                                                        </Link>
+                                                        <ExternalLink className="w-4 h-4" />
+                                                        Lihat Details
                                                     </Button>
 
                                                     <Button
@@ -339,30 +355,39 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
                                                 </CardDescription>
 
                                                 <div className="flex flex-wrap gap-3">
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
+                                                        onClick={() => handleViewDetails(item.slug)}
+                                                    >
+                                                        <ExternalLink className="w-4 h-4" />
+                                                        Lihat Details
+                                                    </Button>
+
                                                     {item.previewLink && (
-                                                        <>
-                                                            <Button
-                                                                variant="secondary"
-                                                                size="sm"
-                                                                className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
-                                                                asChild
-                                                            >
-                                                                <Link href={item.previewLink} rel="noopener noreferrer">
-                                                                    <ExternalLink className="w-4 h-4" />
-                                                                    Live Demo
-                                                                </Link>
-                                                            </Button>
-                                                            <Button
-                                                                variant="secondary"
-                                                                size="sm"
-                                                                className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
-                                                                onClick={() => handlePreview(item)}
-                                                            >
-                                                                <Eye className="w-4 h-4" />
-                                                                Preview
-                                                            </Button>
-                                                        </>
+                                                        <Button
+                                                            variant="secondary"
+                                                            size="sm"
+                                                            className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
+                                                            asChild
+                                                        >
+                                                            <Link href={item.previewLink} target="_blank" rel="noopener noreferrer">
+                                                                <ExternalLink className="w-4 h-4" />
+                                                                Live Demo
+                                                            </Link>
+                                                        </Button>
                                                     )}
+
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        className="gap-2 bg-primary/10 hover:bg-primary/20 text-primary border-0 rounded-full transition-all duration-300 hover:scale-105"
+                                                        onClick={() => handlePreview(item)}
+                                                    >
+                                                        <Eye className="w-4 h-4" />
+                                                        Preview
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -395,4 +420,6 @@ export default function ProjectsContent({ projectsData }: { projectsData: Projec
             <Preview previewProject={previewProject} setPreviewProject={setPreviewProject} />
         </section>
     )
-}
+})
+
+export default ProjectsContent

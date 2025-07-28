@@ -4,7 +4,7 @@ import ProjectDetailsContent from '@/hooks/projects/ProjectsLayout'
 
 import { generateMetadata as getProjectsMetadata } from '@/hooks/projects/meta/metadata'
 
-import { fetchProjectsContents } from "@/components/content/projects/utils/FetchProjects"
+import { fetchProjectBySlug, fetchProjectsContents } from "@/components/content/projects/utils/FetchProjects"
 
 import ProductsSlugSkeleton from '@/hooks/projects/ProjectsSkeleton';
 
@@ -24,18 +24,14 @@ export async function generateMetadata(
 export default async function Page({ params }: Props) {
     try {
         const resolvedParams = await params;
-        const projects = await fetchProjectsContents();
-        const projectData = projects.find(project => project.slug === resolvedParams.slug);
-
-        if (!projectData) {
-            throw new Error('Project not found');
-        }
+        const projectData = await fetchProjectBySlug(resolvedParams.slug);
+        const allProjects = await fetchProjectsContents();
 
         return (
             <ProjectDetailsContent
                 slug={resolvedParams.slug}
                 productsData={projectData}
-                allProjects={projects}
+                allProjects={allProjects}
             />
         );
     } catch (error) {

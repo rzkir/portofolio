@@ -1,21 +1,48 @@
 "use client"
 
-import React from 'react'
+import React, { useCallback } from 'react'
+
 import { ProjectsContentProps } from "@/components/content/projects/types/projects";
+
 import Image from 'next/image';
+
 import Link from 'next/link';
+
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
 
+import { useRouter } from 'next/navigation';
+
+import { useLoading } from '@/utils/context/LoadingContext';
 interface ProjectsLayoutProps {
     slug: string;
     productsData: ProjectsContentProps;
     allProjects: ProjectsContentProps[];
 }
 
-
 export default function ProjectsLayout({ productsData, allProjects }: ProjectsLayoutProps) {
+    const router = useRouter();
+    const { showLoading, hideLoading } = useLoading();
+
+    const handleProjectNavigation = useCallback(async (slug: string) => {
+        try {
+            showLoading("Navigating to project...");
+            // Simulate a small delay for better UX
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            router.push(`/${slug}`);
+            // Hide loading after a short delay to ensure navigation has started
+            setTimeout(() => {
+                hideLoading();
+            }, 1000);
+        } catch (error) {
+            hideLoading();
+            console.error("Navigation error:", error);
+        }
+    }, [router, showLoading, hideLoading]);
+
     return (
         <section className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">
             {/* Hero Section */}
@@ -153,7 +180,10 @@ export default function ProjectsLayout({ productsData, allProjects }: ProjectsLa
                                             .slice(0, 6)
                                             .map((project, index) => (
                                                 <div key={index} className="group block">
-                                                    <Link href={project.slug} className="block h-full">
+                                                    <div
+                                                        className="block h-full cursor-pointer"
+                                                        onClick={() => handleProjectNavigation(project.slug)}
+                                                    >
                                                         <Card className="rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 p-0 border-border/50 hover:border-primary/50 bg-card">
                                                             <div className="relative aspect-video w-full overflow-hidden">
                                                                 <Image
@@ -173,7 +203,7 @@ export default function ProjectsLayout({ productsData, allProjects }: ProjectsLa
                                                                 </CardDescription>
                                                             </div>
                                                         </Card>
-                                                    </Link>
+                                                    </div>
                                                 </div>
                                             ))}
                                     </div>
