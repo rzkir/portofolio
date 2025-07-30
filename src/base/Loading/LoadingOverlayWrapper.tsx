@@ -1,17 +1,15 @@
 'use client'
 
 import { useLoading } from "@/utils/context/LoadingContext"
-
 import LoadingOverlay from "@/base/Loading/LoadingOverlay"
-
-import InitialLoadingOverlay from "@/base/Loading/InitialLoadingOverlay"
+import MangcodingStyleSplash from "@/base/Loading/LoadingStyleSplash"
 
 export default function LoadingOverlayWrapper() {
     const { isLoading, loadingMessage, isInitialLoading } = useLoading()
 
     // Show initial loading overlay for first page load
     if (isInitialLoading) {
-        return <InitialLoadingOverlay isLoading={isInitialLoading} />
+        return <MangcodingStyleSplash isLoading={isInitialLoading} />
     }
 
     // Show regular loading overlay for other operations
