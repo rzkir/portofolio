@@ -1,6 +1,9 @@
 import React from 'react'
+
 import Image from 'next/image'
+
 import { Code, ExternalLink, Calendar } from "lucide-react"
+
 import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
@@ -13,7 +16,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 
-import { ProjectsContentProps } from '../types/projects'
+import { ProjectsContentProps } from '@/types/projects'
 
 interface PreviewProps {
     previewProject: ProjectsContentProps | null;

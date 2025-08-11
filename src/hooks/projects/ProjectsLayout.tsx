@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react'
 
-import { ProjectsContentProps } from "@/components/content/projects/types/projects";
+import { ProjectsContentProps } from "@/types/projects";
 
 import Image from 'next/image';
 
@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { useRouter } from 'next/navigation';
 
-import { useLoading } from '@/utils/context/LoadingContext';
+import { useLoading } from '@/context/LoadingContext';
 interface ProjectsLayoutProps {
     slug: string;
     productsData: ProjectsContentProps;

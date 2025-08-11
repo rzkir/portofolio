@@ -1,4 +1,4 @@
-import { useLoading } from "@/utils/context/LoadingContext";
+import { useLoading } from "@/context/LoadingContext";
 
 import { useRouter } from "next/navigation";
 

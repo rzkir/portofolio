@@ -1,6 +1,6 @@
 'use client'
 
-import { useLoading } from "@/utils/context/LoadingContext"
+import { useLoading } from "@/context/LoadingContext"
 import LoadingOverlay from "@/base/Loading/LoadingOverlay"
 import MangcodingStyleSplash from "@/base/Loading/LoadingStyleSplash"
 

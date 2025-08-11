@@ -14,7 +14,7 @@ import Image from 'next/image'
 
 import bgCard from "@/base/assets/bg-card.png"
 
-import { AnimatedCardProps } from '@/components/content/About/types/about'
+import { AnimatedCardProps } from '@/types/about'
 
 export function AnimatedCard({ data }: AnimatedCardProps) {
     const [isHovered, setIsHovered] = useState(false);

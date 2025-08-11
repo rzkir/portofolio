@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { fetchAboutContents } from '@/components/content/About/utils/FetchAbout';
+import { fetchAboutContents } from '@/utils/FetchAbout';
 
 import AboutContent from '@/components/content/About/AboutContent';
 
 import AboutSkeleton from '@/components/content/About/AboutSkelaton';
 
-import { fetchAchievementsContents } from '@/components/content/achievements/utils/FetchAchievements';
+import { fetchAchievementsContents } from '@/utils/FetchAchievements';
 
 import AchievementsContent from '@/components/content/achievements/AchievementsContent';
 

@@ -6,19 +6,21 @@ metadata.manifest = "/manifest.json";
 
 import "@/base/styling/globals.css";
 
-import Providers from "@/base/router/Provider";
+import { ThemeProvider } from "@/context/ThemaContext"
 
-import Pathname from "@/base/router/Pathname";
-
-import { ThemeProvider } from "@/utils/context/ThemaContext"
-
-import { LoadingProvider } from "@/utils/context/LoadingContext"
+import { LoadingProvider } from "@/context/LoadingContext"
 
 import LoadingOverlayWrapper from "@/base/Loading/LoadingOverlayWrapper"
 
 import { geistSans, geistMono } from "@/base/fonts/Fonts";
 
+import Header from "@/components/layout/header/Header";
+
 import { GoogleTagManager, GoogleTagManagerNoScript } from '@/base/analytics/GoogleTagManager'
+
+import LenisProvider from '@/base/smooth-scroll/LenisProvider'
+
+import Footer from "@/components/layout/footer/Footer"
 
 export default function RootLayout({
   children,
@@ -41,14 +43,14 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme"
         >
-          <LoadingProvider>
-            <Providers>
-              <Pathname>
-                {children}
-              </Pathname>
-            </Providers>
-            <LoadingOverlayWrapper />
-          </LoadingProvider>
+          <LenisProvider>
+            <LoadingProvider>
+              <Header />
+              {children}
+              <Footer />
+              <LoadingOverlayWrapper />
+            </LoadingProvider>
+          </LenisProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -4,13 +4,17 @@ import React, { useState } from 'react'
 
 import { motion } from 'framer-motion'
 
-import { HomeContentProps } from '@/components/content/Home/types/home'
+import { HomeContentProps } from '@/types/home'
 
 import { Button } from '@/components/ui/button'
 
+import ShinyText from '@/components/ui/shiny-text'
+
 import Link from 'next/link'
 
-import { useLoading } from '@/utils/context/LoadingContext'
+import { useLoading } from '@/context/LoadingContext'
+
+import BlurText from '@/components/ui/BlurText'
 
 export default function HomeContent({ homeData }: { homeData: HomeContentProps[] }) {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -25,10 +29,15 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
         });
     };
 
+    const handleAnimationComplete = () => {
+        console.log('Animation completed!');
+    };
+
     return (
         <section
             className="md:min-h-screen min-h-full flex flex-col items-center justify-center py-10 -mt-0 md:-mt-16 relative overflow-hidden"
             onMouseMove={handleMouseMove}
+            id="home"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -92,8 +101,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
             <div className="container px-4 md:px-6">
                 {homeData.map((item) => (
                     <div key={item._id} className="flex flex-col gap-8 md:gap-10">
-                        <motion.h3
-                            className="text-lg md:text-xl font-medium mb-2 text-[color:var(--foreground)] tracking-wide"
+                        <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{
                                 opacity: isInitialLoading ? 0 : 1,
@@ -101,21 +109,27 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                             }}
                             transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.2 }}
                         >
-                            {item.title}
-                        </motion.h3>
+                            <ShinyText
+                                text={item.title}
+                                disabled={isInitialLoading}
+                                speed={3}
+                                className="text-lg md:text-xl font-medium mb-2 tracking-wide"
+                            />
+                        </motion.div>
 
                         <div className='block space-y-4'>
-                            <motion.h1
+                            <BlurText
+                                text={item.text}
+                                delay={150}
+                                animateBy="words"
+                                direction="top"
+                                as="h1"
+                                loading={isInitialLoading}
+                                initialDelay={isInitialLoading ? 0 : 0.4}
+                                onAnimationComplete={handleAnimationComplete}
                                 className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--foreground)] tracking-tight"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{
-                                    opacity: isInitialLoading ? 0 : 1,
-                                    y: isInitialLoading ? 20 : 0
-                                }}
-                                transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.4 }}
-                            >
-                                {item.text}
-                            </motion.h1>
+                                stepDuration={0.5}
+                            />
 
                             <div className="flex flex-wrap items-center justify-start gap-[0.4em] md:gap-[0.6em]">
                                 {item.span.split('').map((char, index) => (
@@ -176,13 +190,13 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                             </motion.div>
 
                             <motion.p
-                                className="text-base md:text-lg text-[color:var(--muted-foreground)] max-w-2xl md:text-right leading-relaxed"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{
                                     opacity: isInitialLoading ? 0 : 1,
                                     y: isInitialLoading ? 20 : 0
                                 }}
                                 transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 1.0 }}
+                                className="max-w-2xl md:text-right"
                             >
                                 {item.description}
                             </motion.p>

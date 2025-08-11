@@ -4,7 +4,7 @@ import ProjectDetailsContent from '@/hooks/projects/ProjectsLayout'
 
 import { generateMetadata as getProjectsMetadata } from '@/hooks/projects/meta/metadata'
 
-import { fetchProjectBySlug, fetchProjectsContents } from "@/components/content/projects/utils/FetchProjects"
+import { fetchProjectBySlug, fetchProjectsContents } from "@/utils/FetchProjects"
 
 import ProductsSlugSkeleton from '@/hooks/projects/ProjectsSkeleton';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fetchSkillsContents } from '@/components/content/skills/utils/FetchSkils';
+import { fetchSkillsContents } from '@/utils/FetchSkils';
 
 import SkilsContent from '@/components/content/skills/SkilsContent';
 

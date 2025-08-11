@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fetchProjectsContents } from '@/components/content/projects/utils/FetchProjects';
+import { fetchProjectsContents } from '@/utils/FetchProjects';
 
 import ProjectsContent from '@/components/content/projects/ProjectsContent';
 

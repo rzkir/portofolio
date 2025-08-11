@@ -1,21 +1,22 @@
 import { Metadata } from "next";
+import { ProjectsContentProps } from "@/types/projects";
 
-import Projects from "@/models/Projects";
+const API_URL = `${process.env.NEXT_PUBLIC_API_PROJECTS}`;
 
-export interface ProjectsData {
-  title: string;
-  thumbnail: string;
-  description: string;
-  slug: string;
-  imageUrl: string[];
-}
-
-export async function getProducts(slug: string): Promise<ProjectsData | null> {
+export async function getProducts(slug: string): Promise<ProjectsContentProps | null> {
   try {
-    const project = await Projects.findOne({ slug });
-    if (!project) {
+    const response = await fetch(`${API_URL}/${slug}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,
+      },
+    });
+
+    if (!response.ok) {
       return null;
     }
+
+    const project = await response.json();
     return project;
   } catch (error) {
     console.error("Error fetching projects:", error);

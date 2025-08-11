@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react'
 
-import { ProjectsContentProps } from './types/projects'
+import { ProjectsContentProps } from '@/types/projects'
 
 import Image from 'next/image'
 
@@ -22,7 +22,7 @@ import Preview from './modal/Priview'
 
 import { useRouter } from 'next/navigation'
 
-import { useLoading } from '@/utils/context/LoadingContext'
+import { useLoading } from '@/context/LoadingContext'
 
 const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { projectsData: ProjectsContentProps[] }) {
     const [activeIndex, setActiveIndex] = useState<number>(-1);
@@ -87,7 +87,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
     }, [router, showLoading, hideLoading]);
 
     return (
-        <section className="py-16 bg-gradient-to-b from-background to-background/95">
+        <section id="projects" className="py-16 bg-gradient-to-b from-background to-background/95">
             <div className="container px-4 md:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

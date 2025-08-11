@@ -21,7 +21,26 @@ export const navLink = [
   },
   {
     number: "05",
-    label: "Insights",
-    path: "#works",
+    label: "Contact",
+    path: "#contact",
+  },
+];
+
+export const SocialMedia = [
+  {
+    label: "INSTAGRAM",
+    path: "https://www.instagram.com/rzkir.20",
+  },
+  {
+    label: "GITHUB",
+    path: "https://github.com/Rizkiramadhan20",
+  },
+  {
+    label: "TIKTOK",
+    path: "https://www.tiktok.com/@rzkir.20",
+  },
+  {
+    label: "LINKEND",
+    path: "https://www.linkedin.com/in/rizki-ramadhan12",
   },
 ];

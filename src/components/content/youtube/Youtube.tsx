@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fetchYoutubeContents } from '@/components/content/youtube/utils/FetchYoutube';
+import { fetchYoutubeContents } from '@/utils/FetchYoutube';
 
 import YoutubeContent from '@/components/content/youtube/YoutubeContent';
 

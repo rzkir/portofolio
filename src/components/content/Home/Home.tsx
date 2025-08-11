@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fetchHomeContents } from '@/components/content/Home/utils/FetchHome';
+import { fetchHomeContents } from '@/utils/FetchHome';
 
 import HomeContent from '@/components/content/Home/HomeContent';
 

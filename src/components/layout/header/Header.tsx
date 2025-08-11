@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 
 import { Button } from "@/components/ui/button"
@@ -10,11 +12,9 @@ import { useRouter } from 'next/navigation'
 
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useAuth } from '@/utils/context/AuthContext'
+import { navLink, SocialMedia } from "@/components/layout/header/data/Header"
 
-import { User, LayoutDashboard, LogOut } from 'lucide-react'
-
-import { navLink } from "@/components/layout/header/data/Header"
+import { useScrollTo } from '@/lib/useLenis'
 
 export default function Header() {
     const { theme, setTheme } = useTheme()
@@ -22,33 +22,44 @@ export default function Header() {
     const [mounted, setMounted] = React.useState(false)
 
     const router = useRouter();
+    const scrollTo = useScrollTo();
 
-    const { user, loading, userRole, signOut } = useAuth()
-
-    // State untuk modal menu dan profile dropdown
+    // State untuk modal menu
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const [isProfileOpen, setIsProfileOpen] = React.useState(false);
     const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
     React.useEffect(() => {
         setMounted(true)
     }, [])
 
-    const handleLogin: () => void = () => {
-        router.push('/signin');
-    }
+    const handleSmoothScroll = (path: string) => {
+        setIsMenuOpen(false);
 
-    const handleLogout = async () => {
-        await signOut();
-        setIsProfileOpen(false);
-    }
-
-    const toggleTheme = () => {
-        setTheme(theme === 'dark' ? 'light' : 'dark')
-    }
-
-    if (loading) {
-        return null; // or a loading skeleton
+        if (path === '/') {
+            // Check if we're already on the home page
+            if (window.location.pathname === '/') {
+                // Scroll to top using Lenis
+                scrollTo('html', { duration: 1.5 });
+            } else {
+                // Navigate to home page
+                router.push('/');
+            }
+        } else if (path.startsWith('#')) {
+            // Check if we're on the home page
+            if (window.location.pathname === '/') {
+                // Scroll to section using Lenis
+                scrollTo(path, {
+                    offset: -80, // Account for header height
+                    duration: 1.5
+                });
+            } else {
+                // Navigate to home page with hash
+                router.push(`/${path}`);
+            }
+        } else {
+            // Regular navigation
+            router.push(path);
+        }
     }
 
     const text = "rizki ramadhan.";
@@ -63,9 +74,10 @@ export default function Header() {
             >
                 <div className='container mx-auto flex justify-between items-center'>
                     <motion.div
-                        className="text-base sm:text-lg font-medium tracking-wide relative group"
+                        className="text-base sm:text-lg font-medium tracking-wide relative group cursor-pointer"
                         whileHover={{ scale: 1.01 }}
                         transition={{ duration: 0.2 }}
+                        onClick={() => handleSmoothScroll('/')}
                     >
                         <motion.div className="w-full flex flex-col items-center justify-center py-2">
                             <div className="font-light text-2xl sm:text-3xl select-none tracking-wide text-foreground flex">
@@ -147,63 +159,6 @@ export default function Header() {
                                 </>
                             )}
                         </div>
-                        {user ? (
-                            <div className="relative">
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="hidden sm:flex items-center gap-2"
-                                >
-                                    <User className="h-4 w-4" />
-                                    {userRole === 'admins' ? 'Dashboard' : `${user.firstName} ${user.lastName}`}
-                                </Button>
-
-                                <AnimatePresence>
-                                    {isProfileOpen && (
-                                        <motion.div
-                                            className="absolute right-0 mt-2 w-48 bg-background border rounded-md shadow-lg py-1 z-50"
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            transition={{ duration: 0.2 }}
-                                        >
-                                            {userRole === 'admins' ? (
-                                                <button
-                                                    onClick={() => {
-                                                        setIsProfileOpen(false);
-                                                        router.push('/dashboard');
-                                                    }}
-                                                    className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
-                                                >
-                                                    <LayoutDashboard className="h-4 w-4" />
-                                                    Dashboard
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => {
-                                                        setIsProfileOpen(false);
-                                                        router.push('/profile');
-                                                    }}
-                                                    className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
-                                                >
-                                                    <User className="h-4 w-4" />
-                                                    View Profile
-                                                </button>
-                                            )}
-                                            <button
-                                                onClick={handleLogout}
-                                                className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
-                                            >
-                                                <LogOut className="h-4 w-4" />
-                                                Logout
-                                            </button>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        ) : (
-                            <Button variant="outline" onClick={handleLogin} className="hidden sm:inline-flex">Sign In</Button>
-                        )}
                         {/* Menu button */}
                         <Button variant="outline" onClick={() => setIsMenuOpen(true)} className="p-2 sm:p-3">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -252,8 +207,8 @@ export default function Header() {
                                 {navLink.map((item, index) => (
                                     <motion.div
                                         key={item.number}
-                                        className="flex items-center justify-between group"
-                                        onClick={() => { setIsMenuOpen(false); router.push(item.path) }}
+                                        className="flex items-center justify-between group cursor-pointer"
+                                        onClick={() => handleSmoothScroll(item.path)}
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{
@@ -268,7 +223,10 @@ export default function Header() {
                                             {item.label} <span className="text-muted-foreground text-base sm:text-lg align-top">({item.number})</span>
                                         </motion.div>
                                         <motion.button
-                                            onClick={() => { setIsMenuOpen(false); router.push(item.path) }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSmoothScroll(item.path);
+                                            }}
                                             className="border border-border rounded-full p-1.5 sm:p-3 group-hover:bg-accent transition-colors duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-ring"
                                             whileHover={{ scale: 1.1, rotate: 5 }}
                                             whileTap={{ scale: 0.95 }}
@@ -295,17 +253,17 @@ export default function Header() {
                                 >
                                     <div className="font-semibold text-muted-foreground mb-2">Follow me.</div>
                                     <div className="flex flex-wrap gap-3 sm:gap-4 text-foreground text-xs sm:text-sm">
-                                        {['INSTAGRAM', 'BEHANCE', 'TWITTER', 'DRIBBBLE'].map((social, index) => (
+                                        {SocialMedia.map((social, index) => (
                                             <motion.a
-                                                key={social}
-                                                href="#"
+                                                key={social.label}
+                                                href={social.path}
                                                 className="hover:underline flex items-center gap-1 transition-colors duration-200 hover:text-primary"
                                                 whileHover={{ x: 5 }}
                                                 initial={{ opacity: 0, x: -10 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: 0.6 + index * 0.1 }}
                                             >
-                                                {social} <span>↗</span>
+                                                {social.label} <span>↗</span>
                                             </motion.a>
                                         ))}
                                     </div>

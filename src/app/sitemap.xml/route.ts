@@ -1,6 +1,8 @@
-import { connectToDatabase } from "@/utils/mongodb/mongodb";
-import { FormatSlug } from "@/base/helper/FormatSlug";
+import { fetchProjectsContents } from "@/utils/FetchProjects";
+
 import metadata from "@/base/meta/Metadata";
+
+import { ProjectsContentProps } from "@/types/projects";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
 
@@ -14,29 +16,11 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, "&apos;");
 }
 
-async function getBlogSlugs() {
+async function getProjectSlugs(): Promise<Array<{ slug: string; updatedAt: Date }>> {
   try {
-    const { db } = await connectToDatabase();
-    const blogs = await db
-      .collection("blogs")
-      .find({}, { projection: { slug: 1 } })
-      .toArray();
-    return blogs.map((blog) => blog.slug);
-  } catch (error) {
-    console.error("Error fetching blog slugs:", error);
-    return [];
-  }
-}
+    const projects: ProjectsContentProps[] = await fetchProjectsContents();
 
-async function getProjectSlugs() {
-  try {
-    const { db } = await connectToDatabase();
-    const projects = await db
-      .collection(process.env.NEXT_PUBLIC_API_PROJECTS as string)
-      .find({}, { projection: { slug: 1, updatedAt: 1 } })
-      .toArray();
-
-    return projects.map((project) => ({
+    return projects.map((project: ProjectsContentProps) => ({
       slug: project.slug,
       updatedAt: project.updatedAt || project.createdAt || new Date(),
     }));
@@ -46,25 +30,27 @@ async function getProjectSlugs() {
   }
 }
 
+
+
 async function generateSitemap() {
-  const blogSlugs = await getBlogSlugs();
   const projectSlugs = await getProjectSlugs();
 
-  const staticUrls = ["/"];
+  const staticUrls = [
+    { url: "/", lastmod: new Date().toISOString() },
+    { url: "/#about", lastmod: new Date().toISOString() },
+    { url: "/#achievements", lastmod: new Date().toISOString() },
+    { url: "/#youtube", lastmod: new Date().toISOString() },
+  ];
 
   const dynamicUrls = [
-    ...blogSlugs.map((slug) => ({
-      url: `/${slug}`,
-      lastmod: new Date().toISOString(),
-    })),
-    ...projectSlugs.map((project) => ({
-      url: `/${project.slug}`,
+    ...projectSlugs.map((project: { slug: string; updatedAt: Date }) => ({
+      url: `/projects/${project.slug}`,
       lastmod: project.updatedAt.toISOString(),
     })),
   ];
 
   const urls = [
-    { url: "/", lastmod: new Date().toISOString() },
+    ...staticUrls,
     ...dynamicUrls,
   ];
 
@@ -73,35 +59,35 @@ async function generateSitemap() {
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls
-  .map((item) => {
-    const isHomePage = item.url === "/";
-    const title = isHomePage
-      ? metadata.title
-      : `${item.url.split("/").pop() || ""} - ${metadata.title}`;
-    const description = isHomePage
-      ? metadata.openGraph.description
-      : `${title} - ${metadata.openGraph.description}`;
+      .map((item) => {
+        const isHomePage = item.url === "/";
+        const title = isHomePage
+          ? metadata.title
+          : `${item.url.split("/").pop() || ""} - ${metadata.title}`;
+        const description = isHomePage
+          ? metadata.openGraph.description
+          : `${title} - ${metadata.openGraph.description}`;
 
-    return `
+        return `
   <url>
     <loc>${escapeXml(BASE_URL)}${escapeXml(item.url)}</loc>
     <lastmod>${item.lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="${escapeXml(
-      metadata.openGraph.locale
-    )}" href="${escapeXml(BASE_URL)}${escapeXml(item.url)}" />
+          metadata.openGraph.locale
+        )}" href="${escapeXml(BASE_URL)}${escapeXml(item.url)}" />
     <image:image>
       <image:loc>${escapeXml(BASE_URL)}${escapeXml(
-      metadata.openGraph.images[0].url
-    )}</image:loc>
+          metadata.openGraph.images[0].url
+        )}</image:loc>
       <image:title>${escapeXml(metadata.openGraph.images[0].alt)}</image:title>
       <image:caption>${escapeXml(description)}</image:caption>
       <image:license>${escapeXml(BASE_URL)}</image:license>
     </image:image>
   </url>`;
-  })
-  .join("")}
+      })
+      .join("")}
 </urlset>`;
 
   return sitemapXml;

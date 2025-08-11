@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { YoutubeContentProps } from '@/components/content/youtube/types/youtube';
+import { YoutubeContentProps } from '@/types/youtube';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/base/helper/pagination';
 import {
@@ -45,7 +45,7 @@ export default function YoutubeContent({ youtubeData = [] }: { youtubeData?: You
     }, [selectedCategory]);
 
     return (
-        <section className='py-8 md:py-12 lg:py-16 bg-transparent'>
+        <section id="youtube" className='py-8 md:py-12 lg:py-16 bg-transparent'>
             <div className="container px-4 md:px-6">
                 <div className='flex flex-col gap-4 items-center justify-center mb-10'>
                     <motion.h3

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import { AchievementsContentProps } from '@/components/content/achievements/types/achievements'
+import { AchievementsContentProps } from '@/types/achievements'
 import Image from 'next/image'
 import { motion, useMotionValue, useTransform, animate } from "framer-motion"
 import { MoveUpRight } from 'lucide-react'
