@@ -4,11 +4,12 @@ import metadata from "@/base/meta/Metadata";
 
 import { ProjectsContentProps } from "@/types/projects";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 // Add XML escape function
-function escapeXml(unsafe: string): string {
-  return unsafe
+function escapeXml(unsafe?: string): string {
+  const s = String(unsafe ?? "");
+  return s
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -20,17 +21,20 @@ async function getProjectSlugs(): Promise<Array<{ slug: string; updatedAt: Date 
   try {
     const projects: ProjectsContentProps[] = await fetchProjectsContents();
 
-    return projects.map((project: ProjectsContentProps) => ({
-      slug: project.slug,
-      updatedAt: project.updatedAt || project.createdAt || new Date(),
-    }));
+    return projects.map((project: ProjectsContentProps) => {
+      const updatedAtSource = (project.updatedAt as unknown as string) || (project.createdAt as unknown as string) || new Date().toISOString();
+      const parsed = new Date(updatedAtSource);
+      const safeDate = isNaN(parsed.getTime()) ? new Date() : parsed;
+      return {
+        slug: project.slug,
+        updatedAt: safeDate,
+      };
+    });
   } catch (error) {
     console.error("Error fetching project slugs:", error);
     return [];
   }
 }
-
-
 
 async function generateSitemap() {
   const projectSlugs = await getProjectSlugs();
