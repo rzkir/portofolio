@@ -175,6 +175,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                     className="group relative rounded-full px-8 py-6 bg-[color:var(--color-primary)] 
                                     text-[color:var(--color-primary-foreground)] text-lg font-semibold 
                                     overflow-hidden transition-all duration-300 hover:shadow-xl
+                                    min-h-[44px] min-w-[44px]
                                     before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent 
                                     before:via-white/40 before:to-transparent before:translate-x-[-100%] 
                                     before:transition-transform before:duration-300 hover:before:translate-x-[100%]
@@ -182,7 +183,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                     after:via-white/30 after:to-transparent after:translate-x-[-100%] 
                                     after:transition-transform after:duration-300 after:delay-50 hover:after:translate-x-[100%]"
                                 >
-                                    <Link href={item.href} className="flex items-center gap-2">
+                                    <Link href={item.href} className="flex items-center gap-3 px-2 py-1 min-h-[44px] min-w-[44px]">
                                         {item.label}
                                         <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
                                     </Link>

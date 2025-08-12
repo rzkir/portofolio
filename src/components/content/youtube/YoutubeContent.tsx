@@ -1,12 +1,19 @@
 "use client"
 
 import React, { useState, useMemo } from 'react'
+
 import Image from 'next/image'
+
 import { motion } from 'framer-motion'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { YoutubeContentProps } from '@/types/youtube';
+
 import { Button } from '@/components/ui/button';
+
 import { Pagination } from '@/base/helper/pagination';
+
 import {
     Dialog,
     DialogContent,
@@ -48,7 +55,7 @@ export default function YoutubeContent({ youtubeData = [] }: { youtubeData?: You
         <section id="youtube" className='py-8 md:py-12 lg:py-16 bg-transparent'>
             <div className="container px-4 md:px-6">
                 <div className='flex flex-col gap-4 items-center justify-center mb-10'>
-                    <motion.h3
+                    <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
@@ -56,7 +63,7 @@ export default function YoutubeContent({ youtubeData = [] }: { youtubeData?: You
                         className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase'
                     >
                         Youtube Content
-                    </motion.h3>
+                    </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}

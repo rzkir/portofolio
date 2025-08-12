@@ -96,9 +96,9 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
                                     transition={{ duration: 0.5, delay: 0.2 }}
                                     className="flex items-center gap-1 flex-wrap justify-center md:justify-start"
                                 >
-                                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-primary text-center md:text-left">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-primary text-center md:text-left">
                                         {data.card.name}
-                                    </h3>
+                                    </h2>
                                 </motion.div>
 
                                 <motion.div
@@ -124,7 +124,7 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
                                         {data.card.location}
                                     </Badge>
                                     <span className="text-muted-foreground/40">•</span>
-                                    <Badge variant="success" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium text-accent-foreground">
+                                    <Badge variant="success" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <circle cx="12" cy="12" r="10"></circle>
                                             <polyline points="12 6 12 12 16 14"></polyline>

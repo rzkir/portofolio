@@ -97,9 +97,9 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                     className='flex flex-col md:flex-row items-center justify-between gap-4 mb-10'
                 >
                     <div className="relative mb-5">
-                        <h1 className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight'>
+                        <h2 className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight'>
                             Featured Projects
-                        </h1>
+                        </h2>
                     </div>
 
                     {/* Category Toggle */}

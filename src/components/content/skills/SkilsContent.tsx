@@ -14,9 +14,9 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
     return (
         <section id="skills" className="w-full py-10 bg-background">
             <div className="container px-4 md:px-6 mx-auto max-w-7xl">
-                <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight mb-14'>
+                <h2 className='text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight mb-14'>
                     Tech Skills
-                </h1>
+                </h2>
 
                 <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
                     {skillsData.map((item) => {
