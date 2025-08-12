@@ -16,8 +16,11 @@ import { navLink, SocialMedia } from "@/components/layout/header/data/Header"
 
 import { useScrollTo } from '@/lib/useLenis'
 
+import { useLoading } from '@/context/LoadingContext'
+
 export default function Header() {
     const { theme, setTheme } = useTheme()
+    const { isInitialLoading } = useLoading();
 
     const [mounted, setMounted] = React.useState(false)
 
@@ -69,8 +72,11 @@ export default function Header() {
             <motion.header
                 className="w-full px-4 sm:px-6 py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm"
                 initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                animate={{
+                    opacity: isInitialLoading ? 0 : 1,
+                    y: isInitialLoading ? -20 : 0
+                }}
+                transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.2 }}
             >
                 <div className='container mx-auto flex justify-between items-center'>
                     <motion.div
@@ -86,15 +92,31 @@ export default function Header() {
                                         key={index}
                                         onHoverStart={() => setHoveredIndex(index)}
                                         onHoverEnd={() => setHoveredIndex(null)}
+                                        initial={{ opacity: 0, y: 10 }}
                                         animate={{
-                                            y: hoveredIndex === index ? -5 : 0,
-                                            scale: hoveredIndex === index ? 1.2 : 1,
-                                            color: hoveredIndex === index ? theme === 'dark' ? '#60A5FA' : '#2563EB' : 'inherit'
+                                            opacity: isInitialLoading ? 0 : 1,
+                                            y: isInitialLoading ? 20 : (hoveredIndex === index ? -5 : 0),
+                                            scale: isInitialLoading ? 0.8 : (hoveredIndex === index ? 1.2 : 1),
+                                            color: hoveredIndex === index ? (theme === 'dark' ? '#60A5FA' : '#2563EB') : 'inherit'
                                         }}
                                         transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                            damping: 10
+                                            opacity: { delay: isInitialLoading ? 0 : 0.3 + (index * 0.05) },
+                                            y: {
+                                                type: "spring",
+                                                stiffness: 400,
+                                                damping: 10,
+                                                delay: isInitialLoading ? 0 : 0.3 + (index * 0.05)
+                                            },
+                                            scale: {
+                                                type: "spring",
+                                                stiffness: 400,
+                                                damping: 10,
+                                            },
+                                            color: {
+                                                type: "spring",
+                                                stiffness: 400,
+                                                damping: 10
+                                            }
                                         }}
                                         className="inline-block"
                                     >
@@ -110,9 +132,19 @@ export default function Header() {
                             {mounted && (
                                 <>
                                     <motion.div
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.3 }}
+                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                        animate={{
+                                            opacity: isInitialLoading ? 0 : 1,
+                                            scale: isInitialLoading ? 0.8 : 1,
+                                            y: isInitialLoading ? 20 : 0
+                                        }}
+                                        transition={{
+                                            duration: 0.5,
+                                            delay: isInitialLoading ? 0 : 0.5,
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 10
+                                        }}
                                     >
                                         <Switch
                                             id="theme-toggle"
@@ -161,16 +193,32 @@ export default function Header() {
                             )}
                         </div>
                         {/* Menu button */}
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsMenuOpen(true)}
-                            className="p-2 sm:p-3"
-                            aria-label="Open navigation menu"
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                            animate={{
+                                opacity: isInitialLoading ? 0 : 1,
+                                scale: isInitialLoading ? 0.8 : 1,
+                                y: isInitialLoading ? 20 : 0
+                            }}
+                            transition={{
+                                duration: 0.5,
+                                delay: isInitialLoading ? 0 : 0.6,
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 10
+                            }}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsMenuOpen(true)}
+                                className="p-2 sm:p-3"
+                                aria-label="Open navigation menu"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            </Button>
+                        </motion.div>
                     </div>
                 </div>
 

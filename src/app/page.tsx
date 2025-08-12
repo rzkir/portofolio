@@ -1,39 +1,26 @@
-import { Fragment, Suspense, lazy } from 'react'
-
-import About from '@/components/content/About/About'
+import { Fragment } from 'react'
 
 import Home from '@/components/content/Home/Home'
 
-// Lazy load non-critical components
-const Youtube = lazy(() => import('@/components/content/youtube/Youtube'))
-const Projects = lazy(() => import('@/components/content/projects/Projects'))
-const Skills = lazy(() => import('@/components/content/skills/Skils'))
-const Contact = lazy(() => import('@/components/content/contact/Contact'))
+import About from '@/components/content/About/About'
 
-// Loading fallback component
-const ComponentLoader = () => (
-  <div className="min-h-[400px] flex items-center justify-center">
-    <div className="animate-pulse bg-muted rounded-lg w-full max-w-md h-64"></div>
-  </div>
-)
+import Youtube from '@/components/content/youtube/Youtube'
+
+import Projects from '@/components/content/projects/Projects'
+
+import Skills from '@/components/content/skills/Skils'
+
+import Contact from '@/components/content/contact/Contact'
 
 export default function page() {
   return (
     <Fragment>
       <Home />
       <About />
-      <Suspense fallback={<ComponentLoader />}>
-        <Skills />
-      </Suspense>
-      <Suspense fallback={<ComponentLoader />}>
-        <Youtube />
-      </Suspense>
-      <Suspense fallback={<ComponentLoader />}>
-        <Projects />
-      </Suspense>
-      <Suspense fallback={<ComponentLoader />}>
-        <Contact />
-      </Suspense>
+      <Skills />
+      <Youtube />
+      <Projects />
+      <Contact />
     </Fragment>
   )
 }

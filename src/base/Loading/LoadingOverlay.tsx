@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-
 import { useEffect, useState } from 'react'
 
 interface LoadingOverlayProps {
@@ -34,81 +33,115 @@ export default function LoadingOverlay({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm ${className}`}
+            className={`fixed inset-0 z-50 flex items-center justify-center ${className}`}
         >
-            <div className="flex flex-col items-center space-y-6">
-                {/* Main loading circle */}
-                <div className="relative">
-                    <motion.div
-                        className="w-16 h-16 border-4 border-white/20 rounded-full"
-                        animate={{
-                            scale: [1, 1.1, 1],
-                            opacity: [0.5, 1, 0.5]
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                    />
-                    <motion.div
-                        className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-white rounded-full"
-                        animate={{ rotate: 360 }}
-                        transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-                    />
+            {/* Background with subtle pattern */}
+            <div className="absolute inset-0 bg-background/90 backdrop-blur-md">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--foreground),0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--foreground),0.15)_1px,transparent_1px)] bg-[size:30px_30px]" />
                 </div>
+            </div>
 
-                {/* Loading text */}
+            {/* Main Content */}
+            <div className="relative flex flex-col items-center space-y-8">
+                {/* Elegant Card */}
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-white text-lg font-medium"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, type: "spring" }}
+                    className="relative rounded-xl p-8"
                 >
-                    {message}{dots}
-                </motion.div>
+                    <div className="flex flex-col items-center space-y-6">
+                        {/* Multi-ring Spinner */}
+                        <div className="relative">
+                            {/* Outer ring */}
+                            <motion.div
+                                className="w-16 h-16 border-2 border-muted/50 rounded-full"
+                                animate={{
+                                    scale: [1, 1.05, 1],
+                                    opacity: [0.3, 0.5, 0.3]
+                                }}
+                                transition={{
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                            />
 
-                {/* Animated dots */}
-                <div className="flex space-x-2">
-                    {[0, 1, 2].map((index) => (
+                            {/* Spinning ring */}
+                            <motion.div
+                                className="absolute inset-0 w-16 h-16 border-2 border-transparent border-t-primary rounded-full"
+                                animate={{ rotate: 360 }}
+                                transition={{
+                                    duration: 1.2,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                            />
+
+                            {/* Inner ring */}
+                            <motion.div
+                                className="absolute inset-1 w-14 h-14 border-2 border-transparent border-t-ring rounded-full"
+                                animate={{ rotate: -360 }}
+                                transition={{
+                                    duration: 0.8,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                            />
+
+                            {/* Center dot */}
+                            <motion.div
+                                className="absolute inset-0 flex items-center justify-center"
+                                animate={{
+                                    scale: [1, 1.1, 1],
+                                    opacity: [0.8, 1, 0.8]
+                                }}
+                                transition={{
+                                    duration: 1.5,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                            >
+                                <div className="w-2 h-2 bg-primary rounded-full" />
+                            </motion.div>
+                        </div>
+
+                        {/* Loading Text */}
                         <motion.div
-                            key={index}
-                            className="w-2 h-2 bg-white rounded-full"
-                            animate={{
-                                scale: [1, 1.5, 1],
-                                opacity: [0.5, 1, 0.5]
-                            }}
-                            transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                delay: index * 0.2,
-                                ease: "easeInOut"
-                            }}
-                        />
-                    ))}
-                </div>
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-center"
+                        >
+                            <div className="text-foreground text-lg font-medium mb-1">
+                                {message}{dots}
+                            </div>
+                            <div className="text-muted-foreground text-sm">
+                                Please wait a moment
+                            </div>
+                        </motion.div>
 
-                {/* Progress bar */}
-                <motion.div
-                    className="w-48 h-1 bg-white/20 rounded-full overflow-hidden"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                >
-                    <motion.div
-                        className="h-full bg-white rounded-full"
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                    />
+                        {/* Subtle Progress Dots */}
+                        <div className="flex space-x-2">
+                            {[0, 1, 2].map((index) => (
+                                <motion.div
+                                    key={index}
+                                    className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"
+                                    animate={{
+                                        scale: [1, 1.3, 1],
+                                        opacity: [0.4, 1, 0.4]
+                                    }}
+                                    transition={{
+                                        duration: 1.2,
+                                        repeat: Infinity,
+                                        delay: index * 0.2,
+                                        ease: "easeInOut"
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         </motion.div>
