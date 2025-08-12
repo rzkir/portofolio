@@ -35,7 +35,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
 
     return (
         <section
-            className="min-h-screen flex flex-col items-center justify-center py-10 -mt-0 md:-mt-16 relative overflow-hidden"
+            className="md:min-h-screen min-h-full flex flex-col items-center justify-center py-10 -mt-0 md:-mt-16 relative overflow-hidden"
             onMouseMove={handleMouseMove}
             id="home"
             onMouseEnter={() => setIsHovered(true)}
