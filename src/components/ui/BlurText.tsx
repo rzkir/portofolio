@@ -1,7 +1,15 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+
+interface AnimationState {
+  filter?: string;
+  opacity?: number;
+  y?: number;
+  [key: string]: any;
+}
 
 interface BlurTextProps {
   text?: string;
@@ -11,22 +19,27 @@ interface BlurTextProps {
   direction?: 'top' | 'bottom';
   threshold?: number;
   rootMargin?: string;
-  animationFrom?: any;
-  animationTo?: any;
+  animationFrom?: AnimationState;
+  animationTo?: AnimationState[];
   easing?: (t: number) => number;
   onAnimationComplete?: () => void;
   stepDuration?: number;
   as?: React.ElementType;
   loading?: boolean;
   initialDelay?: number;
-  maxElements?: number; // New prop to limit DOM elements
 }
 
-const buildKeyframes = (from: any, to: any[]) => {
-  return to.map((snapshot, index) => ({
-    ...snapshot,
-    transition: { duration: 0.1, ease: "easeOut" }
-  }));
+const buildKeyframes = (from: AnimationState, steps: AnimationState[]): Record<string, any[]> => {
+  const keys = new Set([
+    ...Object.keys(from),
+    ...steps.flatMap((s: AnimationState) => Object.keys(s)),
+  ]);
+
+  const keyframes: Record<string, any[]> = {};
+  keys.forEach((k) => {
+    keyframes[k] = [from[k], ...steps.map((s: AnimationState) => s[k])];
+  });
+  return keyframes;
 };
 
 const BlurText = ({
@@ -45,8 +58,8 @@ const BlurText = ({
   as: Component = 'p',
   loading = false,
   initialDelay = 0,
-  maxElements = 50, // Limit DOM elements
 }: BlurTextProps) => {
+  const elements = animateBy === 'words' ? text.split(' ') : text.split('');
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
@@ -101,76 +114,48 @@ const BlurText = ({
   // If loading, show initial state
   const shouldAnimate = !loading && inView;
 
-  // Optimize: Use CSS animations for shorter text, motion spans for longer text
-  const shouldUseCSSAnimation = text.length < 100 || (animateBy === 'words' && text.split(' ').length < 20);
+  const stepCount = toSnapshots.length + 1;
+  const totalDuration = stepDuration * (stepCount - 1);
+  const times = Array.from({ length: stepCount }, (_, i) =>
+    stepCount === 1 ? 0 : i / (stepCount - 1)
+  );
 
-  if (shouldUseCSSAnimation) {
-    // Use CSS animation approach for better performance
-    const elements = animateBy === 'words' ? text.split(' ') : text.split('');
-    const limitedElements = elements.slice(0, maxElements);
+  const content = (
+    <>
+      {elements.map((segment, index) => {
+        const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
 
-    const stepCount = toSnapshots.length + 1;
-    const totalDuration = stepDuration * (stepCount - 1);
-    const times = Array.from({ length: stepCount }, (_, i) =>
-      stepCount === 1 ? 0 : i / (stepCount - 1)
-    );
+        const spanTransition = {
+          duration: totalDuration,
+          times,
+          delay: (index * delay) / 1000,
+          ease: easing,
+        };
 
-    const content = (
-      <>
-        {limitedElements.map((segment, index) => {
-          const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
+        return (
+          <motion.span
+            className="inline-block will-change-[transform,filter,opacity]"
+            key={index}
+            initial={fromSnapshot}
+            animate={shouldAnimate ? animateKeyframes : fromSnapshot}
+            transition={spanTransition}
+            onAnimationComplete={
+              index === elements.length - 1 ? onAnimationComplete : undefined
+            }
+          >
+            {segment === ' ' ? '\u00A0' : segment}
+            {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
+          </motion.span>
+        );
+      })}
+    </>
+  );
 
-          const spanTransition = {
-            duration: totalDuration,
-            times,
-            delay: (index * delay) / 1000,
-            ease: easing,
-          };
-
-          return (
-            <motion.span
-              className="inline-block will-change-[transform,filter,opacity]"
-              key={index}
-              initial={fromSnapshot}
-              animate={shouldAnimate ? animateKeyframes : fromSnapshot}
-              transition={spanTransition}
-              onAnimationComplete={
-                index === limitedElements.length - 1 ? onAnimationComplete : undefined
-              }
-            >
-              {segment === ' ' ? '\u00A0' : segment}
-              {animateBy === 'words' && index < limitedElements.length - 1 && '\u00A0'}
-            </motion.span>
-          );
-        })}
-        {elements.length > maxElements && (
-          <span className="text-muted-foreground">...</span>
-        )}
-      </>
-    );
-
-    return React.createElement(Component as any, {
-      ref,
-      className,
-      style: { display: 'flex', flexWrap: 'wrap' }
-    }, content);
-  } else {
-    // For longer text, use a single animated container with CSS
-    const animationDuration = (text.length * delay) / 1000 + stepDuration;
-
-    return React.createElement(Component as any, {
-      ref,
-      className: `${className} ${shouldAnimate ? 'animate-blur-text' : ''}`,
-      style: {
-        display: 'block',
-        animationDuration: `${animationDuration}s`,
-        animationDelay: `${initialDelay}s`,
-        animationFillMode: 'both',
-        ...fromSnapshot
-      },
-      onAnimationEnd: onAnimationComplete
-    }, text);
-  }
+  return React.createElement(Component, {
+    ref,
+    className,
+    style: { display: 'flex', flexWrap: 'wrap' }
+  }, content);
 };
 
 export default BlurText;
