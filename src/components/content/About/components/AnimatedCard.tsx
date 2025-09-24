@@ -14,8 +14,6 @@ import Image from 'next/image'
 
 import bgCard from "@/base/assets/bg-card.png"
 
-import { AnimatedCardProps } from '@/types/about'
-
 export function AnimatedCard({ data }: AnimatedCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const mouseX = useMotionValue(0);

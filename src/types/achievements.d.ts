@@ -1,4 +1,4 @@
-export interface AchievementsContentProps {
+interface AchievementsContentProps {
   _id?: string;
   title: string;
   imageUrl: string;

@@ -1,11 +1,9 @@
-import { SkillsContentProps } from "@/types/skills";
-
-const API_URL = `${process.env.NEXT_PUBLIC_API_SKILLS}`;
+const API_URL = `${process.env.NEXT_PUBLIC_API}/skills`;
 
 export const fetchSkillsContents = async (): Promise<SkillsContentProps[]> => {
   try {
     const response = await fetch(API_URL, {
-      next: { revalidate: 10 }, // Revalidate every 10 seconds
+      next: { revalidate: 10 },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,

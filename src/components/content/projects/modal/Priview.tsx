@@ -16,13 +16,6 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 
-import { ProjectsContentProps } from '@/types/projects'
-
-interface PreviewProps {
-    previewProject: ProjectsContentProps | null;
-    setPreviewProject: (project: ProjectsContentProps | null) => void;
-}
-
 export default function Preview({ previewProject, setPreviewProject }: PreviewProps) {
     return (
         <Dialog open={!!previewProject} onOpenChange={() => setPreviewProject(null)}>

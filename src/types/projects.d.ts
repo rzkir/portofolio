@@ -1,4 +1,4 @@
-export interface ProjectsContentProps {
+interface ProjectsContentProps {
   _id?: string;
   title: string;
   slug: string;
@@ -13,7 +13,12 @@ export interface ProjectsContentProps {
   updatedAt?: Date;
 }
 
-export interface Framework {
+interface Framework {
   title: string;
   imageUrl: string;
+}
+
+interface PreviewProps {
+  previewProject: ProjectsContentProps | null;
+  setPreviewProject: (project: ProjectsContentProps | null) => void;
 }

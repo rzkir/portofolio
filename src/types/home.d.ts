@@ -1,4 +1,4 @@
-export interface HomeContentProps {
+interface HomeContentProps {
   _id?: string;
   account_id?: string;
   title: string;

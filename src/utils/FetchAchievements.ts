@@ -1,13 +1,11 @@
-import { AchievementsContentProps } from "@/types/achievements";
-
-const API_URL = `${process.env.NEXT_PUBLIC_API_ACHIEVEMENTS}`;
+const API_URL = `${process.env.NEXT_PUBLIC_API}/achievements`;
 
 export const fetchAchievementsContents = async (): Promise<
   AchievementsContentProps[]
 > => {
   try {
     const response = await fetch(API_URL, {
-      next: { revalidate: 10 }, // Revalidate every 10 seconds
+      next: { revalidate: 10 },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,

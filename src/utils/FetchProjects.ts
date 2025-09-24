@@ -1,6 +1,4 @@
-import { ProjectsContentProps } from "@/types/projects";
-
-const API_URL = `${process.env.NEXT_PUBLIC_API_PROJECTS}`;
+const API_URL = `${process.env.NEXT_PUBLIC_API}/projects`;
 
 export const fetchProjectsContents = async (): Promise<
   ProjectsContentProps[]

@@ -1,4 +1,4 @@
-export interface SkillsContentProps {
+interface SkillsContentProps {
   _id?: string;
   title: string;
   imageUrl: string;

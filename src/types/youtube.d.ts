@@ -1,4 +1,4 @@
-export interface YoutubeContentProps {
+interface YoutubeContentProps {
   _id?: string;
   title: string;
   href: string;
@@ -11,7 +11,7 @@ export interface YoutubeContentProps {
   frameworks: Framework[];
 }
 
-export interface Framework {
+interface Framework {
   title: string;
   imageUrl: string;
 }

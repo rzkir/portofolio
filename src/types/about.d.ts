@@ -1,4 +1,4 @@
-export interface AboutContentProps {
+interface AboutContentProps {
   _id?: string;
   card: {
     imageUrl: string;
@@ -12,10 +12,15 @@ export interface AboutContentProps {
   updatedAt?: Date;
 }
 
-export interface AnimatedCardProps {
+interface AnimatedCardProps {
   data: AboutContentProps;
 }
 
-export interface AnimatedDescriptionProps {
+interface AnimatedDescriptionProps {
   description: string;
+}
+
+interface AchievementsModalProps {
+  selectedAchievement: AchievementsContentProps | null
+  onClose: () => void
 }

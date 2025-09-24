@@ -1,7 +1,6 @@
 import { Metadata } from "next";
-import { ProjectsContentProps } from "@/types/projects";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_PROJECTS}`;
+const API_URL = `${process.env.NEXT_PUBLIC_API}/projects`;
 
 export async function getProducts(slug: string): Promise<ProjectsContentProps | null> {
   try {

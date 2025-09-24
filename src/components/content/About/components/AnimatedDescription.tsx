@@ -4,8 +4,6 @@ import React from 'react'
 
 import { motion, useInView } from 'framer-motion'
 
-import { AnimatedDescriptionProps } from "@/types/about"
-
 export function AnimatedDescription({ description }: AnimatedDescriptionProps) {
     const ref = React.useRef(null);
     const isInView = useInView(ref, { once: true });

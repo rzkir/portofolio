@@ -1,13 +1,11 @@
-import { YoutubeContentProps } from "@/types/youtube";
-
-const API_URL = `${process.env.NEXT_PUBLIC_API_YOUTUBE}`;
+const API_URL = `${process.env.NEXT_PUBLIC_API}/youtube`;
 
 export const fetchYoutubeContents = async (): Promise<
   YoutubeContentProps[]
 > => {
   try {
     const response = await fetch(API_URL, {
-      next: { revalidate: 10 }, // Revalidate every 10 seconds
+      next: { revalidate: 10 },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET}`,

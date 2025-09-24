@@ -2,8 +2,6 @@
 
 import React, { useCallback } from 'react'
 
-import { ProjectsContentProps } from "@/types/projects";
-
 import Image from 'next/image';
 
 import Link from 'next/link';
@@ -30,16 +28,13 @@ export default function ProjectsLayout({ productsData, allProjects }: ProjectsLa
     const handleProjectNavigation = useCallback(async (slug: string) => {
         try {
             showLoading("Navigating to project...");
-            // Simulate a small delay for better UX
             await new Promise((resolve) => setTimeout(resolve, 1000));
             router.push(`/${slug}`);
-            // Hide loading after a short delay to ensure navigation has started
             setTimeout(() => {
                 hideLoading();
             }, 1000);
         } catch (error) {
             hideLoading();
-            console.error("Navigation error:", error);
         }
     }, [router, showLoading, hideLoading]);
 

@@ -2,8 +2,6 @@ import { fetchProjectsContents } from "@/utils/FetchProjects";
 
 import metadata from "@/base/meta/Metadata";
 
-import { ProjectsContentProps } from "@/types/projects";
-
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 // Add XML escape function
