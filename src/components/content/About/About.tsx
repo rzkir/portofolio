@@ -2,9 +2,9 @@
 
 import React from 'react'
 
-import { AnimatedCard } from '@/components/content/About/components/AnimatedCard'
+import { AnimatedCard } from '@/components/content/about/components/AnimatedCard'
 
-import { AnimatedDescription } from '@/components/content/About/components/AnimatedDescription'
+import { AnimatedDescription } from '@/components/content/about/components/AnimatedDescription'
 
 export default function AboutContent({ aboutData }: { aboutData: AboutContentProps[] }) {
     return (

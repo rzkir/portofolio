@@ -21,8 +21,8 @@ export const navLink = [
   },
   {
     number: "05",
-    label: "Contact",
-    path: "#contact",
+    label: "Articles",
+    path: "#articles",
   },
 ];
 

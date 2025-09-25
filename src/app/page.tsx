@@ -4,7 +4,7 @@ import { fetchHomeContents } from '@/utils/FetchHome';
 
 import Home from '@/components/content/Home/Home';
 
-import About from '@/components/content/About/About';
+import About from '@/components/content/about/About';
 
 import Achievements from '@/components/content/achievements/Achievements';
 
@@ -14,7 +14,7 @@ import Projects from '@/components/content/projects/Projects';
 
 import Skills from '@/components/content/skills/Skils';
 
-import Contact from '@/components/content/contact/Contact';
+import Articles from '@/components/content/articles/Articles';
 
 import { fetchAboutContents } from "@/utils/FetchAbout";
 
@@ -39,10 +39,10 @@ export default async function HomePage() {
       <Home homeData={homeData} />
       <About aboutData={aboutData} />
       <Achievements achievementsData={achievementsData} />
-      <Youtube youtubeData={youtubeData} />
-      <Projects projectsData={projectsData} />
       <Skills skillsData={skillsData} />
-      <Contact />
+      <Projects projectsData={projectsData} />
+      <Youtube youtubeData={youtubeData} />
+      <Articles />
     </Fragment>
   );
 }

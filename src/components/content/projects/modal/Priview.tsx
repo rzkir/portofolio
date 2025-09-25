@@ -19,7 +19,7 @@ import {
 export default function Preview({ previewProject, setPreviewProject }: PreviewProps) {
     return (
         <Dialog open={!!previewProject} onOpenChange={() => setPreviewProject(null)}>
-            <DialogContent className="sm:max-w-7xl max-h-[100vh] md:max-h-[90vh] overflow-hidden flex flex-col bg-gradient-to-b from-background to-background/95 backdrop-blur-sm p-4 sm:p-6">
+            <DialogContent className="sm:max-w-7xl max-h-[100vh] md:max-h-[90vh] overflow-hidden flex flex-col bg-gradient-to-b from-background to-background/95 backdrop-blur-sm p-4 sm:p-6" data-lenis-prevent>
                 {previewProject && (
                     <>
                         <DialogHeader className="border-b border-border/50 pb-3 sm:pb-4">

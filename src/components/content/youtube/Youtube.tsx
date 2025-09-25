@@ -72,7 +72,7 @@ export default function YoutubeContent({ youtubeData = [] }: { youtubeData?: You
     }, [selectedContent, lenis]);
 
     return (
-        <section id="youtube" className='py-8 md:py-12 lg:py-16 bg-transparent'>
+        <section id="youtube" className='py-4 pb-10 bg-transparent'>
             <div className="container px-4 md:px-6">
                 <div ref={headingRef} className='flex flex-col gap-4 items-center justify-center mb-10'>
                     <motion.h2

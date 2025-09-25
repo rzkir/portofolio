@@ -22,6 +22,8 @@ import LenisProvider from '@/base/smooth-scroll/LenisProvider'
 
 import Footer from "@/components/layout/footer/Footer"
 
+import Overlay from "@/base/helper/Overlay";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,6 +51,7 @@ export default function RootLayout({
               {children}
               <Footer />
               <LoadingOverlayWrapper />
+              <Overlay />
             </LoadingProvider>
           </LenisProvider>
         </ThemeProvider>

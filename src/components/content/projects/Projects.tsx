@@ -22,12 +22,16 @@ import { useRouter } from 'next/navigation'
 
 import { useLoading } from '@/context/LoadingContext'
 
+import { useLenis } from '@/lib/useLenis'
+
 const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { projectsData: ProjectsContentProps[] }) {
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [previewProject, setPreviewProject] = useState<ProjectsContentProps | null>(null);
     const itemsPerPage = 6;
+
+    const lenis = useLenis();
     const router = useRouter();
     const { showLoading, hideLoading } = useLoading();
 
@@ -57,6 +61,22 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
     React.useEffect(() => {
         setCurrentPage(1);
     }, [selectedCategory]);
+
+    React.useEffect(() => {
+        if (previewProject) {
+            // Stop Lenis smooth scrolling to prevent background scroll
+            if (lenis) {
+                lenis.stop();
+            }
+
+            return () => {
+                // Restore Lenis smooth scrolling when modal closes
+                if (lenis) {
+                    lenis.start();
+                }
+            };
+        }
+    }, [previewProject, lenis]);
 
     const handlePreview = useCallback((project: ProjectsContentProps) => {
         setPreviewProject(project);
