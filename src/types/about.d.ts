@@ -21,6 +21,6 @@ interface AnimatedDescriptionProps {
 }
 
 interface AchievementsModalProps {
-  selectedAchievement: AchievementsContentProps | null
-  onClose: () => void
+  selectedAchievement: AchievementsContentProps | null;
+  onClose: () => void;
 }
