@@ -26,10 +26,11 @@ export async function getProducts(slug: string): Promise<ProjectsContentProps | 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   try {
-    const project = await getProducts(params.slug);
+    const resolvedParams = await params;
+    const project = await getProducts(resolvedParams.slug);
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 
     if (!project) {

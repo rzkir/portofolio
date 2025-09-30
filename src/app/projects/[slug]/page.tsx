@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 
-import ProjectDetailsContent from '@/hooks/projects/ProjectsLayout'
+import ProjectDetailsContent from '@/hooks/projects/details/ProjectsLayout'
 
-import { generateMetadata as getProjectsMetadata } from '@/hooks/projects/meta/metadata'
+import { generateMetadata as getProjectsMetadata } from '@/hooks/projects/details/meta/metadata'
 
 import { fetchProjectBySlug, fetchProjectsContents } from "@/utils/FetchProjects"
 
-import ProductsSlugSkeleton from '@/hooks/projects/ProjectsSkeleton';
+import ProductsSlugSkeleton from '@/hooks/projects/details/ProjectsSkeleton';
 
 type Props = {
     params: Promise<{ slug: string }>
@@ -16,8 +16,7 @@ type Props = {
 export async function generateMetadata(
     { params }: Props,
 ): Promise<Metadata> {
-    const resolvedParams = await params;
-    const metadata = await getProjectsMetadata({ params: { slug: resolvedParams.slug } });
+    const metadata = await getProjectsMetadata({ params });
     return metadata;
 }
 

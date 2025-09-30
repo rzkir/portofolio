@@ -24,6 +24,8 @@ import Footer from "@/components/layout/footer/Footer"
 
 import Overlay from "@/base/helper/Overlay";
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{

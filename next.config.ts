@@ -1,23 +1,23 @@
 import type { NextConfig } from "next";
+
 import bundleAnalyzer from "@next/bundle-analyzer";
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react', '@radix-ui/react-dialog'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
 
   compress: true,
-
-  swcMinify: true,
 
   images: {
     remotePatterns: [
