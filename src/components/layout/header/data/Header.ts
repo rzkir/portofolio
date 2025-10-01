@@ -17,12 +17,12 @@ export const navLink = [
   {
     number: "04",
     label: "Projects",
-    path: "#projects",
+    path: "/projects",
   },
   {
     number: "05",
     label: "Articles",
-    path: "#articles",
+    path: "/articles",
   },
 ];
 

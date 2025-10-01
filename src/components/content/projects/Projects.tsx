@@ -86,7 +86,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
         try {
             showLoading("Navigating to project details...");
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            router.push(`/${slug}`);
+            router.push(`projects/${slug}`);
             setTimeout(() => {
                 hideLoading();
             }, 1000);

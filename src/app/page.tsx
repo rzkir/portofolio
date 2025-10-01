@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 
 import { fetchHomeContents } from '@/utils/FetchHome';
 
-import Home from '@/components/content/Home/Home';
+import Home from '@/components/content/home/Home';
 
 import About from '@/components/content/about/About';
 

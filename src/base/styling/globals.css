@@ -159,3 +159,17 @@ html {
   width: 100%;
   height: 100%;
 }
+
+/* FlowingMenu marquee animation (moved from Tailwind config to global CSS) */
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+}

@@ -70,7 +70,7 @@ export default function Header() {
     return (
         <>
             <motion.header
-                className="w-full px-4 sm:px-6 py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm"
+                className="w-full px-4 sm:px-6 py-4 sticky top-0 z-[100] bg-background/80 backdrop-blur-sm"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{
                     opacity: isInitialLoading ? 0 : 1,
@@ -223,11 +223,12 @@ export default function Header() {
                 </div>
 
             </motion.header>
+
             {/* Modal Menu */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80"
+                        className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-80"
                         onClick={() => setIsMenuOpen(false)}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
