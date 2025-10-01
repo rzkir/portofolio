@@ -2,19 +2,19 @@ import { Fragment } from 'react'
 
 import { fetchHomeContents } from '@/utils/FetchHome';
 
-import Home from '@/components/content/home/home';
+import Home from '@/components/home/Home';
 
-import About from '@/components/content/about/about';
+import About from '@/components/about/About';
 
-import Achievements from '@/components/content/achievements/Achievements';
+import Achievements from '@/components/achievements/Achievements';
 
-import Youtube from '@/components/content/youtube/Youtube';
+import Youtube from '@/components/youtube/Youtube';
 
-import Projects from '@/components/content/projects/Projects';
+import Projects from '@/components/projects/Projects';
 
-import Skills from '@/components/content/skills/Skils';
+import Skills from '@/components/skills/Skils';
 
-import Articles from '@/components/content/articles/Articles';
+import Articles from '@/components/articles/Articles';
 
 import { fetchAboutContents } from "@/utils/FetchAbout";
 

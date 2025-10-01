@@ -14,7 +14,7 @@ import { motion } from "framer-motion"
 
 import Link from 'next/link'
 
-import Preview from '@/components/content/projects/modal/Priview'
+import Preview from '@/components/projects/modal/Priview'
 
 import { useRouter } from 'next/navigation'
 

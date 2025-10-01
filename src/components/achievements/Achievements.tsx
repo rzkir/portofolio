@@ -8,7 +8,7 @@ import { MoveUpRight } from 'lucide-react'
 
 import { motion, useInView } from 'framer-motion'
 
-import AchievementsModal from '@/components/content/achievements/modal/AchievementsModal'
+import AchievementsModal from '@/components/achievements/modal/AchievementsModal'
 
 export default function AchievementsContent({ achievementsData }: { achievementsData: AchievementsContentProps[] }) {
     const [selectedAchievement, setSelectedAchievement] = useState<AchievementsContentProps | null>(null);
