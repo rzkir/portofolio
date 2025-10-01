@@ -12,13 +12,13 @@ import { Button } from "@/components/ui/button"
 
 import { motion } from "framer-motion"
 
-import { Pagination } from '@/base/helper/pagination'
-
 import Link from 'next/link'
 
 import Preview from '@/components/content/projects/modal/Priview'
 
 import { useRouter } from 'next/navigation'
+
+import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
 
 import { useLoading } from '@/context/LoadingContext'
 
@@ -27,13 +27,12 @@ import { useLenis } from '@/lib/useLenis'
 const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { projectsData: ProjectsContentProps[] }) {
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
-    const [currentPage, setCurrentPage] = useState<number>(1);
     const [previewProject, setPreviewProject] = useState<ProjectsContentProps | null>(null);
-    const itemsPerPage = 6;
 
     const lenis = useLenis();
     const router = useRouter();
     const { showLoading, hideLoading } = useLoading();
+    const { withNavigationLoading } = useLoadingOverlay();
 
     const categories = useMemo(() => {
         const uniqueCategories = [...new Set(projectsData.map(project => project.category))];
@@ -45,32 +44,19 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
         return projectsData.filter(project => project.category === selectedCategory);
     }, [projectsData, selectedCategory]);
 
-    const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedProjects = filteredProjects.slice(startIndex, startIndex + itemsPerPage);
+    const displayedProjects = useMemo(() => filteredProjects.slice(0, 6), [filteredProjects]);
 
-    const topProject = paginatedProjects[0];
-    const middleProjects = paginatedProjects.slice(1, 4);
-    const bottomProjects = paginatedProjects.slice(4, 6);
-
-    const handlePageChange = useCallback((page: number) => {
-        setCurrentPage(page);
-        setActiveIndex(-1);
-    }, []);
-
-    React.useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedCategory]);
+    const topProject = displayedProjects[0];
+    const middleProjects = displayedProjects.slice(1, 4);
+    const bottomProjects = displayedProjects.slice(4);
 
     React.useEffect(() => {
         if (previewProject) {
-            // Stop Lenis smooth scrolling to prevent background scroll
             if (lenis) {
                 lenis.stop();
             }
 
             return () => {
-                // Restore Lenis smooth scrolling when modal closes
                 if (lenis) {
                     lenis.start();
                 }
@@ -83,18 +69,8 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
     }, []);
 
     const handleViewDetails = useCallback(async (slug: string) => {
-        try {
-            showLoading("Navigating to project details...");
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            router.push(`projects/${slug}`);
-            setTimeout(() => {
-                hideLoading();
-            }, 1000);
-        } catch (error) {
-            hideLoading();
-            console.error("Navigation error:", error);
-        }
-    }, [router, showLoading, hideLoading]);
+        await withNavigationLoading(`projects/${slug}`)
+    }, [withNavigationLoading]);
 
     return (
         <section id="projects" className="py-16 bg-gradient-to-b from-background to-background/95">
@@ -106,10 +82,12 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                     transition={{ duration: 0.5 }}
                     className='flex flex-col md:flex-row items-center justify-between gap-4 mb-10'
                 >
-                    <div className="relative mb-5">
+                    <div className="relative flex flex-col gap-2 mb-5">
                         <h2 className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight'>
                             Featured Projects
                         </h2>
+
+                        <Link href="/projects" className='text-sm bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient uppercase tracking-tight'>View More</Link>
                     </div>
 
                     <div className="overflow-x-auto flex items-center justify-start md:justify-center mb-2 md:mb-5 w-full md:w-fit">
@@ -168,7 +146,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
 
                                     <div className="absolute bottom-0 left-0 right-0 p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                                         <div className="flex items-center gap-3 mb-4">
-                                            <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${startIndex + 1}`}</span>
+                                            <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${1}`}</span>
                                             <CardTitle className="text-2xl font-semibold tracking-tight">{topProject.title}</CardTitle>
                                         </div>
 
@@ -228,7 +206,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
 
                                             <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${startIndex + actualIndex + 1}`}</span>
+                                                    <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${actualIndex + 1}`}</span>
                                                     <CardTitle className="text-xl font-semibold tracking-tight">{item.title}</CardTitle>
                                                 </div>
 
@@ -290,7 +268,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
 
                                             <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${startIndex + actualIndex + 1}`}</span>
+                                                    <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${actualIndex + 1}`}</span>
                                                     <CardTitle className="text-xl font-semibold tracking-tight">{item.title}</CardTitle>
                                                 </div>
 
@@ -330,7 +308,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
 
                 <div className='md:hidden'>
                     <div className='flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory'>
-                        {paginatedProjects.map((item, idx) => {
+                        {displayedProjects.map((item, idx) => {
                             const isActive = activeIndex === idx;
                             return (
                                 <div
@@ -351,7 +329,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
 
                                             <div className={`absolute bottom-0 left-0 right-0 p-6 transition-transform duration-500 ${isActive ? 'translate-y-0' : 'translate-y-full'} md:translate-y-full md:group-hover:translate-y-0`}>
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${startIndex + idx + 1}`}</span>
+                                                    <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">{`0${idx + 1}`}</span>
                                                     <CardTitle className="text-xl font-semibold tracking-tight linc line-clamp-1 md:line-clamp-2">{item.title}</CardTitle>
                                                 </div>
 
@@ -403,21 +381,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                     </div>
                 </div>
 
-                {totalPages > 1 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                            className="px-4"
-                        />
-                    </motion.div>
-                )}
+
             </div>
 
             <Preview previewProject={previewProject} setPreviewProject={setPreviewProject} />

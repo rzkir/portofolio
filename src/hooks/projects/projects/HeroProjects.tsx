@@ -24,7 +24,7 @@ export default function HeroProjects() {
                 speed={0.6}
                 edgeFade={0.25}
                 transparent
-                className='z-50'
+                className='z-20'
             />
             {/* Background overlay beneath LightRays */}
             <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/80 to-background/0" />

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import Image from 'next/image';
 
@@ -12,9 +12,7 @@ import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
 
-import { useRouter } from 'next/navigation';
-
-import { useLoading } from '@/context/LoadingContext';
+import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
 interface ProjectsLayoutProps {
     slug: string;
     productsData: ProjectsContentProps;
@@ -22,21 +20,12 @@ interface ProjectsLayoutProps {
 }
 
 export default function ProjectsLayout({ productsData, allProjects }: ProjectsLayoutProps) {
-    const router = useRouter();
-    const { showLoading, hideLoading } = useLoading();
+    const { withNavigationLoading } = useLoadingOverlay()
 
-    const handleProjectNavigation = useCallback(async (slug: string) => {
-        try {
-            showLoading("Navigating to project...");
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            router.push(`/${slug}`);
-            setTimeout(() => {
-                hideLoading();
-            }, 1000);
-        } catch (error) {
-            hideLoading();
-        }
-    }, [router, showLoading, hideLoading]);
+    const handleProjectNavigation = React.useCallback(async (slug: string) => {
+        await withNavigationLoading(`/projects/${slug}`)
+    }, [withNavigationLoading])
+
 
     return (
         <section className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">

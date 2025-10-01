@@ -1,10 +1,11 @@
 import { useLoading } from "@/context/LoadingContext";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export function useLoadingOverlay() {
   const { showLoading, hideLoading } = useLoading();
   const router = useRouter();
+  const pathname = usePathname();
 
   const withLoading = async <T>(
     asyncFn: () => Promise<T>,
@@ -20,14 +21,28 @@ export function useLoadingOverlay() {
   };
 
   const withNavigationLoading = async (href: string) => {
+    // If navigating to the same pathname, don't show the overlay
+    try {
+      const targetPath = href.startsWith('/') ? href : `/${href}`;
+      if (pathname === targetPath) {
+        hideLoading();
+        return;
+      }
+    } catch (_) {
+      // noop
+    }
     try {
       showLoading("Navigating to project details...");
-      // Simulate a small delay for better UX
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Small delay gives time for overlay to appear smoothly
+      await new Promise((resolve) => setTimeout(resolve, 400));
       router.push(href);
     } catch (error) {
-      hideLoading();
       console.error("Navigation error:", error);
+    } finally {
+      // Ensure the overlay hides even if navigation completes very quickly
+      setTimeout(() => {
+        hideLoading();
+      }, 700);
     }
   };
 

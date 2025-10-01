@@ -10,6 +10,8 @@ import { useTheme } from "next-themes"
 
 import { useRouter } from 'next/navigation'
 
+import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
+
 import { motion, AnimatePresence } from "framer-motion";
 
 import { navLink, SocialMedia } from "@/components/layout/header/data/Header"
@@ -25,6 +27,7 @@ export default function Header() {
     const [mounted, setMounted] = React.useState(false)
 
     const router = useRouter();
+    const { withNavigationLoading } = useLoadingOverlay();
     const scrollTo = useScrollTo();
 
     // State untuk modal menu
@@ -44,8 +47,8 @@ export default function Header() {
                 // Scroll to top using Lenis
                 scrollTo('html', { duration: 1.5 });
             } else {
-                // Navigate to home page
-                router.push('/');
+                // Navigate to home page with loading overlay
+                withNavigationLoading('/');
             }
         } else if (path.startsWith('#')) {
             // Check if we're on the home page
@@ -56,12 +59,12 @@ export default function Header() {
                     duration: 1.5
                 });
             } else {
-                // Navigate to home page with hash
-                router.push(`/${path}`);
+                // Navigate to home page with hash using loading overlay
+                withNavigationLoading(`/${path}`);
             }
         } else {
-            // Regular navigation
-            router.push(path);
+            // Regular navigation with loading overlay
+            withNavigationLoading(path);
         }
     }
 
@@ -70,7 +73,7 @@ export default function Header() {
     return (
         <>
             <motion.header
-                className="w-full px-4 sm:px-6 py-4 sticky top-0 z-[100] bg-background/80 backdrop-blur-sm"
+                className="w-full px-4 sm:px-6 py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{
                     opacity: isInitialLoading ? 0 : 1,

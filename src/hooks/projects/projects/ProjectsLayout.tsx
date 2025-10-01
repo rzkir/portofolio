@@ -16,9 +16,7 @@ import { motion } from 'framer-motion'
 
 import { LayoutGrid, List } from 'lucide-react'
 
-import { useRouter } from 'next/navigation'
-
-import { useLoading } from '@/context/LoadingContext'
+import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
 
 export default function ProjectLayout({ projectsData }: { projectsData: ProjectsContentProps[] }) {
     const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null)
@@ -28,8 +26,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
     const [layoutMode, setLayoutMode] = React.useState<'grid' | 'column'>('grid')
     const [visibleCount, setVisibleCount] = React.useState<number>(6)
     const sentinelRef = React.useRef<HTMLDivElement | null>(null)
-    const router = useRouter()
-    const { showLoading, hideLoading } = useLoading()
+    const { withNavigationLoading } = useLoadingOverlay()
 
     const [selectedCategory, setSelectedCategory] = React.useState<string>('all')
     const categories = React.useMemo(() => {
@@ -53,7 +50,6 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
     }, [])
 
     React.useEffect(() => {
-        // reset visible count when category changes
         setVisibleCount(6)
     }, [selectedCategory])
 
@@ -90,18 +86,8 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
     }
 
     const handleViewDetails = React.useCallback(async (slug: string) => {
-        try {
-            showLoading('Navigating to project details...')
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            router.push(`/projects/${slug}`)
-            setTimeout(() => {
-                hideLoading()
-            }, 1000)
-        } catch (error) {
-            hideLoading()
-            console.error('Navigation error:', error)
-        }
-    }, [router, showLoading, hideLoading])
+        await withNavigationLoading(`/projects/${slug}`)
+    }, [withNavigationLoading])
 
     return (
         <section className='py-10'>
