@@ -1,21 +1,21 @@
 import React, { Fragment } from 'react'
 
-import ProjectLayout from '@/hooks/projects/projects/ProjectsLayout'
+import ArticlesLayout from '@/hooks/articles/articles/ArticlesLayout'
 
-import { fetchProjectsContents } from "@/utils/FetchProjects";
+import { fetchArticlesContents } from "@/utils/FetchArticles";
 
-import HeroProjects from "@/hooks/projects/projects/HeroProjects"
+import HeroArticles from "@/hooks/articles/articles/HeroArticles"
 
-import { ProjectsSchema, ProjectsBreadcrumbSchema } from "@/lib/Script";
+import { ArticlesSchema, ArticlesBreadcrumbSchema } from "@/lib/Script";
 
-export default async function ProjectPage() {
-    const projectsData = await fetchProjectsContents();
+export default async function ArticlesPage() {
+    const articlesData = await fetchArticlesContents();
     return (
         <Fragment>
-            <ProjectsBreadcrumbSchema />
-            <ProjectsSchema projectsData={projectsData} />
-            <HeroProjects />
-            <ProjectLayout projectsData={projectsData} />
+            <ArticlesBreadcrumbSchema />
+            <ArticlesSchema articlesData={articlesData} />
+            <HeroArticles />
+            <ArticlesLayout articlesData={articlesData} />
         </Fragment>
     );
 }

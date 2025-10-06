@@ -4,7 +4,7 @@ import React from 'react'
 
 import LightRays from '@/components/ui/LightRays';
 
-export default function HeroProjects() {
+export default function HeroArticles() {
     return (
         <div className='w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] relative'>
             <LightRays
@@ -37,11 +37,11 @@ export default function HeroProjects() {
                         aria-label="New Background"
                     >
                         <span className="inline-block h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-sm bg-foreground/60" />
-                        <span className="xs:hidden">Projects</span>
+                        <span className="xs:hidden">Articles</span>
                     </button>
                     <h1 className="text-foreground font-extrabold leading-tight tracking-tight">
-                        <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Collection of Projects</span>
-                        <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-1">I've Made.</span>
+                        <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Collection of Articles</span>
+                        <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-1">I've Written.</span>
                     </h1>
                 </div>
             </div>

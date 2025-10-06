@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 
 import Link from 'next/link'
@@ -10,7 +12,15 @@ import { Button } from '@/components/ui/button'
 
 import { formatRelativeTime } from '@/lib/formatTime'
 
+import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
+
 export default function Articles({ articlesData }: { articlesData: Article[] }) {
+    const { withNavigationLoading } = useLoadingOverlay()
+
+    const handleViewDetails = React.useCallback(async (slug: string) => {
+        await withNavigationLoading(`/articles/${slug}`, 'articles')
+    }, [withNavigationLoading])
+
     return (
         <section className='py-10'>
             <div className="container space-y-16 px-6">
@@ -30,7 +40,7 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
                     {
                         articlesData.map((item, idx) => {
                             return (
-                                <Link href={`/articles/${item.slug}`} key={idx} className='group cursor-pointer'>
+                                <div key={idx} className='group cursor-pointer' onClick={() => handleViewDetails(item.slug)}>
                                     <div className='relative aspect-[16/9] overflow-hidden rounded-lg'>
                                         <Image src={item.thumbnail} alt={item.title} fill className='object-cover group-hover:scale-105 transition-transform duration-300' />
 
@@ -59,7 +69,7 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
                                             {item.title}
                                         </h1>
                                     </div>
-                                </Link>
+                                </div>
                             )
                         })
                     }

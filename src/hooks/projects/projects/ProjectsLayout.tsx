@@ -88,7 +88,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
     }
 
     const handleViewDetails = React.useCallback(async (slug: string) => {
-        await withNavigationLoading(`/projects/${slug}`)
+        await withNavigationLoading(`/projects/${slug}`, 'projects')
     }, [withNavigationLoading])
 
     return (

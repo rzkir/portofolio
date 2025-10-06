@@ -69,7 +69,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
     }, []);
 
     const handleViewDetails = useCallback(async (slug: string) => {
-        await withNavigationLoading(`projects/${slug}`)
+        await withNavigationLoading(`/projects/${slug}`, 'projects')
     }, [withNavigationLoading]);
 
     return (

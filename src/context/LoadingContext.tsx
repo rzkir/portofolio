@@ -2,10 +2,13 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 
+type LoadingType = 'projects' | 'articles' | 'general'
+
 interface LoadingContextType {
     isLoading: boolean
     loadingMessage: string
-    showLoading: (message?: string) => void
+    loadingType: LoadingType
+    showLoading: (message?: string, type?: LoadingType) => void
     hideLoading: () => void
     isInitialLoading: boolean
 }
@@ -15,6 +18,7 @@ const LoadingContext = createContext<LoadingContextType | undefined>(undefined)
 export function LoadingProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState(false)
     const [loadingMessage, setLoadingMessage] = useState('Loading...')
+    const [loadingType, setLoadingType] = useState<LoadingType>('general')
     const [isInitialLoading, setIsInitialLoading] = useState(true) // Keep this true for styling
 
     useEffect(() => {
@@ -55,23 +59,26 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
         }
     }, [])
 
-    const showLoading = React.useCallback((message: string = 'Loading...') => {
+    const showLoading = React.useCallback((message: string = 'Loading...', type: LoadingType = 'general') => {
         setLoadingMessage(message)
+        setLoadingType(type)
         setIsLoading(true)
     }, [])
 
     const hideLoading = React.useCallback(() => {
         setIsLoading(false)
         setLoadingMessage('Loading...')
+        setLoadingType('general')
     }, [])
 
     const contextValue = React.useMemo(() => ({
         isLoading: isLoading || isInitialLoading,
         loadingMessage: isInitialLoading ? 'Loading My Portfolio...' : loadingMessage,
+        loadingType: isInitialLoading ? 'general' : loadingType,
         showLoading,
         hideLoading,
         isInitialLoading
-    }), [isLoading, isInitialLoading, loadingMessage, showLoading, hideLoading])
+    }), [isLoading, isInitialLoading, loadingMessage, loadingType, showLoading, hideLoading])
 
     return (
         <LoadingContext.Provider value={contextValue}>

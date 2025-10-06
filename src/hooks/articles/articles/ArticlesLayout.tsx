@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
 
-export default function ProjectLayout({ projectsData }: { projectsData: ProjectsContentProps[] }) {
+export default function ArticlesLayout({ articlesData }: { articlesData: Article[] }) {
     const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null)
     const [mousePosition, setMousePosition] = React.useState<{ x: number; y: number }>({ x: 0, y: 0 })
     const [buttonSize, setButtonSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 })
@@ -32,17 +32,17 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
 
     const [selectedCategory, setSelectedCategory] = React.useState<string>('all')
     const categories = React.useMemo(() => {
-        const unique = Array.from(new Set((projectsData || []).map((p) => (p.category || '').toLowerCase()))).filter(Boolean)
+        const unique = Array.from(new Set((articlesData || []).map((a) => (a.category || '').toLowerCase()))).filter(Boolean)
         return ['all', ...unique]
-    }, [projectsData])
-    const filteredProjects = React.useMemo(() => {
-        if (selectedCategory === 'all') return projectsData
-        return (projectsData || []).filter((p) => (p.category || '').toLowerCase() === selectedCategory)
-    }, [projectsData, selectedCategory])
+    }, [articlesData])
+    const filteredArticles = React.useMemo(() => {
+        if (selectedCategory === 'all') return articlesData
+        return (articlesData || []).filter((a) => (a.category || '').toLowerCase() === selectedCategory)
+    }, [articlesData, selectedCategory])
 
-    const displayedProjects = React.useMemo(() => {
-        return (filteredProjects || []).slice(0, Math.min(visibleCount, (filteredProjects || []).length))
-    }, [filteredProjects, visibleCount])
+    const displayedArticles = React.useMemo(() => {
+        return (filteredArticles || []).slice(0, Math.min(visibleCount, (filteredArticles || []).length))
+    }, [filteredArticles, visibleCount])
 
     React.useLayoutEffect(() => {
         if (buttonRef.current) {
@@ -65,7 +65,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
             if (entry.isIntersecting) {
                 setVisibleCount((prev) => {
                     const next = prev + 6
-                    const max = (filteredProjects || []).length
+                    const max = (filteredArticles || []).length
                     return next > max ? max : next
                 })
             }
@@ -73,7 +73,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
 
         observer.observe(node)
         return () => observer.disconnect()
-    }, [layoutMode, filteredProjects])
+    }, [layoutMode, filteredArticles])
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, idx: number) => {
         if (layoutMode !== 'grid') return
@@ -88,7 +88,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
     }
 
     const handleViewDetails = React.useCallback(async (slug: string) => {
-        await withNavigationLoading(`/projects/${slug}`)
+        await withNavigationLoading(`/articles/${slug}`, 'articles')
     }, [withNavigationLoading])
 
     return (
@@ -154,7 +154,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
                                 >
                                     {selectedCategory === category && (
                                         <motion.div
-                                            layoutId="activeProjectCategory"
+                                            layoutId="activeArticleCategory"
                                             className="absolute inset-0 bg-primary rounded-lg"
                                             initial={false}
                                             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
@@ -196,7 +196,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
                 {layoutMode === 'grid' ? (
                     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4'>
                         {
-                            displayedProjects.map((item, idx) => {
+                            displayedArticles.map((item, idx) => {
                                 return (
                                     <Card
                                         key={idx}
@@ -234,7 +234,7 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
                                                 }}
                                             />
 
-                                            <Link href={`/projects/${item.slug}`}>
+                                            <Link href={`/articles/${item.slug}`}>
                                                 <motion.div
                                                     aria-label="View details"
                                                     className='absolute z-[2] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold bg-[color:var(--color-primary)] text-[color:var(--color-primary-foreground)] shadow-lg hover:shadow-xl active:scale-95 transition-[box-shadow,transform]'
@@ -266,13 +266,13 @@ export default function ProjectLayout({ projectsData }: { projectsData: Projects
                                 )
                             })
                         }
-                        {(displayedProjects.length < (filteredProjects || []).length) && (
+                        {(displayedArticles.length < (filteredArticles || []).length) && (
                             <div ref={sentinelRef} className='col-span-full h-8' aria-hidden="true" />
                         )}
                     </div>
                 ) : (
                     <div className='h-[70vh] sm:h-[80vh] lg:h-screen relative'>
-                        <FlowingMenu items={filteredProjects.map((item) => ({ link: `/projects/${item.slug}`, text: item.title, image: item.thumbnail }))} />
+                        <FlowingMenu items={filteredArticles.map((item) => ({ link: `/articles/${item.slug}`, text: item.title, image: item.thumbnail }))} />
                     </div>
                 )}
             </div>

@@ -1,6 +1,10 @@
+"use client";
+
 import { useLoading } from "@/context/LoadingContext";
 
 import { useRouter, usePathname } from "next/navigation";
+
+type LoadingType = "projects" | "articles" | "general";
 
 export function useLoadingOverlay() {
   const { showLoading, hideLoading } = useLoading();
@@ -9,10 +13,11 @@ export function useLoadingOverlay() {
 
   const withLoading = async <T>(
     asyncFn: () => Promise<T>,
-    message: string = "Loading..."
+    message: string = "Loading...",
+    type: LoadingType = "general"
   ): Promise<T> => {
     try {
-      showLoading(message);
+      showLoading(message, type);
       const result = await asyncFn();
       return result;
     } finally {
@@ -20,10 +25,13 @@ export function useLoadingOverlay() {
     }
   };
 
-  const withNavigationLoading = async (href: string) => {
+  const withNavigationLoading = async (
+    href: string,
+    type: LoadingType = "general"
+  ) => {
     // If navigating to the same pathname, don't show the overlay
     try {
-      const targetPath = href.startsWith('/') ? href : `/${href}`;
+      const targetPath = href.startsWith("/") ? href : `/${href}`;
       if (pathname === targetPath) {
         hideLoading();
         return;
@@ -31,8 +39,27 @@ export function useLoadingOverlay() {
     } catch (_) {
       // noop
     }
+
+    // Determine message based on type and path
+    let message = "Loading...";
+    if (href === "/" || href === "") {
+      message = "Loading to homepage...";
+    } else if (type === "projects") {
+      if (href.includes("/projects/") && !href.endsWith("/projects")) {
+        message = "Loading project details...";
+      } else {
+        message = "Loading projects...";
+      }
+    } else if (type === "articles") {
+      if (href.includes("/articles/") && !href.endsWith("/articles")) {
+        message = "Loading article details...";
+      } else {
+        message = "Loading articles...";
+      }
+    }
+
     try {
-      showLoading("Navigating to project details...");
+      showLoading(message, type);
       // Small delay gives time for overlay to appear smoothly
       await new Promise((resolve) => setTimeout(resolve, 400));
       router.push(href);

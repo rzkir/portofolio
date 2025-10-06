@@ -8,8 +8,6 @@ import { Switch } from "@/components/ui/switch"
 
 import { useTheme } from "next-themes"
 
-import { useRouter } from 'next/navigation'
-
 import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,7 +24,6 @@ export default function Header() {
 
     const [mounted, setMounted] = React.useState(false)
 
-    const router = useRouter();
     const { withNavigationLoading } = useLoadingOverlay();
     const scrollTo = useScrollTo();
 
@@ -48,7 +45,7 @@ export default function Header() {
                 scrollTo('html', { duration: 1.5 });
             } else {
                 // Navigate to home page with loading overlay
-                withNavigationLoading('/');
+                withNavigationLoading('/', 'general');
             }
         } else if (path.startsWith('#')) {
             // Check if we're on the home page
@@ -60,11 +57,19 @@ export default function Header() {
                 });
             } else {
                 // Navigate to home page with hash using loading overlay
-                withNavigationLoading(`/${path}`);
+                withNavigationLoading(`/${path}`, 'general');
             }
         } else {
+            // Determine loading type based on path
+            let loadingType: 'projects' | 'articles' | 'general' = 'general';
+            if (path.startsWith('/projects')) {
+                loadingType = 'projects';
+            } else if (path.startsWith('/articles')) {
+                loadingType = 'articles';
+            }
+
             // Regular navigation with loading overlay
-            withNavigationLoading(path);
+            withNavigationLoading(path, loadingType);
         }
     }
 

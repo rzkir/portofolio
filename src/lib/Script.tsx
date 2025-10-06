@@ -19,6 +19,16 @@ export const projectsBreadcrumbJsonLd = {
     ]
 };
 
+// Breadcrumb for articles page
+export const articlesBreadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rizkiramadhan.web.id" },
+        { "@type": "ListItem", "position": 2, "name": "Articles", "item": "https://rizkiramadhan.web.id/articles" },
+    ]
+};
+
 // Dynamic breadcrumb for individual project pages
 export const createProjectBreadcrumb = (project: ProjectsContentProps) => ({
     "@context": "https://schema.org",
@@ -399,6 +409,60 @@ export const ArticleSchema = ({ article }: { article: Article }) => (
         type="application/ld+json"
         dangerouslySetInnerHTML={{
             __html: JSON.stringify(createArticleSchema(article)),
+        }}
+        strategy="afterInteractive"
+    />
+);
+
+// Articles List Schema
+export const createArticlesSchema = (articlesData: Article[]) => ({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Articles - Rizki Ramadhan",
+    "description": "Collection of articles and blog posts by Rizki Ramadhan",
+    "url": "https://rizkiramadhan.web.id/articles",
+    "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": articlesData.length,
+        "itemListElement": articlesData.map((article, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+                "@type": "Article",
+                "name": article.title,
+                "description": article.description,
+                "url": `https://rizkiramadhan.web.id/articles/${article.slug}`,
+                "image": article.thumbnail,
+                "author": {
+                    "@type": "Person",
+                    "name": "Rizki Ramadhan"
+                },
+                "datePublished": article.createdAt,
+                "articleSection": article.category
+            }
+        }))
+    }
+});
+
+// Articles Schema Component
+export const ArticlesSchema = ({ articlesData }: { articlesData: Article[] }) => (
+    <Script
+        id="articles-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+            __html: JSON.stringify(createArticlesSchema(articlesData)),
+        }}
+        strategy="afterInteractive"
+    />
+);
+
+// Articles Breadcrumb Schema Component
+export const ArticlesBreadcrumbSchema = () => (
+    <Script
+        id="articles-breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articlesBreadcrumbJsonLd),
         }}
         strategy="afterInteractive"
     />
