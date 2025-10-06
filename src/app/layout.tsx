@@ -24,6 +24,8 @@ import Footer from "@/components/layout/footer/Footer"
 
 import Overlay from "@/base/helper/Overlay";
 
+import { AllSchemas } from "@/lib/Script";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,6 +35,7 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning>
       <head>
         <GoogleTagManager />
+        <AllSchemas />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

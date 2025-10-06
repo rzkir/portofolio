@@ -22,3 +22,5 @@ interface PreviewProps {
   previewProject: ProjectsContentProps | null;
   setPreviewProject: (project: ProjectsContentProps | null) => void;
 }
+
+//============ Projects Details ============//

@@ -30,14 +30,14 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
                     {
                         articlesData.map((item, idx) => {
                             return (
-                                <div key={idx} className='group cursor-pointer'>
+                                <Link href={`/articles/${item.slug}`} key={idx} className='group cursor-pointer'>
                                     <div className='relative aspect-[16/9] overflow-hidden rounded-lg'>
                                         <Image src={item.thumbnail} alt={item.title} fill className='object-cover group-hover:scale-105 transition-transform duration-300' />
 
                                         <div className='absolute bottom-0 right-0 bg-background h-20 w-20 p-4 rounded-tl-4xl transition-colors duration-300'>
-                                            <Link href={item.slug} className='inline-flex items-center justify-center w-14 h-14 rounded-full bg-foreground group-hover:bg-gray-900 transition-all duration-300 shadow-lg group-hover:shadow-xl'>
+                                            <div className='inline-flex items-center justify-center w-14 h-14 rounded-full bg-foreground group-hover:bg-gray-900 transition-all duration-300 shadow-lg group-hover:shadow-xl'>
                                                 <ArrowUpRight className='w-7 h-7 text-background group-hover:text-foreground group-hover:-translate-y-1 group-hover:translate-x-1 stroke-2 transition-all duration-300' />
-                                            </Link>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -59,7 +59,7 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
                                             {item.title}
                                         </h1>
                                     </div>
-                                </div>
+                                </Link>
                             )
                         })
                     }

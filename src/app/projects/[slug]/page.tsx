@@ -8,6 +8,10 @@ import { fetchProjectBySlug, fetchProjectsContents } from "@/utils/FetchProjects
 
 import ProductsSlugSkeleton from '@/hooks/projects/details/ProjectsSkeleton';
 
+import { ProjectSchema, ProjectBreadcrumbSchema } from "@/lib/Script";
+
+import { Fragment } from 'react';
+
 type Props = {
     params: Promise<{ slug: string }>
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -27,11 +31,15 @@ export default async function Page({ params }: Props) {
         const allProjects = await fetchProjectsContents();
 
         return (
-            <ProjectDetailsContent
-                slug={resolvedParams.slug}
-                productsData={projectData}
-                allProjects={allProjects}
-            />
+            <Fragment>
+                <ProjectBreadcrumbSchema project={projectData} />
+                <ProjectSchema project={projectData} />
+                <ProjectDetailsContent
+                    slug={resolvedParams.slug}
+                    productsData={projectData}
+                    allProjects={allProjects}
+                />
+            </Fragment>
         );
     } catch (error) {
         console.error('Error fetching project data:', error);
