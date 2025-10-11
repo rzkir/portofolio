@@ -33,7 +33,7 @@ export const SocialMedia = [
   },
   {
     label: "GITHUB",
-    path: "https://github.com/Rizkiramadhan20",
+    path: "https://github.com/rzkir",
   },
   {
     label: "TIKTOK",

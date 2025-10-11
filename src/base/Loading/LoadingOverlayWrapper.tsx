@@ -8,6 +8,8 @@ import ArticlesLoadingOverlay from "@/base/Loading/ArticlesLoadingOverlay"
 
 import ProjectsLoadingOverlay from "@/base/Loading/ProjectsLoadingOverlay"
 
+import ContactsLoadingOverlay from "@/base/Loading/ContactsLoadingOverlay"
+
 import MangcodingStyleSplash from "@/base/Loading/LoadingStyleSplash"
 
 export default function LoadingOverlayWrapper() {
@@ -33,6 +35,15 @@ export default function LoadingOverlayWrapper() {
         if (loadingType === 'articles') {
             return (
                 <ArticlesLoadingOverlay
+                    isLoading={isLoading}
+                    message={loadingMessage}
+                />
+            )
+        }
+
+        if (loadingType === 'contacts') {
+            return (
+                <ContactsLoadingOverlay
                     isLoading={isLoading}
                     message={loadingMessage}
                 />

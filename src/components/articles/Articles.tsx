@@ -16,6 +16,8 @@ import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
 
 import { motion } from 'framer-motion'
 
+import { articlesAnimations } from '@/base/animations/animation'
+
 export default function Articles({ articlesData }: { articlesData: Article[] }) {
     const { withNavigationLoading } = useLoadingOverlay()
 
@@ -29,19 +31,19 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
                 <div className='flex justify-between items-center'>
                     <motion.h1
                         className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase'
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={articlesAnimations.title.initial}
+                        whileInView={articlesAnimations.title.animate}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
+                        transition={articlesAnimations.title.transition}
                     >
                         From my blog post
                     </motion.h1>
 
                     <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                        initial={articlesAnimations.seeAll.initial}
+                        whileInView={articlesAnimations.seeAll.animate}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
+                        transition={articlesAnimations.seeAll.transition}
                     >
                         <Link href={"/articles"} className='rounded-full overflow-hidden'>
                             <Button>See All</Button>
@@ -57,27 +59,27 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
                                     key={idx}
                                     className='group cursor-pointer'
                                     onClick={() => handleViewDetails(item.slug)}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
+                                    initial={articlesAnimations.article.initial}
+                                    whileInView={articlesAnimations.article.animate}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: idx * 0.1 }}
-                                    whileHover={{ scale: 1.02 }}
+                                    transition={articlesAnimations.article.transition(idx)}
+                                    whileHover={articlesAnimations.article.whileHover}
                                 >
                                     <motion.div
                                         className='relative aspect-[16/9] overflow-hidden rounded-lg'
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        initial={articlesAnimations.articleImage.initial}
+                                        whileInView={articlesAnimations.articleImage.animate}
                                         viewport={{ once: true }}
-                                        transition={{ duration: 0.5, delay: idx * 0.1 }}
+                                        transition={articlesAnimations.articleImage.transition(idx)}
                                     >
                                         <Image src={item.thumbnail} alt={item.title} fill className='object-cover group-hover:scale-105 transition-transform duration-300' />
 
                                         <motion.div
                                             className='absolute bottom-0 right-0 bg-background h-20 w-20 p-4 rounded-tl-4xl transition-colors duration-300'
-                                            initial={{ opacity: 0, x: 20, y: 20 }}
-                                            whileInView={{ opacity: 1, x: 0, y: 0 }}
+                                            initial={articlesAnimations.articleIcon.initial}
+                                            whileInView={articlesAnimations.articleIcon.animate}
                                             viewport={{ once: true }}
-                                            transition={{ duration: 0.4, delay: (idx * 0.1) + 0.3 }}
+                                            transition={articlesAnimations.articleIcon.transition(idx)}
                                         >
                                             <div className='inline-flex items-center justify-center w-14 h-14 rounded-full bg-foreground group-hover:bg-gray-900 transition-all duration-300 shadow-lg group-hover:shadow-xl'>
                                                 <ArrowUpRight className='w-7 h-7 text-background group-hover:text-white group-hover:-translate-y-1 group-hover:translate-x-1 stroke-2 transition-all duration-300' />
@@ -87,17 +89,17 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
 
                                     <motion.div
                                         className='space-y-6 mt-6 py-2'
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
+                                        initial={articlesAnimations.articleContent.initial}
+                                        whileInView={articlesAnimations.articleContent.animate}
                                         viewport={{ once: true }}
-                                        transition={{ duration: 0.5, delay: (idx * 0.1) + 0.2 }}
+                                        transition={articlesAnimations.articleContent.transition(idx)}
                                     >
                                         <motion.div
                                             className='inline-block'
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            initial={articlesAnimations.articleCategory.initial}
+                                            whileInView={articlesAnimations.articleCategory.animate}
                                             viewport={{ once: true }}
-                                            transition={{ duration: 0.4, delay: (idx * 0.1) + 0.3 }}
+                                            transition={articlesAnimations.articleCategory.transition(idx)}
                                         >
                                             <span className='px-3 py-1 capitalize text-sm font-medium text-muted-foreground bg-muted rounded-full group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300'>
                                                 {item.category}
@@ -106,10 +108,10 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
 
                                         <motion.div
                                             className='flex items-center gap-2 text-sm text-muted-foreground'
-                                            initial={{ opacity: 0, x: -20 }}
-                                            whileInView={{ opacity: 1, x: 0 }}
+                                            initial={articlesAnimations.articleMeta.initial}
+                                            whileInView={articlesAnimations.articleMeta.animate}
                                             viewport={{ once: true }}
-                                            transition={{ duration: 0.4, delay: (idx * 0.1) + 0.4 }}
+                                            transition={articlesAnimations.articleMeta.transition(idx)}
                                         >
                                             <span className='w-1 h-1 bg-primary rounded-full'></span>
                                             <span className='font-medium group-hover:text-foreground transition-colors duration-300'>Rizki</span>
@@ -119,10 +121,10 @@ export default function Articles({ articlesData }: { articlesData: Article[] }) 
 
                                         <motion.h1
                                             className='text-xl font-semibold text-foreground leading-tight group-hover:text-primary transition-colors duration-300'
-                                            initial={{ opacity: 0, y: 20 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
+                                            initial={articlesAnimations.articleTitle.initial}
+                                            whileInView={articlesAnimations.articleTitle.animate}
                                             viewport={{ once: true }}
-                                            transition={{ duration: 0.5, delay: (idx * 0.1) + 0.5 }}
+                                            transition={articlesAnimations.articleTitle.transition(idx)}
                                         >
                                             {item.title}
                                         </motion.h1>

@@ -50,7 +50,7 @@ export default function Contact() {
                     </motion.p>
                 </div>
 
-                <div className='max-w-full md:max-w-5xl mx-auto'>
+                <div className='max-w-full md:max-w-5xl mx-auto animate-shadow-pulse'>
                     <Card>
                         <CardHeader>
                             <motion.h2

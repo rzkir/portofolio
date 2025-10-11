@@ -9,14 +9,14 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: "#0f172a", // Updated to dark theme
+  themeColor: "#0f172a",
   viewportFit: "cover",
   colorScheme: "dark light",
   interactiveWidget: "resizes-content",
 };
 
 export const metadata = {
-  title: "Rizki Ramadhan - Full Stack Developer & Creative Digital Solutions",
+  title: "Rizki Ramadhan - Full Stack Developer",
   description:
     "Full Stack Developer dan Creative Digital Solutions profesional dari Indonesia. Spesialis dalam pengembangan website modern, aplikasi web, UI/UX Design, dan solusi digital yang inovatif untuk bisnis.",
   authors: [{ name: "Rizki Ramadhan" }],

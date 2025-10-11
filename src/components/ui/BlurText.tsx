@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import React from 'react';
 import { motion } from 'framer-motion';
 
+import { blurTextAnimations } from '@/base/animations/animation'
+
 interface AnimationState {
   filter?: string;
   opacity?: number;
@@ -89,22 +91,12 @@ const BlurText = ({
   }, [threshold, rootMargin, loading, initialDelay]);
 
   const defaultFrom = useMemo(
-    () =>
-      direction === 'top'
-        ? { filter: 'blur(10px)', opacity: 0, y: -50 }
-        : { filter: 'blur(10px)', opacity: 0, y: 50 },
+    () => blurTextAnimations.defaultFrom(direction),
     [direction]
   );
 
   const defaultTo = useMemo(
-    () => [
-      {
-        filter: 'blur(5px)',
-        opacity: 0.5,
-        y: direction === 'top' ? 5 : -5,
-      },
-      { filter: 'blur(0px)', opacity: 1, y: 0 },
-    ],
+    () => blurTextAnimations.defaultTo(direction),
     [direction]
   );
 

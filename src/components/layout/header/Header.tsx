@@ -6,62 +6,26 @@ import { Button } from "@/components/ui/button"
 
 import { Switch } from "@/components/ui/switch"
 
-import { useTheme } from "next-themes"
-
-import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
-
 import { motion, AnimatePresence } from "framer-motion";
+
+import { headerAnimations } from '@/base/animations/animation'
 
 import { navLink, SocialMedia } from "@/components/layout/header/data/Header"
 
-import { useScrollTo } from '@/lib/useLenis'
-
-import { useLoading } from '@/context/LoadingContext'
+import { useStateHeader } from "@/components/layout/header/lib/useStateHeader"
 
 export default function Header() {
-    const { theme, setTheme } = useTheme()
-    const { isInitialLoading } = useLoading();
-
-    const [mounted, setMounted] = React.useState(false)
-
-    const { withNavigationLoading } = useLoadingOverlay();
-    const scrollTo = useScrollTo();
-
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
-
-    React.useEffect(() => {
-        setMounted(true)
-    }, [])
-
-    const handleSmoothScroll = (path: string) => {
-        setIsMenuOpen(false);
-
-        if (path === '/') {
-            if (window.location.pathname === '/') {
-                scrollTo('html', { duration: 1.5 });
-            } else {
-                withNavigationLoading('/', 'general');
-            }
-        } else if (path.startsWith('#')) {
-            if (window.location.pathname === '/') {
-                scrollTo(path, {
-                    offset: -80,
-                });
-            } else {
-                withNavigationLoading(`/${path}`, 'general');
-            }
-        } else {
-            let loadingType: 'projects' | 'articles' | 'general' = 'general';
-            if (path.startsWith('/projects')) {
-                loadingType = 'projects';
-            } else if (path.startsWith('/articles')) {
-                loadingType = 'articles';
-            }
-
-            withNavigationLoading(path, loadingType);
-        }
-    }
+    const {
+        theme,
+        setTheme,
+        mounted,
+        isInitialLoading,
+        isMenuOpen,
+        setIsMenuOpen,
+        hoveredIndex,
+        setHoveredIndex,
+        handleSmoothScroll
+    } = useStateHeader();
 
     const text = "rizki ramadhan.";
 
@@ -69,18 +33,15 @@ export default function Header() {
         <>
             <motion.header
                 className="w-full px-4 sm:px-6 py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{
-                    opacity: isInitialLoading ? 0 : 1,
-                    y: isInitialLoading ? -20 : 0
-                }}
-                transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.2 }}
+                initial={headerAnimations.header.initial}
+                animate={headerAnimations.header.animate(isInitialLoading)}
+                transition={headerAnimations.header.transition(isInitialLoading)}
             >
                 <div className='container mx-auto flex justify-between items-center'>
                     <motion.div
                         className="text-base sm:text-lg font-medium tracking-wide relative group cursor-pointer"
-                        whileHover={{ scale: 1.01 }}
-                        transition={{ duration: 0.2 }}
+                        whileHover={headerAnimations.logo.whileHover}
+                        transition={headerAnimations.logo.transition}
                         onClick={() => handleSmoothScroll('/')}
                     >
                         <motion.div className="w-full flex flex-col items-center justify-center py-2">
@@ -90,32 +51,9 @@ export default function Header() {
                                         key={index}
                                         onHoverStart={() => setHoveredIndex(index)}
                                         onHoverEnd={() => setHoveredIndex(null)}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{
-                                            opacity: isInitialLoading ? 0 : 1,
-                                            y: isInitialLoading ? 20 : (hoveredIndex === index ? -5 : 0),
-                                            scale: isInitialLoading ? 0.8 : (hoveredIndex === index ? 1.2 : 1),
-                                            color: hoveredIndex === index ? (theme === 'dark' ? '#60A5FA' : '#2563EB') : 'inherit'
-                                        }}
-                                        transition={{
-                                            opacity: { delay: isInitialLoading ? 0 : 0.3 + (index * 0.05) },
-                                            y: {
-                                                type: "spring",
-                                                stiffness: 400,
-                                                damping: 10,
-                                                delay: isInitialLoading ? 0 : 0.3 + (index * 0.05)
-                                            },
-                                            scale: {
-                                                type: "spring",
-                                                stiffness: 400,
-                                                damping: 10,
-                                            },
-                                            color: {
-                                                type: "spring",
-                                                stiffness: 400,
-                                                damping: 10
-                                            }
-                                        }}
+                                        initial={headerAnimations.logoChar.initial}
+                                        animate={headerAnimations.logoChar.animate(isInitialLoading, hoveredIndex, index)}
+                                        transition={headerAnimations.logoChar.transition(isInitialLoading, index)}
                                         className="inline-block"
                                     >
                                         {char}
@@ -130,19 +68,9 @@ export default function Header() {
                             {mounted && (
                                 <>
                                     <motion.div
-                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                        animate={{
-                                            opacity: isInitialLoading ? 0 : 1,
-                                            scale: isInitialLoading ? 0.8 : 1,
-                                            y: isInitialLoading ? 20 : 0
-                                        }}
-                                        transition={{
-                                            duration: 0.5,
-                                            delay: isInitialLoading ? 0 : 0.5,
-                                            type: "spring",
-                                            stiffness: 400,
-                                            damping: 10
-                                        }}
+                                        initial={headerAnimations.themeToggle.initial}
+                                        animate={headerAnimations.themeToggle.animate(isInitialLoading)}
+                                        transition={headerAnimations.themeToggle.transition(isInitialLoading)}
                                     >
                                         <Switch
                                             id="theme-toggle"
@@ -192,19 +120,9 @@ export default function Header() {
                         </div>
                         {/* Menu button */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                            animate={{
-                                opacity: isInitialLoading ? 0 : 1,
-                                scale: isInitialLoading ? 0.8 : 1,
-                                y: isInitialLoading ? 20 : 0
-                            }}
-                            transition={{
-                                duration: 0.5,
-                                delay: isInitialLoading ? 0 : 0.6,
-                                type: "spring",
-                                stiffness: 400,
-                                damping: 10
-                            }}
+                            initial={headerAnimations.menuButton.initial}
+                            animate={headerAnimations.menuButton.animate(isInitialLoading)}
+                            transition={headerAnimations.menuButton.transition(isInitialLoading)}
                         >
                             <Button
                                 variant="outline"
@@ -228,30 +146,26 @@ export default function Header() {
                     <motion.div
                         className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-80"
                         onClick={() => setIsMenuOpen(false)}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
+                        initial={headerAnimations.modal.overlay.initial}
+                        animate={headerAnimations.modal.overlay.animate}
+                        exit={headerAnimations.modal.overlay.exit}
+                        transition={headerAnimations.modal.overlay.transition}
                     >
                         <motion.div
                             className="bg-background w-full h-full mx-auto flex flex-col justify-center items-center relative gap-8 sm:gap-12 px-4 sm:px-10 py-6 sm:py-16 rounded-none shadow-2xl"
                             onClick={e => e.stopPropagation()}
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            transition={{
-                                type: "spring",
-                                stiffness: 300,
-                                damping: 30
-                            }}
+                            initial={headerAnimations.modal.content.initial}
+                            animate={headerAnimations.modal.content.animate}
+                            exit={headerAnimations.modal.content.exit}
+                            transition={headerAnimations.modal.content.transition}
                         >
                             {/* Close button */}
                             <motion.button
                                 className="absolute top-4 right-4 text-foreground text-2xl sm:text-4xl hover:text-muted-foreground z-10 focus:outline-none focus:ring-2 focus:ring-ring"
                                 onClick={() => setIsMenuOpen(false)}
                                 aria-label="Close"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
+                                whileHover={headerAnimations.closeButton.whileHover}
+                                whileTap={headerAnimations.closeButton.whileTap}
                             >
                                 &times;
                             </motion.button>
@@ -262,16 +176,13 @@ export default function Header() {
                                         key={item.number}
                                         className="flex items-center justify-between group cursor-pointer"
                                         onClick={() => handleSmoothScroll(item.path)}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{
-                                            delay: index * 0.1,
-                                            duration: 0.3
-                                        }}
+                                        initial={headerAnimations.menuItem.initial}
+                                        animate={headerAnimations.menuItem.animate}
+                                        transition={headerAnimations.menuItem.transition(index)}
                                     >
                                         <motion.div
                                             className="text-2xl sm:text-5xl font-bold text-foreground transition-all duration-200 group-hover:tracking-wide"
-                                            whileHover={{ scale: 1.02 }}
+                                            whileHover={headerAnimations.menuButtonItem.whileHover}
                                         >
                                             {item.label} <span className="text-muted-foreground text-base sm:text-lg align-top">({item.number})</span>
                                         </motion.div>
@@ -281,8 +192,8 @@ export default function Header() {
                                                 handleSmoothScroll(item.path);
                                             }}
                                             className="border border-border rounded-full p-1.5 sm:p-3 group-hover:bg-accent transition-colors duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-ring"
-                                            whileHover={{ scale: 1.1, rotate: 5 }}
-                                            whileTap={{ scale: 0.95 }}
+                                            whileHover={headerAnimations.menuArrow.whileHover}
+                                            whileTap={headerAnimations.menuArrow.whileTap}
                                         >
                                             <span className="sr-only">Go to {item.label}</span>
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -295,9 +206,9 @@ export default function Header() {
                             {/* Footer menu modal */}
                             <motion.div
                                 className="border-t border-border pt-6 sm:pt-8 flex flex-col md:flex-row justify-between gap-6 sm:gap-8 w-full mt-6 sm:mt-10"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4, duration: 0.3 }}
+                                initial={headerAnimations.footer.initial}
+                                animate={headerAnimations.footer.animate}
+                                transition={headerAnimations.footer.transition}
                             >
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
@@ -311,10 +222,10 @@ export default function Header() {
                                                 key={social.label}
                                                 href={social.path}
                                                 className="hover:underline flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                                                whileHover={{ x: 5 }}
-                                                initial={{ opacity: 0, x: -10 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: 0.6 + index * 0.1 }}
+                                                whileHover={headerAnimations.socialLink.whileHover}
+                                                initial={headerAnimations.socialLink.initial}
+                                                animate={headerAnimations.socialLink.animate}
+                                                transition={headerAnimations.socialLink.transition(index)}
                                             >
                                                 {social.label} <span>↗</span>
                                             </motion.a>
@@ -333,12 +244,12 @@ export default function Header() {
                                             type="email"
                                             placeholder="Enter your email"
                                             className="bg-transparent border-b border-border text-foreground px-2 py-1 outline-none w-full placeholder-muted-foreground text-sm sm:text-base"
-                                            whileFocus={{ scale: 1.02 }}
+                                            whileFocus={headerAnimations.emailInput.whileFocus}
                                         />
                                         <motion.div
                                             className="text-foreground text-lg sm:text-xl hover:text-primary transition-colors duration-200"
-                                            whileHover={{ scale: 1.1, rotate: 5 }}
-                                            whileTap={{ scale: 0.95 }}
+                                            whileHover={headerAnimations.emailArrow.whileHover}
+                                            whileTap={headerAnimations.emailArrow.whileTap}
                                         >
                                             ↗
                                         </motion.div>

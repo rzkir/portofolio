@@ -8,6 +8,8 @@ import Image from 'next/image'
 
 import { Badge } from "@/components/ui/badge"
 
+import { skillsAnimations } from '@/base/animations/animation'
+
 export default function SkillsContent({ skillsData }: { skillsData: SkillsContentProps[] }) {
     const containerRef = React.useRef(null)
     const isInView = useInView(containerRef, { once: true, amount: 0.3 })
@@ -17,9 +19,9 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
             <div className="container px-4 md:px-6 mx-auto max-w-7xl">
                 <motion.h2
                     className='text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center uppercase tracking-tight mb-14'
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    initial={skillsAnimations.title.initial}
+                    animate={skillsAnimations.title.animate(isInView)}
+                    transition={skillsAnimations.title.transition}
                 >
                     Tech Skills
                 </motion.h2>
@@ -27,9 +29,9 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
                 <motion.div
                     ref={containerRef}
                     className="flex flex-wrap gap-3 sm:gap-4 justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ duration: 0.3, delay: 0.2 }}
+                    initial={skillsAnimations.container.initial}
+                    animate={skillsAnimations.container.animate(isInView)}
+                    transition={skillsAnimations.container.transition}
                 >
                     {skillsData.map((item, index) => {
                         const x = useMotionValue(0)
@@ -55,13 +57,9 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
                         return (
                             <motion.div
                                 key={item._id}
-                                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                                animate={isInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 30 }}
-                                transition={{
-                                    duration: 0.5,
-                                    ease: "easeOut",
-                                    delay: 0.4 + (index * 0.1) // Staggered animation
-                                }}
+                                initial={skillsAnimations.skill.initial}
+                                animate={skillsAnimations.skill.animate(isInView)}
+                                transition={skillsAnimations.skill.transition(index)}
                                 style={{
                                     perspective: 1000,
                                     rotateX,
@@ -69,14 +67,8 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
                                 }}
                                 onMouseMove={handleMouseMove}
                                 onMouseLeave={handleMouseLeave}
-                                whileHover={{
-                                    scale: 1.05,
-                                    transition: { duration: 0.2 }
-                                }}
-                                whileTap={{
-                                    scale: 0.95,
-                                    transition: { duration: 0.1 }
-                                }}
+                                whileHover={skillsAnimations.skill.whileHover}
+                                whileTap={skillsAnimations.skill.whileTap}
                             >
                                 <Badge
                                     variant="secondary"
@@ -90,13 +82,9 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
                                 >
                                     <motion.div
                                         className="relative w-6 h-6 sm:w-8 sm:h-8"
-                                        initial={{ scale: 0 }}
-                                        animate={isInView ? { scale: 1 } : { scale: 0 }}
-                                        transition={{
-                                            duration: 0.3,
-                                            delay: 0.6 + (index * 0.1),
-                                            ease: "backOut"
-                                        }}
+                                        initial={skillsAnimations.skillIcon.initial}
+                                        animate={skillsAnimations.skillIcon.animate(isInView)}
+                                        transition={skillsAnimations.skillIcon.transition(index)}
                                     >
                                         <Image
                                             src={item.imageUrl}
@@ -107,12 +95,9 @@ export default function SkillsContent({ skillsData }: { skillsData: SkillsConten
                                     </motion.div>
                                     <motion.span
                                         className="text-sm sm:text-base font-medium drop-shadow-sm"
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-                                        transition={{
-                                            duration: 0.3,
-                                            delay: 0.7 + (index * 0.1)
-                                        }}
+                                        initial={skillsAnimations.skillText.initial}
+                                        animate={skillsAnimations.skillText.animate(isInView)}
+                                        transition={skillsAnimations.skillText.transition(index)}
                                     >
                                         {item.title}
                                     </motion.span>

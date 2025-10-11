@@ -4,7 +4,7 @@ import { useLoading } from "@/context/LoadingContext";
 
 import { useRouter, usePathname } from "next/navigation";
 
-type LoadingType = "projects" | "articles" | "general";
+type LoadingType = "projects" | "articles" | "contacts" | "general";
 
 export function useLoadingOverlay() {
   const { showLoading, hideLoading } = useLoading();
@@ -55,6 +55,12 @@ export function useLoadingOverlay() {
         message = "Loading article details...";
       } else {
         message = "Loading articles...";
+      }
+    } else if (type === "contacts") {
+      if (href.includes("/contacts")) {
+        message = "Loading contact form...";
+      } else {
+        message = "Preparing contact page...";
       }
     }
 

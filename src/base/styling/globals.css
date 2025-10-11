@@ -381,13 +381,57 @@ html {
     90deg,
     transparent,
     transparent,
-    rgba(59, 130, 246, 0.8),
-    rgba(59, 130, 246, 0.8),
-    rgba(59, 130, 246, 0.8),
+    var(--primary),
+    var(--primary),
+    var(--primary),
     transparent,
     transparent
   );
   background-size: 400% 100%;
   animation: border-marquee 10s linear infinite;
   z-index: -1;
+}
+
+/* Home component mouse blob effects enhancement */
+#home {
+  cursor: default !important;
+}
+
+#home * {
+  cursor: inherit !important;
+}
+
+#home button,
+#home a,
+#home [role="button"] {
+  cursor: pointer !important;
+}
+
+#home input,
+#home textarea,
+#home [contenteditable] {
+  cursor: text !important;
+}
+
+/* Ensure mouse blob effects are visible and performant */
+#home .pointer-events-none {
+  pointer-events: none !important;
+}
+
+#home [style*="filter: blur"] {
+  will-change: transform, opacity;
+}
+
+/* Force cursor thickness for better visibility */
+input,
+textarea,
+[contenteditable] {
+  caret-color: var(--primary);
+  caret-width: 2px;
+}
+
+/* Additional cursor styling for better visibility */
+::selection {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }

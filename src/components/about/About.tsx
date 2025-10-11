@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge"
 
 import { AnimatedDescription } from '@/components/about/components/AnimatedDescription'
 
+import PixelTransition from '@/components/ui/PixelTransition';
+
 export default function AboutContent({ aboutData, skillsData }: { aboutData: AboutContentProps, skillsData: SkillsContentProps[] }) {
     const [showAllSkills, setShowAllSkills] = useState(false)
     const skillsToShow = showAllSkills ? skillsData : skillsData.slice(0, 20)
@@ -48,23 +50,27 @@ export default function AboutContent({ aboutData, skillsData }: { aboutData: Abo
                                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                                 transition={{ duration: 0.6, delay: 0.4 }}
                             >
-                                <Image
-                                    src={aboutData.card.imageUrl}
-                                    alt={aboutData.card.name}
-                                    fill
-                                    className="object-cover"
-                                    priority
+                                <PixelTransition
+                                    firstContent={
+                                        <Image
+                                            src={aboutData.card.imageUrl}
+                                            alt={aboutData.card.name}
+                                            className="w-full h-full object-cover"
+                                            fill
+                                            unoptimized={true}
+                                            draggable={false}
+                                        />
+                                    }
+                                    secondContent={
+                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-background to-surface/20 backdrop-blur-sm">
+                                            <p className="font-black text-5xl text-white text-center capitalize">{aboutData.card.status} <br /> for freelance</p>
+                                        </div>
+                                    }
+                                    gridSize={12}
+                                    pixelColor='#ffffff'
+                                    animationStepDuration={0.4}
+                                    className="w-full h-full"
                                 />
-                                {/* Status Badge on Image */}
-                                <motion.div
-                                    className="absolute bottom-4 left-4 inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 backdrop-blur-sm rounded-full border border-primary/20 shadow-lg"
-                                    initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                                    animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 10, scale: 0.8 }}
-                                    transition={{ duration: 0.4, delay: 0.8 }}
-                                >
-                                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                    <span className="text-xs font-medium text-white drop-shadow-sm">{aboutData.card.status}</span>
-                                </motion.div>
                             </motion.div>
                         </div>
                     </motion.div>
@@ -185,12 +191,12 @@ export default function AboutContent({ aboutData, skillsData }: { aboutData: Abo
                                             <Badge
                                                 variant="secondary"
                                                 className="flex items-center gap-2 px-4 py-2 h-auto cursor-pointer 
-                                                    bg-gradient-to-br from-secondary to-secondary/80
-                                                    shadow-[0_4px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_0_rgb(0,0,0,0.1)]
-                                                    active:shadow-[0_2px_0_rgb(0,0,0,0.1)] active:translate-y-[2px]
-                                                    transition-all duration-200 ease-out
-                                                    border border-black/10
-                                                    hover:bg-secondary/90"
+                                                        bg-gradient-to-br from-secondary to-secondary/80
+                                                        shadow-[0_4px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_0_rgb(0,0,0,0.1)]
+                                                        active:shadow-[0_2px_0_rgb(0,0,0,0.1)] active:translate-y-[2px]
+                                                        transition-all duration-200 ease-out
+                                                        border border-black/10
+                                                        hover:bg-secondary/90"
                                             >
                                                 <motion.div
                                                     className="relative w-6 h-6"
@@ -231,7 +237,7 @@ export default function AboutContent({ aboutData, skillsData }: { aboutData: Abo
                                         className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        transition={{ duration: 0.3, delay: 0.5 }}
+                                        transition={{ duration: 0.2 }}
                                     />
                                 )}
 
@@ -240,16 +246,16 @@ export default function AboutContent({ aboutData, skillsData }: { aboutData: Abo
                                     <motion.button
                                         onClick={() => setShowAllSkills(!showAllSkills)}
                                         className={`absolute bottom-2 left-1/2 transform -translate-x-1/2 z-10
-                                            flex items-center justify-center w-12 h-12 rounded-full
-                                            bg-primary/10 hover:bg-primary/20 backdrop-blur-sm
-                                            border border-primary/20 shadow-lg
-                                            transition-all duration-300 text-primary
-                                            hover:shadow-xl hover:scale-105 active:scale-95`}
+                                                flex items-center justify-center w-12 h-12 rounded-full
+                                                bg-primary/10 hover:bg-primary/20 backdrop-blur-sm
+                                                border border-primary/20 shadow-lg
+                                                transition-all duration-300 text-primary
+                                                hover:shadow-xl hover:scale-105 active:scale-95`}
                                         whileHover={{ y: -2 }}
                                         whileTap={{ scale: 0.95 }}
                                         initial={{ opacity: 0, y: 10, scale: 0.8 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        transition={{ duration: 0.4, delay: 3.0 }}
+                                        transition={{ duration: 0.3 }}
                                         title="View More"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,20 +271,20 @@ export default function AboutContent({ aboutData, skillsData }: { aboutData: Abo
                                     className="flex justify-center pt-4"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4 }}
+                                    transition={{ duration: 0.2 }}
                                 >
                                     <motion.button
                                         onClick={() => setShowAllSkills(!showAllSkills)}
                                         className={`flex items-center justify-center w-12 h-12 rounded-full
-                                            bg-primary/10 hover:bg-primary/20 backdrop-blur-sm
-                                            border border-primary/20 shadow-lg
-                                            transition-all duration-300 text-primary
-                                            hover:shadow-xl hover:scale-105 active:scale-95`}
+                                                bg-primary/10 hover:bg-primary/20 backdrop-blur-sm
+                                                border border-primary/20 shadow-lg
+                                                transition-all duration-300 text-primary
+                                                hover:shadow-xl hover:scale-105 active:scale-95`}
                                         whileHover={{ y: -2 }}
                                         whileTap={{ scale: 0.95 }}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.3 }}
+                                        transition={{ duration: 0.2 }}
                                         title="Show Less"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

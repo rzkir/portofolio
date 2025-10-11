@@ -8,16 +8,19 @@ import { MoveUpRight } from 'lucide-react'
 
 import { motion, useInView } from 'framer-motion'
 
+import { achievementsAnimations } from '@/base/animations/animation'
+
 import AchievementsModal from '@/components/achievements/modal/AchievementsModal'
 
 export default function AchievementsContent({ achievementsData }: { achievementsData: AchievementsContentProps[] }) {
     const [selectedAchievement, setSelectedAchievement] = useState<AchievementsContentProps | null>(null);
 
     const headingRef = React.useRef(null);
-    const cardsRef = React.useRef(null);
 
     const isHeadingInView = useInView(headingRef, { once: true, margin: "-100px" });
-    const isCardsInView = useInView(cardsRef, { once: true, margin: "-50px" });
+
+    const containerRef = React.useRef(null);
+    const isCardsInView = useInView(containerRef, { once: true, margin: "-100px" });
 
     return (
         <section className="w-full py-10 px-4 md:px-8 relative overflow-hidden bg-gradient-to-b from-background to-background/95">
@@ -25,14 +28,14 @@ export default function AchievementsContent({ achievementsData }: { achievements
                 <motion.h2
                     ref={headingRef}
                     className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient text-center mb-20 uppercase"
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={isHeadingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    initial={achievementsAnimations.title.initial}
+                    animate={achievementsAnimations.title.animate(isHeadingInView)}
+                    transition={achievementsAnimations.title.transition}
                 >
                     Achievements
                 </motion.h2>
 
-                <div ref={cardsRef} className="relative w-full overflow-hidden">
+                <div className="relative w-full overflow-hidden">
                     {/* Left fade overlay */}
                     <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
 
@@ -41,9 +44,7 @@ export default function AchievementsContent({ achievementsData }: { achievements
 
                     {/* React Marquee Container */}
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={isCardsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
+                        ref={containerRef}
                     >
                         <Marquee
                             speed={30}
@@ -64,10 +65,10 @@ export default function AchievementsContent({ achievementsData }: { achievements
                                         <div>
                                             <motion.h2
                                                 className="text-2xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300 mb-3"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={isCardsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                                                whileHover={{ scale: 1.02 }}
+                                                initial={achievementsAnimations.achievementTitle.initial}
+                                                animate={achievementsAnimations.achievementTitle.animate(isCardsInView)}
+                                                transition={achievementsAnimations.achievementTitle.transition(index)}
+                                                whileHover={achievementsAnimations.achievementTitle.whileHover}
                                             >
                                                 {achievement.title}
                                             </motion.h2>
@@ -76,11 +77,11 @@ export default function AchievementsContent({ achievementsData }: { achievements
                                         <motion.button
                                             onClick={() => setSelectedAchievement(achievement)}
                                             className="flex items-center gap-2 text-primary/60 group-hover:text-primary transition-colors duration-300 self-end cursor-pointer"
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={isCardsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-                                            transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
+                                            initial={achievementsAnimations.achievementButton.initial}
+                                            animate={achievementsAnimations.achievementButton.animate(isCardsInView)}
+                                            transition={achievementsAnimations.achievementButton.transition(index)}
+                                            whileHover={achievementsAnimations.achievementButton.whileHover}
+                                            whileTap={achievementsAnimations.achievementButton.whileTap}
                                         >
                                             <span className="text-sm font-medium">View Details</span>
                                             <MoveUpRight className="w-5 h-5" />

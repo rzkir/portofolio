@@ -27,10 +27,6 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
         });
     };
 
-    const handleAnimationComplete = () => {
-        console.log('Animation completed!');
-    };
-
     return (
         <section
             className="md:min-h-screen min-h-full flex flex-col items-center justify-center py-16 -mt-0 md:-mt-16 relative overflow-hidden bg-gradient-to-br from-background via-background to-surface/30"
@@ -128,7 +124,6 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                 as="h1"
                                 loading={isInitialLoading}
                                 initialDelay={isInitialLoading ? 0 : 0.4}
-                                onAnimationComplete={handleAnimationComplete}
                                 className="text-4xl md:text-7xl font-extrabold leading-tight text-[color:var(--foreground)] tracking-tight"
                                 stepDuration={0.5}
                             />
@@ -183,7 +178,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                     before:transition-transform before:duration-300 hover:before:translate-x-[100%]
                                     after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent 
                                     after:via-white/30 after:to-transparent after:translate-x-[-100%] 
-                                    after:transition-transform after:duration-300 after:delay-50 hover:after:translate-x-[100%]"
+                                    after:transition-transform after:duration-300 after:delay-50 hover:after:translate-x-[100%] overflow-hidden"
                                 >
                                     <Link href={item.href} className="flex items-center gap-3 px-2 py-1 min-h-[44px] min-w-[44px]">
                                         {item.label}
@@ -210,4 +205,3 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
         </section>
     )
 }
-

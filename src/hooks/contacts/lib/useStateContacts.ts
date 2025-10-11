@@ -12,7 +12,11 @@ import { toast } from "sonner";
 
 import { contactFormSchema, ContactFormData } from "@/lib/validations/contact";
 
+import { useLoading } from "@/context/LoadingContext";
+
 export const useStateContacts = () => {
+  const { showLoading, hideLoading } = useLoading();
+
   const {
     register,
     handleSubmit,
@@ -30,6 +34,8 @@ export const useStateContacts = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
+      showLoading("Sending message...", "contacts");
+
       const response = await axios.post("/api/contact", data, {
         headers: {
           "Content-Type": "application/json",
@@ -50,6 +56,8 @@ export const useStateContacts = () => {
         description: errorMessage,
         duration: 5000,
       });
+    } finally {
+      hideLoading();
     }
   };
 

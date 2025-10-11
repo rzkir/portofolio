@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 
-type LoadingType = 'projects' | 'articles' | 'general'
+type LoadingType = 'projects' | 'articles' | 'contacts' | 'general'
 
 interface LoadingContextType {
     isLoading: boolean

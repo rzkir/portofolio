@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React from 'react'
 
 import Image from 'next/image'
 
@@ -12,69 +12,39 @@ import { Button } from "@/components/ui/button"
 
 import { motion } from "framer-motion"
 
+import { projectsAnimations } from '@/base/animations/animation'
+
 import Link from 'next/link'
 
 import Preview from '@/components/projects/modal/Priview'
 
-import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
-
-import { useLenis } from '@/lib/useLenis'
+import { useStateProjects } from './lib/useStateProjects'
 
 const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { projectsData: ProjectsContentProps[] }) {
-    const [activeIndex, setActiveIndex] = useState<number>(-1);
-    const [selectedCategory, setSelectedCategory] = useState<string>('all');
-    const [previewProject, setPreviewProject] = useState<ProjectsContentProps | null>(null);
-
-    const lenis = useLenis();
-
-    const { withNavigationLoading } = useLoadingOverlay();
-
-    const categories = useMemo(() => {
-        const uniqueCategories = [...new Set(projectsData.map(project => project.category))];
-        return ['all', ...uniqueCategories];
-    }, [projectsData]);
-
-    const filteredProjects = useMemo(() => {
-        if (selectedCategory === 'all') return projectsData;
-        return projectsData.filter(project => project.category === selectedCategory);
-    }, [projectsData, selectedCategory]);
-
-    const displayedProjects = useMemo(() => filteredProjects.slice(0, 6), [filteredProjects]);
-
-    const topProject = displayedProjects[0];
-    const middleProjects = displayedProjects.slice(1, 4);
-    const bottomProjects = displayedProjects.slice(4);
-
-    useEffect(() => {
-        if (previewProject) {
-            if (lenis) {
-                lenis.stop();
-            }
-
-            return () => {
-                if (lenis) {
-                    lenis.start();
-                }
-            };
-        }
-    }, [previewProject, lenis]);
-
-    const handlePreview = useCallback((project: ProjectsContentProps) => {
-        setPreviewProject(project);
-    }, []);
-
-    const handleViewDetails = useCallback(async (slug: string) => {
-        await withNavigationLoading(`/projects/${slug}`, 'projects')
-    }, [withNavigationLoading]);
+    const {
+        activeIndex,
+        setActiveIndex,
+        selectedCategory,
+        setSelectedCategory,
+        previewProject,
+        setPreviewProject,
+        categories,
+        displayedProjects,
+        topProject,
+        middleProjects,
+        bottomProjects,
+        handlePreview,
+        handleViewDetails
+    } = useStateProjects(projectsData);
 
     return (
         <section id="projects" className="py-16 bg-gradient-to-b from-background to-background/95">
             <div className="container px-4 md:px-6">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={projectsAnimations.header.initial}
+                    whileInView={projectsAnimations.header.animate}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
+                    transition={projectsAnimations.header.transition}
                     className='flex flex-col md:flex-row items-center justify-between gap-4 mb-10'
                 >
                     <div className="relative flex flex-col gap-2 mb-5">
@@ -90,9 +60,9 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                             {categories.map((category) => (
                                 <motion.button
                                     key={category}
-                                    whileInView={{ scale: [0.9, 1] }}
+                                    whileInView={projectsAnimations.category.whileInView}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.3 }}
+                                    transition={projectsAnimations.category.transition}
                                     className={`relative px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium whitespace-nowrap transition-colors duration-200 capitalize cursor-pointer ${selectedCategory === category
                                         ? 'text-primary-foreground'
                                         : 'text-muted-foreground hover:text-foreground'
@@ -104,11 +74,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                                             layoutId="activeProjectCategory"
                                             className="absolute inset-0 bg-primary rounded-lg"
                                             initial={false}
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 400,
-                                                damping: 30
-                                            }}
+                                            transition={projectsAnimations.categoryActive.transition}
                                         />
                                     )}
                                     <span className="relative z-10">{category}</span>
@@ -121,10 +87,10 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                 <div className='md:flex flex-col gap-8 hidden'>
                     {topProject && (
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={projectsAnimations.project.initial}
+                            whileInView={projectsAnimations.project.animate}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5 }}
+                            transition={projectsAnimations.project.transition(0)}
                             className="group w-full"
                         >
                             <Card className={`relative overflow-hidden border-border/50 transition-all duration-500 hover:border-primary/50 p-0 ${activeIndex === 0 ? 'bg-card/50' : 'hover:bg-card/50'} backdrop-blur-sm`}>
@@ -183,10 +149,10 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                             return (
                                 <motion.div
                                     key={actualIndex}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
+                                    initial={projectsAnimations.project.initial}
+                                    whileInView={projectsAnimations.project.animate}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: idx * 0.1 }}
+                                    transition={projectsAnimations.project.transition(idx)}
                                     className="group w-full md:w-[calc(33.333%-15px)]"
                                 >
                                     <Card className={`relative overflow-hidden border-border/50 transition-all duration-500 hover:border-primary/50 p-0 ${isActive ? 'bg-card/50' : 'hover:bg-card/50'} backdrop-blur-sm`}>
@@ -245,10 +211,10 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
                             return (
                                 <motion.div
                                     key={actualIndex}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
+                                    initial={projectsAnimations.project.initial}
+                                    whileInView={projectsAnimations.project.animate}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: idx * 0.1 }}
+                                    transition={projectsAnimations.project.transition(idx)}
                                     className="group w-full md:w-[calc(50%-16px)]"
                                 >
                                     <Card className={`relative overflow-hidden border-border/50 transition-all duration-500 hover:border-primary/50 p-0 ${isActive ? 'bg-card/50' : 'hover:bg-card/50'} backdrop-blur-sm`}>

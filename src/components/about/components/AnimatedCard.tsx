@@ -14,6 +14,8 @@ import Image from 'next/image'
 
 import bgCard from "@/base/assets/bg-card.png"
 
+import { cardAnimations, springConfig, mouseRanges, transitions } from '@/base/animations/animation'
+
 export function AnimatedCard({ data }: AnimatedCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const mouseX = useMotionValue(0);
@@ -21,10 +23,9 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
     const ref = React.useRef(null);
     const isInView = useInView(ref, { once: true });
 
-    const rotateX = useTransform(mouseY, [-150, 150], [5, -5]);
-    const rotateY = useTransform(mouseX, [-150, 150], [-5, 5]);
+    const rotateX = useTransform(mouseY, mouseRanges.y, mouseRanges.rotateX);
+    const rotateY = useTransform(mouseX, mouseRanges.x, mouseRanges.rotateY);
 
-    const springConfig = { damping: 30, stiffness: 80, mass: 1.5 };
     const springRotateX = useSpring(rotateX, springConfig);
     const springRotateY = useSpring(rotateY, springConfig);
 
@@ -57,8 +58,8 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
                 style={{
                     rotateX: isHovered ? springRotateX : 0,
                     rotateY: isHovered ? springRotateY : 0,
-                    transition: "transform 0.2s ease-out"
                 }}
+                transition={transitions.smooth}
             >
                 <Card className="relative overflow-hidden">
                     <div className="absolute inset-0 rounded-lg">
@@ -72,9 +73,9 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
                     <CardContent className="p-2 sm:p-3 md:p-4 px-3 sm:px-4 md:px-10 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-center gap-3 sm:gap-4 md:gap-6">
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                                transition={{ duration: 0.5 }}
+                                initial={cardAnimations.avatar.initial}
+                                animate={isInView ? cardAnimations.avatar.animate : cardAnimations.avatar.initial}
+                                transition={cardAnimations.avatar.transition}
                                 className="flex justify-center md:justify-start"
                             >
                                 <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-background shadow-lg">
@@ -89,9 +90,9 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
 
                             <div className="flex flex-col items-center md:items-start gap-3 sm:gap-4">
                                 <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    initial={cardAnimations.name.initial}
+                                    animate={isInView ? cardAnimations.name.animate : cardAnimations.name.initial}
+                                    transition={cardAnimations.name.transition}
                                     className="flex items-center gap-1 flex-wrap justify-center md:justify-start"
                                 >
                                     <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-primary text-center md:text-left">
@@ -100,9 +101,9 @@ export function AnimatedCard({ data }: AnimatedCardProps) {
                                 </motion.div>
 
                                 <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                                    transition={{ duration: 0.5, delay: 0.3 }}
+                                    initial={cardAnimations.badges.initial}
+                                    animate={isInView ? cardAnimations.badges.animate : cardAnimations.badges.initial}
+                                    transition={cardAnimations.badges.transition}
                                     className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2 items-center justify-center md:justify-start"
                                 >
                                     <Badge variant="secondary" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium text-secondary-foreground">

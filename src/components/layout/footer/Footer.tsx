@@ -4,6 +4,8 @@ import React from 'react'
 
 import { motion } from 'framer-motion'
 
+import { footerAnimations } from '@/base/animations/animation'
+
 import { useFooterState } from '@/components/layout/footer/lib/useStateFooter'
 
 export default function Footer() {
@@ -21,46 +23,46 @@ export default function Footer() {
     return (
         <motion.footer
             className="w-full bg-gradient-to-t from-background/90 via-background/80 to-background/60 border-t border-border/30 pt-16 pb-8 relative overflow-hidden rounded-t-2xl"
-            initial="hidden"
-            whileInView="visible"
+            initial={footerAnimations.container.hidden}
+            whileInView={footerAnimations.container.visible}
             viewport={{ once: true, amount: 0.3 }}
-            variants={containerVariants}
+            variants={footerAnimations.container}
         >
             {/* Animated Decorative Blobs */}
             <motion.div
                 className="pointer-events-none absolute -top-10 -left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl z-0"
-                variants={floatingVariants}
-                animate="animate"
+                variants={footerAnimations.floating}
+                animate={footerAnimations.floating.animate}
             />
             <motion.div
                 className="pointer-events-none absolute bottom-0 right-0 w-56 h-56 bg-secondary/10 rounded-full blur-2xl z-0"
-                variants={floatingVariants}
-                animate="animate"
+                variants={footerAnimations.floating}
+                animate={footerAnimations.floating.animate}
                 transition={{ delay: 2 }}
             />
 
             <div className="container px-4 relative z-10">
                 <motion.div
                     className="flex flex-col md:flex-row items-center justify-between gap-10"
-                    variants={containerVariants}
+                    variants={footerAnimations.container}
                 >
                     {/* Brand / Logo */}
                     <motion.div
                         className="flex flex-col items-center md:items-start gap-2"
-                        variants={itemVariants}
+                        variants={footerAnimations.item}
                     >
                         <motion.span
                             className="text-2xl font-extrabold text-primary tracking-tight"
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
+                            whileHover={footerAnimations.brand.whileHover}
+                            transition={footerAnimations.brand.transition}
                         >
                             Rizki Ramadhan
                         </motion.span>
                         <motion.span
                             className="text-muted-foreground text-xs font-medium"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.8, duration: 0.5 }}
+                            initial={footerAnimations.copyright.initial}
+                            animate={footerAnimations.copyright.animate}
+                            transition={footerAnimations.copyright.transition}
                         >
                             © 2024 - {new Date().getFullYear()} All rights reserved.
                         </motion.span>
@@ -69,7 +71,7 @@ export default function Footer() {
                     {/* Navigation */}
                     <motion.nav
                         className="flex flex-wrap gap-6 text-sm font-medium justify-center"
-                        variants={itemVariants}
+                        variants={footerAnimations.item}
                     >
                         {navigationLinks.map((link, index) => (
                             <motion.a
@@ -77,10 +79,10 @@ export default function Footer() {
                                 href={link.href}
                                 onClick={(e) => { e.preventDefault(); handleSmoothScroll(link.href); }}
                                 className="hover:text-primary/90 transition-colors duration-200 cursor-pointer"
-                                variants={navVariants}
-                                whileHover="hover"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                variants={footerAnimations.nav}
+                                whileHover={footerAnimations.nav.hover}
+                                initial={footerAnimations.nav.hidden}
+                                animate={footerAnimations.nav.visible}
                                 transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
                             >
                                 {link.label}
@@ -91,7 +93,7 @@ export default function Footer() {
                     {/* Socials */}
                     <motion.div
                         className="flex gap-5"
-                        variants={itemVariants}
+                        variants={footerAnimations.item}
                     >
                         {socialLinks.map((social, index) => (
                             <motion.a
@@ -101,11 +103,11 @@ export default function Footer() {
                                 rel="noopener noreferrer"
                                 aria-label={social.label}
                                 className="group rounded-full p-2 bg-background/70 border border-border/30 hover:bg-primary/10 transition-all"
-                                variants={socialVariants}
-                                whileHover="hover"
-                                whileTap="tap"
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
+                                variants={footerAnimations.social}
+                                whileHover={footerAnimations.social.hover}
+                                whileTap={footerAnimations.social.tap}
+                                initial={footerAnimations.social.hidden}
+                                animate={footerAnimations.social.visible}
                                 transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
                             >
                                 {social.icon}
@@ -116,18 +118,18 @@ export default function Footer() {
 
                 <motion.div
                     className="mt-12 border-t border-border/20 pt-6 flex flex-col md:flex-row items-center justify-between gap-4"
-                    variants={itemVariants}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={footerAnimations.item}
+                    initial={footerAnimations.item.hidden}
+                    animate={footerAnimations.item.visible}
                     transition={{ delay: 1, duration: 0.5 }}
                 >
                     <motion.div
                         className="text-xs text-muted-foreground text-center md:text-left"
                     >
-                        Built with <span className="text-primary font-semibold">Next.js</span> &amp; <motion.span
+                        Built with <span className="text-primary font-semibold">Love</span> <motion.span
                             className="text-red-500"
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                            animate={footerAnimations.heart.animate}
+                            transition={footerAnimations.heart.transition}
                         >♥</motion.span> by <span className="font-semibold">Rizki Ramadhan</span>
                     </motion.div>
                     <motion.div

@@ -15,3 +15,8 @@ interface Framework {
   title: string;
   imageUrl: string;
 }
+
+interface ModalProps {
+  selectedContent: YoutubeContentProps | null;
+  onClose: () => void;
+}
