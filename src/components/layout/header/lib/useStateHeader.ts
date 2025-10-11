@@ -10,10 +10,14 @@ import { useScrollTo, useLenis } from "@/lib/useLenis";
 
 import { useLoading } from "@/context/LoadingContext";
 
+import { useThemeSwitchOverlay } from "@/context/SwitchThemaOverlay";
+
 export const useStateHeader = () => {
   const { theme, setTheme } = useTheme();
   const { isInitialLoading } = useLoading();
   const { withNavigationLoading } = useLoadingOverlay();
+  const { isOverlayVisible, showThemeSwitchOverlay, hideThemeSwitchOverlay } =
+    useThemeSwitchOverlay();
   const lenis = useLenis();
   const scrollTo = useScrollTo();
 
@@ -38,6 +42,11 @@ export const useStateHeader = () => {
       };
     }
   }, [isMenuOpen, lenis]);
+
+  const handleThemeChange = (newTheme: string) => {
+    showThemeSwitchOverlay();
+    setTheme(newTheme);
+  };
 
   const handleSmoothScroll = (path: string) => {
     setIsMenuOpen(false);
@@ -74,7 +83,7 @@ export const useStateHeader = () => {
   return {
     // Theme related
     theme,
-    setTheme,
+    setTheme: handleThemeChange,
     mounted,
 
     // Loading related
@@ -87,6 +96,10 @@ export const useStateHeader = () => {
     // Logo hover state
     hoveredIndex,
     setHoveredIndex,
+
+    // Theme overlay state
+    isThemeOverlayVisible: isOverlayVisible,
+    hideThemeSwitchOverlay,
 
     // Functions
     handleSmoothScroll,

@@ -1,13 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
 
-interface ProjectsLoadingOverlayProps {
-    isLoading?: boolean
-    message?: string
-    className?: string
-}
+import { useEffect, useState } from 'react'
 
 export default function ProjectsLoadingOverlay({
     isLoading = true,

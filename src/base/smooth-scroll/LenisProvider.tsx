@@ -1,11 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Lenis from 'lenis';
 
-interface LenisProviderProps {
-    children: React.ReactNode;
-}
+import Lenis from 'lenis';
 
 export default function LenisProvider({ children }: LenisProviderProps) {
     const lenisRef = useRef<Lenis | null>(null);

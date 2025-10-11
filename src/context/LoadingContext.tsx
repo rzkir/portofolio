@@ -2,17 +2,6 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 
-type LoadingType = 'projects' | 'articles' | 'contacts' | 'general'
-
-interface LoadingContextType {
-    isLoading: boolean
-    loadingMessage: string
-    loadingType: LoadingType
-    showLoading: (message?: string, type?: LoadingType) => void
-    hideLoading: () => void
-    isInitialLoading: boolean
-}
-
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined)
 
 export function LoadingProvider({ children }: { children: ReactNode }) {

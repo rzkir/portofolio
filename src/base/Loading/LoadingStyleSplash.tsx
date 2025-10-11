@@ -4,12 +4,6 @@ import { motion } from 'framer-motion'
 
 import { useEffect, useState } from 'react'
 
-interface MangcodingStyleSplashProps {
-    isLoading: boolean
-    message?: string
-    className?: string
-}
-
 export default function MangcodingStyleSplash({
     isLoading,
     message = "Loading...",

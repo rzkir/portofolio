@@ -4,8 +4,6 @@ import { useLoading } from "@/context/LoadingContext";
 
 import { useRouter, usePathname } from "next/navigation";
 
-type LoadingType = "projects" | "articles" | "contacts" | "general";
-
 export function useLoadingOverlay() {
   const { showLoading, hideLoading } = useLoading();
   const router = useRouter();

@@ -14,6 +14,8 @@ import { navLink, SocialMedia } from "@/components/layout/header/data/Header"
 
 import { useStateHeader } from "@/components/layout/header/lib/useStateHeader"
 
+import { ThemeSwitchOverlay } from '@/context/SwitchThemaOverlay';
+
 export default function Header() {
     const {
         theme,
@@ -24,6 +26,8 @@ export default function Header() {
         setIsMenuOpen,
         hoveredIndex,
         setHoveredIndex,
+        isThemeOverlayVisible,
+        hideThemeSwitchOverlay,
         handleSmoothScroll
     } = useStateHeader();
 
@@ -31,6 +35,11 @@ export default function Header() {
 
     return (
         <>
+            <ThemeSwitchOverlay
+                isVisible={isThemeOverlayVisible}
+                onAnimationComplete={hideThemeSwitchOverlay}
+            />
+
             <motion.header
                 className="w-full px-4 sm:px-6 py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm"
                 initial={headerAnimations.header.initial}

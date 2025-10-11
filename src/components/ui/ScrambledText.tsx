@@ -8,16 +8,6 @@ import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin);
 
-export interface ScrambledTextProps {
-    radius?: number;
-    duration?: number;
-    speed?: number;
-    scrambleChars?: string;
-    className?: string;
-    style?: React.CSSProperties;
-    children: React.ReactNode;
-}
-
 const ScrambledText: React.FC<ScrambledTextProps> = ({
     radius = 100,
     duration = 1.2,

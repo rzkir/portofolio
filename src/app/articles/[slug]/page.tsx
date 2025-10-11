@@ -6,7 +6,7 @@ import { generateMetadata as getArticlesMetadata } from '@/hooks/articles/detail
 
 import { fetchArticleBySlug } from "@/utils/FetchArticles"
 
-import ProductsSlugSkeleton from '@/hooks/articles/details/ArticlesSkeleton';
+import ArticlesSkeleton from '@/hooks/articles/details/ArticlesSkeleton';
 
 import { ArticleSchema, ArticleBreadcrumbSchema } from "@/lib/Script";
 
@@ -39,6 +39,6 @@ export default async function Page({ params }: Props) {
             </Fragment>
         );
     } catch (error) {
-        return <ProductsSlugSkeleton />;
+        return <ArticlesSkeleton />;
     }
 }

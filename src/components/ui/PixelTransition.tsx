@@ -1,17 +1,6 @@
-import React, { useRef, useEffect, useState, CSSProperties } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 import { gsap } from 'gsap';
-
-interface PixelTransitionProps {
-    firstContent: React.ReactNode;
-    secondContent: React.ReactNode;
-    gridSize?: number;
-    pixelColor?: string;
-    animationStepDuration?: number;
-    className?: string;
-    style?: CSSProperties;
-    aspectRatio?: string;
-}
 
 const PixelTransition: React.FC<PixelTransitionProps> = ({
     firstContent,

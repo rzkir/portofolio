@@ -1,35 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from 'react';
+
 import React from 'react';
+
 import { motion } from 'framer-motion';
 
 import { blurTextAnimations } from '@/base/animations/animation'
-
-interface AnimationState {
-  filter?: string;
-  opacity?: number;
-  y?: number;
-  [key: string]: any;
-}
-
-interface BlurTextProps {
-  text?: string;
-  delay?: number;
-  className?: string;
-  animateBy?: 'words' | 'characters';
-  direction?: 'top' | 'bottom';
-  threshold?: number;
-  rootMargin?: string;
-  animationFrom?: AnimationState;
-  animationTo?: AnimationState[];
-  easing?: (t: number) => number;
-  onAnimationComplete?: () => void;
-  stepDuration?: number;
-  as?: React.ElementType;
-  loading?: boolean;
-  initialDelay?: number;
-}
 
 const buildKeyframes = (from: AnimationState, steps: AnimationState[]): Record<string, any[]> => {
   const keys = new Set([

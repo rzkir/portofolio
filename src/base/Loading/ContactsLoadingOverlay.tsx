@@ -1,13 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
 
-interface ContactsLoadingOverlayProps {
-    isLoading?: boolean
-    message?: string
-    className?: string
-}
+import { useEffect, useState } from 'react'
 
 export default function ContactsLoadingOverlay({
     isLoading = true,
