@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 
 import Image from 'next/image'
 
@@ -16,11 +16,7 @@ import Link from 'next/link'
 
 import Preview from '@/components/projects/modal/Priview'
 
-import { useRouter } from 'next/navigation'
-
 import { useLoadingOverlay } from '@/base/Loading/useLoadingOverlay'
-
-import { useLoading } from '@/context/LoadingContext'
 
 import { useLenis } from '@/lib/useLenis'
 
@@ -30,8 +26,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
     const [previewProject, setPreviewProject] = useState<ProjectsContentProps | null>(null);
 
     const lenis = useLenis();
-    const router = useRouter();
-    const { showLoading, hideLoading } = useLoading();
+
     const { withNavigationLoading } = useLoadingOverlay();
 
     const categories = useMemo(() => {
@@ -50,7 +45,7 @@ const ProjectsContent = React.memo(function ProjectsContent({ projectsData }: { 
     const middleProjects = displayedProjects.slice(1, 4);
     const bottomProjects = displayedProjects.slice(4);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (previewProject) {
             if (lenis) {
                 lenis.stop();

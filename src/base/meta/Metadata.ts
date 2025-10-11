@@ -1,4 +1,8 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
 
 export const viewport = {
   width: "device-width",
@@ -6,6 +10,9 @@ export const viewport = {
   maximumScale: 5,
   userScalable: true,
   themeColor: "#0f172a", // Updated to dark theme
+  viewportFit: "cover",
+  colorScheme: "dark light",
+  interactiveWidget: "resizes-content",
 };
 
 export const metadata = {
@@ -202,7 +209,12 @@ export const metadata = {
       publishedTime: "2024-01-01T00:00:00+07:00",
       modifiedTime: new Date().toISOString(),
       section: "Web Development & Digital Solutions",
-      tags: ["Full Stack Developer", "Web Development", "Creative Design", "Technology"],
+      tags: [
+        "Full Stack Developer",
+        "Web Development",
+        "Creative Design",
+        "Technology",
+      ],
     },
     video: {
       url: "https://www.youtube.com/watch?v=uURhi3S5qEM",
@@ -244,10 +256,7 @@ export const metadata = {
       "Full Stack Developer dan Creative Digital Solutions profesional dari Indonesia. Spesialis dalam pengembangan website modern, aplikasi web, UI/UX Design, dan solusi digital yang inovatif untuk bisnis.",
     creator: "@codingwithrizki",
     site: "@codingwithrizki",
-    images: [
-      "/twitter-image-main.jpg",
-      "/twitter-image-square.jpg",
-    ],
+    images: ["/twitter-image-main.jpg", "/twitter-image-square.jpg"],
     // New Twitter fields
     app: {
       name: "Rizki Ramadhan",
@@ -259,7 +268,8 @@ export const metadata = {
       url: {
         iphone: "https://apps.apple.com/app/rizki-ramadhan",
         ipad: "https://apps.apple.com/app/rizki-ramadhan",
-        googleplay: "https://play.google.com/store/apps/details?id=com.rizkiramadhan.app",
+        googleplay:
+          "https://play.google.com/store/apps/details?id=com.rizkiramadhan.app",
       },
     },
   },
@@ -339,7 +349,8 @@ export const metadata = {
       name: "Rizki Ramadhan",
       url: BASE_URL,
       logo: `${BASE_URL}/favicon.ico`,
-      description: "Full Stack Developer dan Creative Digital Solutions profesional dari Indonesia",
+      description:
+        "Full Stack Developer dan Creative Digital Solutions profesional dari Indonesia",
       address: {
         "@type": "PostalAddress",
         streetAddress: "Leuwiliang, Kabupaten Bogor, Jawa Barat",

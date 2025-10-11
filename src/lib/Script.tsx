@@ -1,6 +1,5 @@
 import Script from "next/script";
 
-// Base breadcrumb for home page
 export const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -30,7 +29,7 @@ export const articlesBreadcrumbJsonLd = {
 };
 
 // Dynamic breadcrumb for individual project pages
-export const createProjectBreadcrumb = (project: ProjectsContentProps) => ({
+export const createProjectBreadcrumb = (project: ProjectDetails) => ({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
@@ -194,7 +193,7 @@ export const ProjectsBreadcrumbSchema = () => (
     />
 );
 
-export const ProjectBreadcrumbSchema = ({ project }: { project: ProjectsContentProps }) => (
+export const ProjectBreadcrumbSchema = ({ project }: { project: ProjectDetails }) => (
     <Script
         id="project-breadcrumb-schema"
         type="application/ld+json"
@@ -270,7 +269,7 @@ export const createProjectsSchema = (projectsData: ProjectsContentProps[]) => ({
 });
 
 // Individual Project Schema
-export const createProjectSchema = (project: ProjectsContentProps) => ({
+export const createProjectSchema = (project: ProjectDetails) => ({
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     "@id": `https://rizkiramadhan.web.id/projects/${project.slug}`,
@@ -337,7 +336,7 @@ export const ProjectsSchema = ({ projectsData }: { projectsData: ProjectsContent
 );
 
 // Individual Project Schema Component
-export const ProjectSchema = ({ project }: { project: ProjectsContentProps }) => (
+export const ProjectSchema = ({ project }: { project: ProjectDetails }) => (
     <Script
         id="project-schema"
         type="application/ld+json"
@@ -463,6 +462,71 @@ export const ArticlesBreadcrumbSchema = () => (
         type="application/ld+json"
         dangerouslySetInnerHTML={{
             __html: JSON.stringify(articlesBreadcrumbJsonLd),
+        }}
+        strategy="afterInteractive"
+    />
+);
+
+// Breadcrumb for contacts page
+export const contactsBreadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rizkiramadhan.web.id" },
+        { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://rizkiramadhan.web.id/contacts" },
+    ]
+};
+
+// Contact Schema
+export const createContactSchema = () => ({
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact - Rizki Ramadhan",
+    "description": "Get in touch with Rizki Ramadhan for web development and digital solutions",
+    "url": "https://rizkiramadhan.web.id/contacts",
+    "mainEntity": {
+        "@type": "Person",
+        "name": "Rizki Ramadhan",
+        "url": "https://rizkiramadhan.web.id",
+        "telephone": "+62-813-9863-2939",
+        "email": "rr8027896@gmail.com",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Leuwiliang",
+            "addressRegion": "Jawa Barat",
+            "addressCountry": "ID",
+            "postalCode": "16640"
+        },
+        "sameAs": [
+            "https://www.facebook.com/rizki.ramadhan.419859",
+            "https://github.com/Rizkiramadhan20",
+            "https://www.instagram.com/rzkir.20",
+            "https://www.tiktok.com/@rzkir.20",
+            "https://www.linkedin.com/in/rizki-ramadhan12",
+            "https://www.youtube.com/@codingwithrizki"
+        ]
+    }
+});
+
+// Contacts Breadcrumb Schema Component
+export const ContactsBreadcrumbSchema = () => (
+    <Script
+        id="contacts-breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+            __html: JSON.stringify(contactsBreadcrumbJsonLd),
+        }}
+        strategy="afterInteractive"
+    />
+);
+
+// Contacts Schema Component
+export const ContactsSchema = () => (
+    <Script
+        id="contacts-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+            __html: JSON.stringify(createContactSchema()),
         }}
         strategy="afterInteractive"
     />

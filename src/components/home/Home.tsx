@@ -33,7 +33,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
 
     return (
         <section
-            className="md:min-h-screen min-h-full flex flex-col items-center justify-center py-10 -mt-0 md:-mt-16 relative overflow-hidden"
+            className="md:min-h-screen min-h-full flex flex-col items-center justify-center py-16 -mt-0 md:-mt-16 relative overflow-hidden bg-gradient-to-br from-background via-background to-surface/30"
             onMouseMove={handleMouseMove}
             id="home"
             onMouseEnter={() => setIsHovered(true)}
@@ -115,7 +115,7 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                 text={item.title}
                                 disabled={isInitialLoading}
                                 speed={3}
-                                className="text-lg md:text-xl font-medium mb-2 tracking-wide"
+                                className="text-lg md:text-xl font-medium mb-2 tracking-wide text-gradient"
                             />
                         </motion.div>
 
@@ -174,10 +174,10 @@ export default function HomeContent({ homeData }: { homeData: HomeContentProps[]
                                 transition={{ duration: 0.5, delay: isInitialLoading ? 0 : 0.8 }}
                             >
                                 <Button
-                                    className="group relative rounded-full px-8 py-6 bg-[color:var(--color-primary)] 
-                                    text-[color:var(--color-primary-foreground)] text-lg font-semibold 
-                                    overflow-hidden transition-all duration-300 hover:shadow-xl
+                                    className="group relative rounded-full px-8 py-6 button-modern
+                                    text-lg font-semibold 
                                     min-h-[44px] min-w-[44px]
+                                    shadow-glow hover:shadow-glow-secondary
                                     before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent 
                                     before:via-white/40 before:to-transparent before:translate-x-[-100%] 
                                     before:transition-transform before:duration-300 hover:before:translate-x-[100%]

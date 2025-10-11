@@ -28,7 +28,7 @@ export const fetchProjectsContents = async (): Promise<
 
 export const fetchProjectBySlug = async (
   slug: string
-): Promise<ProjectsContentProps> => {
+): Promise<ProjectDetails> => {
   try {
     const response = await fetch(`${API_URL}/${slug}`, {
       headers: {

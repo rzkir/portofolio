@@ -12,8 +12,6 @@ import Youtube from '@/components/youtube/Youtube';
 
 import Projects from '@/components/projects/Projects';
 
-import Skills from '@/components/skills/Skils';
-
 import Articles from '@/components/articles/Articles';
 
 import { fetchAboutContents } from "@/utils/FetchAbout";
@@ -40,9 +38,8 @@ export default async function HomePage() {
   return (
     <Fragment>
       <Home homeData={homeData} />
-      <About aboutData={aboutData} />
+      <About aboutData={aboutData} skillsData={skillsData} />
       <Achievements achievementsData={achievementsData} />
-      <Skills skillsData={skillsData} />
       <Projects projectsData={projectsData} />
       <Youtube youtubeData={youtubeData} />
       <Articles articlesData={articlesData} />

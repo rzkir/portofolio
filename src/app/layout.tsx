@@ -1,6 +1,6 @@
-import { metadata } from "@/base/meta/Metadata";
+import { metadata, viewport } from "@/base/meta/Metadata";
 
-export { metadata };
+export { metadata, viewport };
 
 metadata.manifest = "/manifest.json";
 
@@ -25,6 +25,8 @@ import Footer from "@/components/layout/footer/Footer"
 import Overlay from "@/base/helper/Overlay";
 
 import { AllSchemas } from "@/lib/Script";
+
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -56,6 +58,7 @@ export default function RootLayout({
               <LoadingOverlayWrapper />
               <Overlay />
             </LoadingProvider>
+            <Toaster position="top-center" richColors />
           </LenisProvider>
         </ThemeProvider>
       </body>

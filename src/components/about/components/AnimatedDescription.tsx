@@ -14,7 +14,7 @@ export function AnimatedDescription({ description }: AnimatedDescriptionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-sm md:text-base lg:text-lg text-muted-foreground text-center mt-3 md:mt-4 max-w-3xl mx-auto leading-relaxed"
+            className="text-sm md:text-base lg:text-lg text-muted-foreground mt-3 md:mt-4 leading-relaxed"
         >
             {description.split(' ').map((word, index) => (
                 <motion.span

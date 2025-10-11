@@ -11,18 +11,18 @@ export const navLink = [
   },
   {
     number: "03",
-    label: "Youtube",
-    path: "#youtube",
-  },
-  {
-    number: "04",
     label: "Projects",
     path: "/projects",
   },
   {
-    number: "05",
+    number: "04",
     label: "Articles",
     path: "/articles",
+  },
+  {
+    number: "05",
+    label: "Contacts",
+    path: "/contacts",
   },
 ];
 

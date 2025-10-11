@@ -3,7 +3,6 @@ interface Article {
   title: string;
   slug: string;
   description: string;
-  content: string;
   category: string;
   thumbnail: string;
   createdAt: string;

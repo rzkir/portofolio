@@ -1,6 +1,6 @@
 const API_URL = `${process.env.NEXT_PUBLIC_API}/about`;
 
-export const fetchAboutContents = async (): Promise<AboutContentProps[]> => {
+export const fetchAboutContents = async (): Promise<AboutContentProps> => {
   try {
     const response = await fetch(API_URL, {
       next: { revalidate: 10 },
@@ -15,7 +15,7 @@ export const fetchAboutContents = async (): Promise<AboutContentProps[]> => {
     }
 
     const data = await response.json();
-    return data;
+    return data[0];
   } catch (error) {
     console.error("Error fetching about contents:", error);
     throw error;

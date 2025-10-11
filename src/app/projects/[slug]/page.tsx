@@ -4,7 +4,7 @@ import ProjectDetailsContent from '@/hooks/projects/details/ProjectsLayout'
 
 import { generateMetadata as getProjectsMetadata } from '@/hooks/projects/details/meta/metadata'
 
-import { fetchProjectBySlug, fetchProjectsContents } from "@/utils/FetchProjects"
+import { fetchProjectBySlug } from "@/utils/FetchProjects"
 
 import ProductsSlugSkeleton from '@/hooks/projects/details/ProjectsSkeleton';
 
@@ -28,7 +28,6 @@ export default async function Page({ params }: Props) {
     try {
         const resolvedParams = await params;
         const projectData = await fetchProjectBySlug(resolvedParams.slug);
-        const allProjects = await fetchProjectsContents();
 
         return (
             <Fragment>
@@ -37,7 +36,6 @@ export default async function Page({ params }: Props) {
                 <ProjectDetailsContent
                     slug={resolvedParams.slug}
                     productsData={projectData}
-                    allProjects={allProjects}
                 />
             </Fragment>
         );

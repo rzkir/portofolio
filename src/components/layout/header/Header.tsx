@@ -27,7 +27,6 @@ export default function Header() {
     const { withNavigationLoading } = useLoadingOverlay();
     const scrollTo = useScrollTo();
 
-    // State untuk modal menu
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
@@ -39,28 +38,20 @@ export default function Header() {
         setIsMenuOpen(false);
 
         if (path === '/') {
-            // Check if we're already on the home page
             if (window.location.pathname === '/') {
-                // Scroll to top using Lenis
                 scrollTo('html', { duration: 1.5 });
             } else {
-                // Navigate to home page with loading overlay
                 withNavigationLoading('/', 'general');
             }
         } else if (path.startsWith('#')) {
-            // Check if we're on the home page
             if (window.location.pathname === '/') {
-                // Scroll to section using Lenis
                 scrollTo(path, {
-                    offset: -80, // Account for header height
-                    duration: 1.5
+                    offset: -80,
                 });
             } else {
-                // Navigate to home page with hash using loading overlay
                 withNavigationLoading(`/${path}`, 'general');
             }
         } else {
-            // Determine loading type based on path
             let loadingType: 'projects' | 'articles' | 'general' = 'general';
             if (path.startsWith('/projects')) {
                 loadingType = 'projects';
@@ -68,7 +59,6 @@ export default function Header() {
                 loadingType = 'articles';
             }
 
-            // Regular navigation with loading overlay
             withNavigationLoading(path, loadingType);
         }
     }
@@ -244,7 +234,7 @@ export default function Header() {
                         transition={{ duration: 0.3 }}
                     >
                         <motion.div
-                            className="bg-background w-full h-full mx-auto flex flex-col justify-center items-center relative gap-8 sm:gap-12 px-4 sm:px-10 py-6 sm:py-16 rounded-none sm:rounded-2xl shadow-2xl"
+                            className="bg-background w-full h-full mx-auto flex flex-col justify-center items-center relative gap-8 sm:gap-12 px-4 sm:px-10 py-6 sm:py-16 rounded-none shadow-2xl"
                             onClick={e => e.stopPropagation()}
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -257,7 +247,7 @@ export default function Header() {
                         >
                             {/* Close button */}
                             <motion.button
-                                className="absolute top-4 right-4 sm:top-8 sm:right-10 text-foreground text-2xl sm:text-4xl hover:text-muted-foreground z-10 focus:outline-none focus:ring-2 focus:ring-ring"
+                                className="absolute top-4 right-4 text-foreground text-2xl sm:text-4xl hover:text-muted-foreground z-10 focus:outline-none focus:ring-2 focus:ring-ring"
                                 onClick={() => setIsMenuOpen(false)}
                                 aria-label="Close"
                                 whileHover={{ scale: 1.1 }}
