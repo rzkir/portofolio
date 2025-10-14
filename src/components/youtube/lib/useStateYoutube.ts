@@ -15,9 +15,9 @@ export function useStateYoutube(youtubeData: YoutubeContentProps[] = []) {
 
   const lenis = useLenis();
 
-  const headingRef = useRef(null);
-  const categoriesRef = useRef(null);
-  const contentRef = useRef(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const isHeadingInView = useInView(headingRef, {
     once: true,

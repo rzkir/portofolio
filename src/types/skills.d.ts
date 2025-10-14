@@ -5,3 +5,8 @@ interface SkillsContentProps {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+interface TechSkillProps {
+  skillsData: SkillsContentProps[];
+  isInView: boolean;
+}
