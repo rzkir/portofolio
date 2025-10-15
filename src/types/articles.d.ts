@@ -17,6 +17,17 @@ interface ArticlesResponse {
   limit: number;
 }
 
+type ArticleCardProps = {
+  article: Article;
+  index: number;
+  onClick: (slug: string) => void;
+};
+
+type ArticlesGridProps = {
+  articles: Article[];
+  onItemClick: (slug: string) => void;
+};
+
 //============ Article Details ============//
 interface ArticleDetails {
   _id: string;

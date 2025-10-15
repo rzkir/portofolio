@@ -56,6 +56,7 @@ interface PixelTransitionProps {
   className?: string;
   style?: CSSProperties;
   aspectRatio?: string;
+  trigger?: "auto" | "hover" | "click";
 }
 
 // ScrambledText

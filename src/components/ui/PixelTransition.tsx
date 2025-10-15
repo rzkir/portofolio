@@ -10,7 +10,8 @@ const PixelTransition: React.FC<PixelTransitionProps> = ({
     animationStepDuration = 0.3,
     className = '',
     style = {},
-    aspectRatio = '100%'
+    aspectRatio = '100%',
+    trigger = 'auto'
 }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const pixelGridRef = useRef<HTMLDivElement | null>(null);
@@ -126,9 +127,21 @@ const PixelTransition: React.FC<PixelTransitionProps> = ({
         overflow-hidden
       `}
             style={style}
-            onMouseEnter={!isTouchDevice ? handleMouseEnter : undefined}
-            onMouseLeave={!isTouchDevice ? handleMouseLeave : undefined}
-            onClick={isTouchDevice ? handleClick : undefined}
+            onMouseEnter={
+                trigger === 'hover' || (trigger === 'auto' && !isTouchDevice)
+                    ? handleMouseEnter
+                    : undefined
+            }
+            onMouseLeave={
+                trigger === 'hover' || (trigger === 'auto' && !isTouchDevice)
+                    ? handleMouseLeave
+                    : undefined
+            }
+            onClick={
+                trigger === 'click' || (trigger === 'auto' && isTouchDevice)
+                    ? handleClick
+                    : undefined
+            }
         >
             <div style={{ paddingTop: aspectRatio }} />
 

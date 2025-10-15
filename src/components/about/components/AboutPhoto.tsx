@@ -28,6 +28,7 @@ export default function AboutPhoto({ imageUrl, name, status, isInView }: AboutPh
                     transition={{ duration: 0.6, delay: 0.4 }}
                 >
                     <PixelTransition
+                        trigger="hover"
                         firstContent={
                             <Image
                                 src={imageUrl}

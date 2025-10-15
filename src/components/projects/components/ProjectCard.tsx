@@ -57,7 +57,7 @@ const ProjectCard = React.memo(function ProjectCard({
                             <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded">
                                 {`0${index + 1}`}
                             </span>
-                            <CardTitle className="text-xl font-semibold tracking-tight line-clamp-1 md:line-clamp-2">
+                            <CardTitle className="text-xl font-semibold tracking-tight line-clamp-1">
                                 {project.title}
                             </CardTitle>
                         </div>
